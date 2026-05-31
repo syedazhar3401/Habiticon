@@ -35,6 +35,7 @@ export default function TaskModule({
   const [newTitle, setNewTitle] = useState('');
   const [newCourseId, setNewCourseId] = useState('');
   const [newPriority, setNewPriority] = useState<'low' | 'medium' | 'high'>('medium');
+  const [newStartDate, setNewStartDate] = useState('2026-05-30');
   const [newDeadline, setNewDeadline] = useState('2026-06-05');
   const [newEstimatedHours, setNewEstimatedHours] = useState('4');
   const [newDescription, setNewDescription] = useState('');
@@ -61,6 +62,7 @@ export default function TaskModule({
       title: newTitle,
       courseId: newCourseId || undefined,
       priority: newPriority,
+      startDate: newStartDate,
       deadline: newDeadline,
       estimatedHours: Number(newEstimatedHours) || 2,
       progress: 0,
@@ -78,6 +80,7 @@ export default function TaskModule({
     setNewTitle('');
     setNewCourseId('');
     setNewPriority('medium');
+    setNewStartDate('2026-05-30');
     setNewDeadline('2026-06-05');
     setNewEstimatedHours('4');
     setNewDescription('');
@@ -166,7 +169,7 @@ export default function TaskModule({
                       {task.estimatedHours} hrs est
                     </span>
                     <span className="font-semibold text-slate-700">
-                      Due {task.deadline}
+                      {task.startDate ? `${task.startDate.split('-').slice(1).join('/')} to ${task.deadline.split('-').slice(1).join('/')}` : `Due ${task.deadline.split('-').slice(1).join('/')}`}
                     </span>
                   </div>
 
@@ -300,7 +303,7 @@ export default function TaskModule({
                     <th className="p-3">Course</th>
                     <th className="p-3">Priority</th>
                     <th className="p-3">Estimates</th>
-                    <th className="p-3">Deadline</th>
+                    <th className="p-3">Dates</th>
                     <th className="p-3 text-right">Delete</th>
                   </tr>
                 </thead>
@@ -328,8 +331,8 @@ export default function TaskModule({
                             {task.priority}
                           </span>
                         </td>
-                        <td className="p-3">{task.estimatedHours} hrs</td>
-                        <td className="p-3 text-slate-500 font-medium">{task.deadline}</td>
+                        <td className="p-3 font-semibold text-slate-650">{task.estimatedHours} hrs</td>
+                        <td className="p-3 text-slate-500 font-medium">{task.startDate ? `${task.startDate} to ${task.deadline}` : task.deadline}</td>
                         <td className="p-3 text-right">
                           <button onClick={() => onDeleteTask(task.id)} className="text-slate-400 hover:text-red-500">
                             Delete
@@ -404,6 +407,15 @@ export default function TaskModule({
                 {/* Estimated / Deadline */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Start Date</label>
+                    <input 
+                      type="date" 
+                      value={newStartDate} 
+                      onChange={(e) => setNewStartDate(e.target.value)}
+                      className="w-full bg-slate-150 border border-slate-200 rounded-lg p-1.5 text-xs text-slate-805"
+                    />
+                  </div>
+                  <div>
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Target Deadline</label>
                     <input 
                       type="date" 
@@ -412,6 +424,9 @@ export default function TaskModule({
                       className="w-full bg-slate-150 border border-slate-200 rounded-lg p-1.5 text-xs text-slate-805"
                     />
                   </div>
+                </div>
+
+                <div className="grid grid-cols-1">
                   <div>
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Est Completion time (hrs)</label>
                     <input 

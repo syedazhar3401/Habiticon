@@ -33,6 +33,7 @@ export interface Task {
   title: string;
   courseId?: string; // Optional course link
   priority: 'low' | 'medium' | 'high';
+  startDate?: string; // YYYY-MM-DD
   deadline: string; // YYYY-MM-DD
   estimatedHours: number;
   progress: number; // 0 to 100
