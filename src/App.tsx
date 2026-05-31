@@ -17,6 +17,7 @@ import DashboardModule from './components/DashboardModule';
 import CourseModule from './components/CourseModule';
 import HabitTracker from './components/HabitTracker';
 import WellnessJournalModule from './components/WellnessJournalModule';
+import { ColorOrb } from './components/ui/ai-input';
 
 import { 
   Home, Calendar as CalIcon, CheckSquare, BarChart2, BookOpen, FileText, Cpu, Bell, CheckCircle, Sparkles, AlertCircle, MessageSquare, Flame, Heart
@@ -193,8 +194,8 @@ export default function App() {
     // Reposition FAB if window scales
     const handleResize = () => {
       setFabPos(prev => {
-        const x = Math.min(prev.x, window.innerWidth - 70);
-        const y = Math.min(prev.y, window.innerHeight - 70);
+        const x = Math.min(prev.x, window.innerWidth - 150);
+        const y = Math.min(prev.y, window.innerHeight - 56);
         return { x: Math.max(20, x), y: Math.max(20, y) };
       });
     };
@@ -226,8 +227,8 @@ export default function App() {
         hasMoved.current = true;
       }
       
-      const newX = Math.max(20, Math.min(e.clientX - dragOffset.current.x, window.innerWidth - 70));
-      const newY = Math.max(20, Math.min(e.clientY - dragOffset.current.y, window.innerHeight - 70));
+      const newX = Math.max(20, Math.min(e.clientX - dragOffset.current.x, window.innerWidth - 150));
+      const newY = Math.max(20, Math.min(e.clientY - dragOffset.current.y, window.innerHeight - 56));
       setFabPos({ x: newX, y: newY });
     };
 
@@ -240,8 +241,8 @@ export default function App() {
         hasMoved.current = true;
       }
       
-      const newX = Math.max(20, Math.min(touch.clientX - dragOffset.current.x, window.innerWidth - 70));
-      const newY = Math.max(20, Math.min(touch.clientY - dragOffset.current.y, window.innerHeight - 70));
+      const newX = Math.max(20, Math.min(touch.clientX - dragOffset.current.x, window.innerWidth - 150));
+      const newY = Math.max(20, Math.min(touch.clientY - dragOffset.current.y, window.innerHeight - 56));
       setFabPos({ x: newX, y: newY });
     };
 
@@ -1032,7 +1033,7 @@ export default function App() {
 
       </main>
 
-      {/* Floating Draggable AI Assistant FAB Trigger */}
+      {/* Floating Draggable AI Assistant Pill Trigger */}
       <div
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
@@ -1042,39 +1043,42 @@ export default function App() {
           top: `${fabPos.y}px`,
           touchAction: 'none'
         }}
-        className={`fixed w-14 h-14 bg-gradient-to-tr from-indigo-600 to-violet-500 text-white rounded-full flex items-center justify-center shadow-[0_4px_25px_rgba(99,102,241,0.55)] hover:shadow-[0_4px_30px_rgba(99,102,241,0.7)] border border-indigo-400/30 cursor-pointer select-none transition-all duration-200 z-40 hover:scale-110 active:scale-95 ${
+        className={`fixed w-[130px] h-9 bg-indigo-900 border border-indigo-800 text-white rounded-full flex items-center justify-between px-3 shadow-[0_4px_20px_rgba(99,102,241,0.5)] hover:shadow-[0_4px_25px_rgba(99,102,241,0.65)] cursor-pointer select-none transition-all duration-200 z-40 hover:scale-105 active:scale-95 ${
           isDragging ? 'cursor-grabbing' : 'cursor-grab'
         }`}
-        title="Reposition anywhere! Click to consult Aura AI"
+        title="Reposition anywhere! Click to consult Gemmi AI"
       >
-        <Sparkles className="w-6 h-6 text-white animate-pulse" />
-        <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+        <div className="flex items-center gap-2 select-none pointer-events-none">
+          <ColorOrb dimension="20px" tones={{ base: "oklch(22.64% 0 0)" }} className="shrink-0" />
+          <span className="font-bold text-[10.5px] tracking-wide text-white select-none">Ask Gemmi</span>
+        </div>
+        <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border border-slate-900"></span>
+          <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border border-indigo-950"></span>
         </span>
       </div>
 
-      {/* Sleek Right Slide-out Aura AI Assistant drawer */}
+      {/* Floating Aura AI Assistant Pop-up Chat Card */}
       <div 
-        className={`fixed top-0 right-0 h-full w-80 sm:w-96 bg-slate-900 shadow-2xl z-50 border-l border-slate-800 flex flex-col transition-all duration-300 ${
-          showAIWidget ? 'translate-x-0 opacity-100 font-sans' : 'translate-x-full opacity-0 pointer-events-none'
+        style={{
+          left: `${Math.max(20, Math.min(window.innerWidth - 380, fabPos.x - 120))}px`,
+          top: `${Math.max(20, Math.min(window.innerHeight - 480, fabPos.y - 480))}px`,
+          width: '360px',
+          height: '460px'
+        }}
+        className={`fixed z-50 rounded-2xl overflow-hidden bg-slate-900 shadow-2xl border border-indigo-900/60 flex flex-col transition-all duration-300 origin-bottom ${
+          showAIWidget 
+            ? 'scale-100 opacity-100 pointer-events-auto' 
+            : 'scale-90 opacity-0 pointer-events-none'
         }`}
       >
-        <div className="absolute top-3.5 right-4 z-50">
-          <button 
-            onClick={() => setShowAIWidget(false)}
-            className="p-1.5 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white transition text-lg font-bold"
-            title="Close Assistant"
-          >
-            &times;
-          </button>
-        </div>
         <div className="h-full w-full">
           <AssistantChat 
             courses={courses}
             events={events}
             tasks={tasks}
             onTriggerAction={handleTriggerAction}
+            onClose={() => setShowAIWidget(false)}
           />
         </div>
       </div>
