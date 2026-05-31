@@ -243,12 +243,12 @@ export default function GanttModule({
         <div className="flex bg-slate-50 border-b border-slate-200 select-none shrink-0 z-20">
           
           {/* Left Table Header columns */}
-          <div className="w-[380px] flex shrink-0 border-r border-slate-200 text-left text-[9.5px] font-extrabold text-slate-400 uppercase tracking-wider items-center h-10 pl-3">
-            <div className="w-44 pl-1">NAME</div>
-            <div className="w-20 text-center">STATUS</div>
-            <div className="w-14 text-center">PRIORITY</div>
-            <div className="w-18 text-center">START DATE</div>
-            <div className="w-18 text-center">END DATE</div>
+          <div className="w-[500px] flex shrink-0 border-r border-slate-200 text-left text-[9.5px] font-extrabold text-slate-400 uppercase tracking-wider items-center h-10 pl-3 pr-3">
+            <div className="w-[180px] shrink-0 pl-1">NAME</div>
+            <div className="w-24 shrink-0 text-center">STATUS</div>
+            <div className="w-18 shrink-0 text-center">PRIORITY</div>
+            <div className="w-16 shrink-0 text-center">START DATE</div>
+            <div className="w-16 shrink-0 text-center">END DATE</div>
           </div>
 
           {/* Right Timeline Header columns */}
@@ -295,6 +295,16 @@ export default function GanttModule({
             
             // Calculate parent folder timeline span
             const parentSpan = getParentTimelineSpan(groupTaskList);
+            const { startOffsetCol: pStart, widthCols: pWidth } = parentSpan;
+            const pEnd = pStart + pWidth;
+            const pHasOverlap = pWidth > 0 && pStart < timeZoom && pEnd > 0;
+            
+            const pVisualStart = Math.max(0, pStart);
+            const pVisualEnd = Math.min(timeZoom, pEnd);
+            const pVisualWidth = pVisualEnd - pVisualStart;
+            
+            const pLeftPct = (pVisualStart / timeZoom) * 100;
+            const pWidthPct = (pVisualWidth / timeZoom) * 100;
             
             return (
               <div key={groupName} className="flex flex-col">
@@ -303,38 +313,40 @@ export default function GanttModule({
                 <div className="flex items-center bg-slate-50/70 hover:bg-slate-50 transition border-b border-slate-150 h-9 shrink-0 select-none z-10">
                   
                   {/* Left Column values */}
-                  <div className="w-[380px] shrink-0 border-r border-slate-200 pl-3 flex items-center pr-3">
-                    <button 
-                      onClick={() => toggleGroup(groupName)}
-                      className="p-1 hover:bg-slate-200/60 rounded text-slate-400 hover:text-slate-800 transition mr-1 cursor-pointer border-none bg-transparent flex items-center"
-                    >
-                      {isCollapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-                    </button>
-                    
-                    <span className="w-2.5 h-2.5 rounded bg-indigo-500 mr-2 inline-block shadow-inner shrink-0" />
-                    
-                    <h4 className="w-44 text-[10.5px] font-black text-indigo-950 truncate text-left" title={groupName}>
-                      {groupName}
-                    </h4>
+                  <div className="w-[500px] shrink-0 border-r border-slate-200 pl-3 flex items-center pr-3">
+                    <div className="w-[180px] shrink-0 flex items-center pr-2">
+                      <button 
+                        onClick={() => toggleGroup(groupName)}
+                        className="p-1 hover:bg-slate-200/60 rounded text-slate-400 hover:text-slate-800 transition mr-1 cursor-pointer border-none bg-transparent flex items-center"
+                      >
+                        {isCollapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                      </button>
+                      
+                      <span className="w-2.5 h-2.5 rounded bg-indigo-500 mr-2 inline-block shadow-inner shrink-0" />
+                      
+                      <h4 className="flex-grow text-[10.5px] font-black text-indigo-950 truncate text-left" title={groupName}>
+                        {groupName}
+                      </h4>
+                    </div>
 
                     {/* Group Status summary columns */}
-                    <div className="w-20 text-[9px] font-bold text-slate-450 text-center uppercase tracking-wide">
+                    <div className="w-24 shrink-0 text-[9px] font-bold text-slate-450 text-center uppercase tracking-wide">
                       Group Folder
                     </div>
-                    <div className="w-14 text-center">-</div>
-                    <div className="w-18 text-center">-</div>
-                    <div className="w-18 text-center">-</div>
+                    <div className="w-18 shrink-0 text-center text-slate-400">-</div>
+                    <div className="w-16 shrink-0 text-center text-slate-400">-</div>
+                    <div className="w-16 shrink-0 text-center text-slate-400">-</div>
                   </div>
 
                   {/* Right Timeline section: Spans Course combined project range */}
                   <div className="flex-grow min-w-[500px] h-full relative flex items-center">
-                    {/* Visual parent range bar */}
-                    {!isCollapsed && parentSpan.widthCols > 0 && parentSpan.startOffsetCol < timeZoom && (
+                    {/* Visual parent range bar with precise bounds overlap clipping */}
+                    {!isCollapsed && pHasOverlap && (
                       <div 
                         className="absolute h-1.5 rounded-full bg-emerald-500 shadow-sm border border-emerald-400 z-10 transition-all opacity-85"
                         style={{
-                          left: `${Math.max(0, (parentSpan.startOffsetCol / timeZoom) * 100)}%`,
-                          width: `${Math.min(100, (parentSpan.widthCols / timeZoom) * 100)}%`
+                          left: `${pLeftPct}%`,
+                          width: `${pWidthPct}%`
                         }}
                         title={`${groupName} combined range`}
                       />
@@ -352,25 +364,36 @@ export default function GanttModule({
                 {/* B. Children Task Rows (only if folder expanded) */}
                 {!isCollapsed && groupTaskList.map(task => {
                   const { startOffsetCol, widthCols } = getTaskTimelineSpan(task);
+                  const endCol = startOffsetCol + widthCols;
                   const isOverdue = new Date(task.deadline).getTime() < new Date('2026-05-30').getTime() && task.status !== 'completed';
+
+                  const hasOverlap = widthCols > 0 && startOffsetCol < timeZoom && endCol > 0;
+                  const visualStart = Math.max(0, startOffsetCol);
+                  const visualEnd = Math.min(timeZoom, endCol);
+                  const visualWidth = visualEnd - visualStart;
+
+                  const leftPct = (visualStart / timeZoom) * 100;
+                  const widthPct = (visualWidth / timeZoom) * 100;
 
                   return (
                     <div key={task.id} className="flex items-center hover:bg-slate-50/50 transition h-9 shrink-0 group">
                       
                       {/* Left Spreadsheet cells */}
-                      <div className="w-[380px] shrink-0 border-r border-slate-200 pl-3 flex items-center pr-3">
-                        <div className="w-5 flex items-center justify-center shrink-0">
-                          {/* Hierarchical bullet guidelines */}
-                          <span className="w-1.5 h-1.5 rounded-full bg-slate-300 group-hover:bg-indigo-400 transition shrink-0" />
-                        </div>
-                        
-                        {/* Task Title */}
-                        <div className="w-44 text-[10.5px] font-bold text-slate-800 leading-snug truncate text-left group-hover:text-indigo-650 transition pl-1" title={task.title}>
-                          {task.title}
+                      <div className="w-[500px] shrink-0 border-r border-slate-200 pl-3 flex items-center pr-3">
+                        <div className="w-[180px] shrink-0 flex items-center pr-2">
+                          <div className="w-5 flex items-center justify-center shrink-0">
+                            {/* Hierarchical bullet guidelines */}
+                            <span className="w-1.5 h-1.5 rounded-full bg-slate-300 group-hover:bg-indigo-450 transition shrink-0" />
+                          </div>
+                          
+                          {/* Task Title */}
+                          <div className="flex-grow text-[10.5px] font-bold text-slate-850 leading-snug truncate text-left group-hover:text-indigo-650 transition pl-1" title={task.title}>
+                            {task.title}
+                          </div>
                         </div>
 
                         {/* STATUS Badges (Capitalized) */}
-                        <div className="w-20 text-center">
+                        <div className="w-24 shrink-0 text-center flex justify-center items-center">
                           <span className={`text-[8.5px] font-black tracking-wider px-1.5 py-0.5 rounded uppercase select-none ${
                             task.status === 'completed' ? 'bg-emerald-50 text-emerald-600 border border-emerald-200/50'
                               : isOverdue ? 'bg-rose-50 text-rose-600 border border-rose-200/50 animate-pulse'
@@ -385,7 +408,7 @@ export default function GanttModule({
                         </div>
 
                         {/* PRIORITY Badges (Capitalized) */}
-                        <div className="w-14 text-center">
+                        <div className="w-18 shrink-0 text-center flex justify-center items-center">
                           <span className={`text-[8.5px] font-black tracking-wider px-1.5 py-0.5 rounded-md uppercase select-none ${
                             task.priority === 'high' ? 'bg-red-50 text-red-600'
                               : task.priority === 'medium' ? 'bg-amber-50 text-amber-600'
@@ -396,12 +419,12 @@ export default function GanttModule({
                         </div>
 
                         {/* START DATE */}
-                        <div className="w-18 text-center text-[9px] font-semibold text-slate-500 font-mono">
+                        <div className="w-16 shrink-0 text-center text-[9px] font-semibold text-slate-500 font-mono">
                           {task.startDate ? task.startDate.split('-').slice(1).join('/') : '05/30'}
                         </div>
 
                         {/* END DATE */}
-                        <div className="w-18 text-center text-[9px] font-semibold text-slate-500 font-mono">
+                        <div className="w-16 shrink-0 text-center text-[9px] font-semibold text-slate-500 font-mono">
                           {task.deadline.split('-').slice(1).join('/')}
                         </div>
                       </div>
@@ -409,13 +432,13 @@ export default function GanttModule({
                       {/* Right Timeline grid area */}
                       <div className="flex-grow min-w-[500px] h-full relative flex items-center select-none">
                         
-                        {/* Task duration pill bar */}
-                        {widthCols > 0 && startOffsetCol < timeZoom && (startOffsetCol + widthCols) > 0 && (
+                        {/* Task duration pill bar with precise viewport clipping */}
+                        {hasOverlap && (
                           <div 
                             className="absolute h-5 rounded-full flex items-center justify-center px-3.5 shadow-sm border text-[8px] font-bold text-white tracking-wide transition-all duration-300 hover:scale-[1.02] hover:shadow-md cursor-pointer truncate"
                             style={{
-                              left: `${Math.max(0, (startOffsetCol / timeZoom) * 100)}%`,
-                              width: `${Math.min(100, (widthCols / timeZoom) * 100)}%`,
+                              left: `${leftPct}%`,
+                              width: `${widthPct}%`,
                               backgroundColor: task.status === 'completed' ? '#10b981' 
                                 : isOverdue ? '#ef4444'
                                 : task.status === 'in_progress' ? '#0ea5e9'
