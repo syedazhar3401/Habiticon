@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { 
-  Course, CalendarEvent, Task, Folder, Note, AIMessage, AppNotification, HabitCategory, HabitLog 
+  Course, CalendarEvent, Task, Folder, Note, AIMessage, AppNotification, HabitCategory, HabitLog, JournalEntry 
 } from './types';
 import AssistantChat from './components/AssistantChat';
 import BlueprintDocs from './components/BlueprintDocs';
@@ -16,13 +16,14 @@ import NoteModule from './components/NoteModule';
 import DashboardModule from './components/DashboardModule';
 import CourseModule from './components/CourseModule';
 import HabitTracker from './components/HabitTracker';
+import WellnessJournalModule from './components/WellnessJournalModule';
 
 import { 
-  Home, Calendar as CalIcon, CheckSquare, BarChart2, BookOpen, FileText, Cpu, Bell, CheckCircle, Sparkles, AlertCircle, MessageSquare, Flame
+  Home, Calendar as CalIcon, CheckSquare, BarChart2, BookOpen, FileText, Cpu, Bell, CheckCircle, Sparkles, AlertCircle, MessageSquare, Flame, Heart
 } from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'calendar' | 'tasks' | 'gantt' | 'courses' | 'notes' | 'blueprint' | 'habits'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'calendar' | 'tasks' | 'gantt' | 'courses' | 'notes' | 'blueprint' | 'habits' | 'wellness'>('dashboard');
   const [showNotifications, setShowNotifications] = useState(false);
 
   // --- Habits State Initialization & Persistence ---
@@ -98,6 +99,86 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('habit_logs', JSON.stringify(habitLogs));
   }, [habitLogs]);
+
+  // --- Journal Entries State Initialization & Persistence ---
+  const [journalEntries, setJournalEntries] = useState<JournalEntry[]>(() => {
+    const saved = localStorage.getItem('journal_entries');
+    if (saved) return JSON.parse(saved);
+    return [
+      {
+        id: 'entry-1',
+        userId: 'student-1',
+        dateCreated: '2026-05-30',
+        timeCreated: '21:30',
+        lastModified: new Date('2026-05-30T21:30:00Z').toISOString(),
+        type: 'daily',
+        title: 'Overcoming Operating Systems Lab Fatigue',
+        content: 'Today was an intensely productive but physically exhausting day. I spent over 4 hours debugging the multithreading process scheduling logic in C for the OS Lab assignment. Finally got the mutex locks and semaphores working without causing deadlocks! I felt stressed in the afternoon, but coding projects always bring a sense of resolution.',
+        mood: {
+          score: 8,
+          type: 'happy',
+          energyLevel: 6,
+          stressLevel: 5,
+          motivationLevel: 9,
+          sleepQuality: 7
+        },
+        wellness: {
+          anxietyLevel: 3,
+          focusLevel: 9,
+          exerciseCompleted: false,
+          workloadPressure: 7,
+          assignmentConfidence: 9,
+          productivityRating: 9
+        },
+        gratitudeItems: [
+          'The clean, error-free compile of the scheduler simulation code.',
+          'Hot peppermint tea during the long evening coding session.',
+          'Friendly peer advice on threads from my classmate Alice.'
+        ],
+        tags: ['Success', 'Goals', 'Stress'],
+        images: [],
+        isLocked: false
+      },
+      {
+        id: 'entry-2',
+        userId: 'student-1',
+        dateCreated: '2026-05-29',
+        timeCreated: '22:15',
+        lastModified: new Date('2026-05-29T22:15:00Z').toISOString(),
+        type: 'gratitude',
+        title: 'End of Week Reflections & Gratitude Log',
+        content: 'Enrolled in a new class and started mapping the semester revision phase. The workload is picking up, but I am keeping up with my habit check-ins. Daily stretches and hydration are helping me stay grounded.',
+        mood: {
+          score: 9,
+          type: 'very_happy',
+          energyLevel: 8,
+          stressLevel: 2,
+          motivationLevel: 9,
+          sleepQuality: 8
+        },
+        wellness: {
+          anxietyLevel: 2,
+          focusLevel: 8,
+          exerciseCompleted: true,
+          workloadPressure: 4,
+          assignmentConfidence: 8,
+          productivityRating: 8
+        },
+        gratitudeItems: [
+          'Getting a full 8 hours of high-quality sleep.',
+          'Finding a quiet study desk in the main library auditorium.',
+          'A simple, clear plan for tomorrow\'s homework sheets.'
+        ],
+        tags: ['Health', 'Goals'],
+        images: [],
+        isLocked: false
+      }
+    ];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('journal_entries', JSON.stringify(journalEntries));
+  }, [journalEntries]);
 
   // --- Floating Draggable AI Assistant Widget State & Logic ---
   const [showAIWidget, setShowAIWidget] = useState(false);
@@ -620,8 +701,8 @@ export default function App() {
             {/* Dashboard button */}
             <button 
               onClick={() => setActiveTab('dashboard')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${
-                activeTab === 'dashboard' ? 'bg-indigo-700 text-white shadow-md' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${
+                activeTab === 'dashboard' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
               }`}
               title="Dashboard Hub"
             >
@@ -631,8 +712,8 @@ export default function App() {
             {/* Calendar */}
             <button 
               onClick={() => setActiveTab('calendar')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${
-                activeTab === 'calendar' ? 'bg-indigo-700 text-white shadow-md' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${
+                activeTab === 'calendar' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
               }`}
               title="Academic Calendar"
             >
@@ -642,8 +723,8 @@ export default function App() {
             {/* Tasks & Kanban */}
             <button 
               onClick={() => setActiveTab('tasks')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${
-                activeTab === 'tasks' ? 'bg-indigo-700 text-white shadow-md' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${
+                activeTab === 'tasks' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
               }`}
               title="Kanban Tasks Workspace"
             >
@@ -653,8 +734,8 @@ export default function App() {
             {/* Gantt chart */}
             <button 
               onClick={() => setActiveTab('gantt')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${
-                activeTab === 'gantt' ? 'bg-indigo-700 text-white shadow-md' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${
+                activeTab === 'gantt' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
               }`}
               title="Interactive Project Timeline"
             >
@@ -664,8 +745,8 @@ export default function App() {
             {/* Course catalogs */}
             <button 
               onClick={() => setActiveTab('courses')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${
-                activeTab === 'courses' ? 'bg-indigo-700 text-white shadow-md' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${
+                activeTab === 'courses' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
               }`}
               title="Course dashboards"
             >
@@ -675,10 +756,10 @@ export default function App() {
             {/* Notes Notion */}
             <button 
               onClick={() => setActiveTab('notes')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${
-                activeTab === 'notes' ? 'bg-indigo-700 text-white shadow-md' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${
+                activeTab === 'notes' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
               }`}
-              title="Notion Study notebooks"
+              title="Notebook and Whiteboard"
             >
               <FileText className="w-5.5 h-5.5" />
             </button>
@@ -686,19 +767,30 @@ export default function App() {
             {/* Habits daily ledger tracker */}
             <button 
               onClick={() => setActiveTab('habits')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${
-                activeTab === 'habits' ? 'bg-indigo-700 text-white shadow-md' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${
+                activeTab === 'habits' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
               }`}
               title="Daily Habits & Routines"
             >
               <Flame className="w-5.5 h-5.5 text-amber-500 animate-pulse" />
             </button>
 
+            {/* Wellness & Journal Reflections */}
+            <button 
+              onClick={() => setActiveTab('wellness')}
+              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${
+                activeTab === 'wellness' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+              }`}
+              title="Journal &amp; Wellbeing reflections"
+            >
+              <Heart className="w-5.5 h-5.5 text-rose-450 animate-pulse" />
+            </button>
+
             {/* Technical Specs Engineering Blueprint */}
             <button 
               onClick={() => setActiveTab('blueprint')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${
-                activeTab === 'blueprint' ? 'bg-indigo-700 text-white shadow-md' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${
+                activeTab === 'blueprint' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
               }`}
               title="Engineering Blueprint Docs"
             >
@@ -729,7 +821,7 @@ export default function App() {
               {activeTab === 'tasks' && 'Kanban Task Board'}
               {activeTab === 'gantt' && 'Project Gantt visualizer'}
               {activeTab === 'courses' && 'Active Enrolled Courses'}
-              {activeTab === 'notes' && 'Notion Notebook & Whiteboard'}
+              {activeTab === 'notes' && 'Notebook and Whiteboard'}
               {activeTab === 'blueprint' && 'Engineering Blueprint Specs'}
             </h1>
             <p className="text-[10px] text-slate-500 font-semibold tracking-wide uppercase">
@@ -924,6 +1016,15 @@ export default function App() {
                 logs={habitLogs}
                 onUpdateCategories={setHabitCategories}
                 onUpdateLogs={setHabitLogs}
+              />
+            </div>
+          )}
+
+          {activeTab === 'wellness' && (
+            <div className="h-full overflow-y-auto pr-1">
+              <WellnessJournalModule 
+                entries={journalEntries}
+                onUpdateEntries={setJournalEntries}
               />
             </div>
           )}

@@ -347,26 +347,25 @@ export default function HabitTracker({
       {/* 2. Content Sections based on Active Tab */}
       {activeTab === 'ledger' ? (
         <div className="space-y-4">
-          
-          {/* Consistency Stats Panel (Streaks History & Celebration Cards) */}
+                   {/* Consistency Stats Panel (Streaks History & Celebration Cards) */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Stat 1: Current Streak */}
-            <div className="bg-gradient-to-tr from-amber-50 to-orange-100/40 border border-orange-150 p-4 rounded-2xl flex items-center justify-between shadow-sm">
+            <div className="bg-gradient-to-tr from-amber-50 to-orange-100/40 border border-orange-150 p-4 rounded-2xl flex items-center justify-between shadow-sm hover:shadow-md hover:scale-[1.01] transition-all duration-200">
               <div>
                 <span className="text-[10px] font-extrabold text-orange-600 uppercase tracking-widest block">Current Streak</span>
                 <div className="text-xl font-black text-orange-950 mt-1 flex items-baseline gap-1">
-                  <Flame className="w-5.5 h-5.5 text-orange-500 fill-orange-500 animate-bounce" />
+                  <Flame className="w-5.5 h-5.5 text-orange-500 fill-orange-500 animate-pulse" />
                   <span>{streaks.current} Days</span>
                 </div>
                 <span className="text-[9.5px] text-slate-500 font-semibold mt-0.5 block">50%+ daily keeps it burning</span>
               </div>
-              <div className="w-10 h-10 rounded-full bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 text-lg font-bold">
-                🔥
+              <div className="w-10 h-10 rounded-full bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
+                <Flame className="w-5.5 h-5.5 text-orange-500 fill-orange-500" />
               </div>
             </div>
 
             {/* Stat 2: Longest Streak */}
-            <div className="bg-gradient-to-tr from-indigo-50 to-indigo-100/40 border border-indigo-150 p-4 rounded-2xl flex items-center justify-between shadow-sm">
+            <div className="bg-gradient-to-tr from-indigo-50 to-indigo-100/40 border border-indigo-150 p-4 rounded-2xl flex items-center justify-between shadow-sm hover:shadow-md hover:scale-[1.01] transition-all duration-200">
               <div>
                 <span className="text-[10px] font-extrabold text-indigo-650 uppercase tracking-widest block">Longest Streak</span>
                 <div className="text-xl font-black text-indigo-950 mt-1 flex items-baseline gap-1">
@@ -375,13 +374,13 @@ export default function HabitTracker({
                 </div>
                 <span className="text-[9.5px] text-slate-500 font-semibold mt-0.5 block">Your personal best!</span>
               </div>
-              <div className="w-10 h-10 rounded-full bg-indigo-550/10 border border-indigo-500/20 flex items-center justify-center text-indigo-600 text-lg font-bold">
-                🏆
+              <div className="w-10 h-10 rounded-full bg-indigo-550/10 border border-indigo-500/20 flex items-center justify-center">
+                <Trophy className="w-5.5 h-5.5 text-indigo-600" />
               </div>
             </div>
 
             {/* Stat 3: Perfect Days */}
-            <div className="bg-gradient-to-tr from-emerald-50 to-emerald-100/40 border border-emerald-150 p-4 rounded-2xl flex items-center justify-between shadow-sm">
+            <div className="bg-gradient-to-tr from-emerald-50 to-emerald-100/40 border border-emerald-150 p-4 rounded-2xl flex items-center justify-between shadow-sm hover:shadow-md hover:scale-[1.01] transition-all duration-200">
               <div>
                 <span className="text-[10px] font-extrabold text-emerald-650 uppercase tracking-widest block">Perfect Days</span>
                 <div className="text-xl font-black text-emerald-950 mt-1 flex items-baseline gap-1">
@@ -390,8 +389,8 @@ export default function HabitTracker({
                 </div>
                 <span className="text-[9.5px] text-slate-500 font-semibold mt-0.5 block">100% completion logged</span>
               </div>
-              <div className="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 text-lg font-bold">
-                ✨
+              <div className="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                <Award className="w-5.5 h-5.5 text-emerald-600" />
               </div>
             </div>
           </div>

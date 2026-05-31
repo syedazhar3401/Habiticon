@@ -97,3 +97,60 @@ export interface HabitLog {
   completedHabits: Record<string, boolean>; // habitId -> completed (boolean)
 }
 
+export type JournalEntryType = 
+  | 'daily' 
+  | 'reflection' 
+  | 'goal_review' 
+  | 'study_reflection' 
+  | 'gratitude' 
+  | 'freeform';
+
+export type MoodType = 'very_happy' | 'happy' | 'neutral' | 'stressed' | 'sad';
+
+export interface MoodCheckIn {
+  score: number; // 1 to 10
+  type: MoodType;
+  energyLevel: number; // 1 to 10
+  stressLevel: number; // 1 to 10
+  motivationLevel: number; // 1 to 10
+  sleepQuality: number; // 1 to 10
+}
+
+export interface WellnessCheckIn {
+  anxietyLevel: number; // 1 to 10
+  focusLevel: number; // 1 to 10
+  exerciseCompleted: boolean;
+  workloadPressure: number; // 1 to 10
+  assignmentConfidence: number; // 1 to 10
+  productivityRating: number; // 1 to 10
+}
+
+export interface JournalImage {
+  id: string;
+  url: string; // Base64 or custom string
+  caption?: string;
+}
+
+export interface JournalEntry {
+  id: string;
+  userId: string;
+  dateCreated: string; // YYYY-MM-DD
+  timeCreated: string; // HH:MM
+  lastModified: string; // ISO string
+  type: JournalEntryType;
+  title: string;
+  content: string; // HTML/Rich text
+  mood: MoodCheckIn;
+  wellness?: WellnessCheckIn;
+  gratitudeItems?: string[];
+  tags: string[];
+  images: JournalImage[];
+  isLocked: boolean;
+  aiInsights?: {
+    summary: string;
+    recurringThemes: string[];
+    positiveHighlights: string[];
+    sentiment: string;
+  };
+}
+

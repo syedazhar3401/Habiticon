@@ -166,6 +166,117 @@ Your response MUST conform to the structured JSON schema provided. Expand your e
   }
 });
 
+// AI Journal Reflection endpoint
+app.post("/api/reflection", async (req, res) => {
+  const { content, moodScore, wellness } = req.body;
+  if (!content) {
+    return res.status(400).json({ error: "Journal content is required for reflection analysis." });
+  }
+
+  const ai = getGeminiClient();
+
+  if (!ai) {
+    // Resilience fallback analysis
+    console.log("Analyzing journal reflection utilizing local heuristic reflection engine...");
+    const themes = [];
+    const lowerContent = content.toLowerCase();
+    
+    if (lowerContent.includes("study") || lowerContent.includes("exam") || lowerContent.includes("lecture") || lowerContent.includes("assignment")) {
+      themes.push("Academic workload and test anxiety");
+    }
+    if (lowerContent.includes("code") || lowerContent.includes("project") || lowerContent.includes("program") || lowerContent.includes("debug")) {
+      themes.push("Software project execution focus");
+    }
+    if (lowerContent.includes("sleep") || lowerContent.includes("tired") || lowerContent.includes("fatigue") || lowerContent.includes("rest")) {
+      themes.push("Physical recovery and sleep hygiene");
+    }
+    if (lowerContent.includes("friend") || lowerContent.includes("alice") || lowerContent.includes("family") || lowerContent.includes("lecturer")) {
+      themes.push("Social support networks and peer collaboration");
+    }
+    if (themes.length === 0) {
+      themes.push("Personal growth and daily logs");
+    }
+
+    const highlights = [];
+    if (moodScore && moodScore >= 7) {
+      highlights.push("Maintaining a positive and motivated mindset despite daily pressures.");
+    } else {
+      highlights.push("Showing courage by documenting stressful periods and seeking resolution.");
+    }
+    if (lowerContent.includes("debug") || lowerContent.includes("solve") || lowerContent.includes("work") || lowerContent.includes("complete")) {
+      highlights.push("Successfully resolving technical issues and making direct task progress.");
+    }
+
+    let sentiment = "neutral";
+    if (moodScore && moodScore >= 8) sentiment = "positive";
+    else if (moodScore && moodScore <= 4) sentiment = "stressed";
+    else if (lowerContent.includes("anxious") || lowerContent.includes("worry") || lowerContent.includes("panic")) sentiment = "anxious";
+
+    return res.json({
+      summary: `A thoughtful reflection focusing on daily activities. You logged a mood index of ${moodScore || 5}/10.`,
+      recurringThemes: themes,
+      positiveHighlights: highlights,
+      sentiment
+    });
+  }
+
+  try {
+    const systemInstruction = `You are the Campus Task Manager Wellbeing Analyst. Your job is to read the student's journal entry text and provide a supportive reflection analysis.
+You MUST extract:
+1. A concise, encouraging summary (1-2 sentences max).
+2. Up to 3 recurring themes or key emotional drivers from the text.
+3. Up to 3 positive moments, highlights, or accomplishments mentioned in the text to celebrate.
+4. The sentiment classification: 'positive' | 'neutral' | 'anxious' | 'stressed' | 'mixed'.
+
+Your response MUST conform to the structured JSON schema provided. Deliver high-value, encouraging feedback. Avoid any code format descriptions.`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3.5-flash",
+      contents: `Journal Entry: "${content}"\nMood Score: ${moodScore || 5}/10\nWellness Context: ${JSON.stringify(wellness || {})}`,
+      config: {
+        systemInstruction,
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            summary: {
+              type: Type.STRING,
+              description: "A brief, highly encouraging summary of the entry."
+            },
+            recurringThemes: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING },
+              description: "Key themes extracted (e.g. 'Project delivery stress', 'Peer appreciation')"
+            },
+            positiveHighlights: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING },
+              description: "Positive notes, achievements, or moments to celebrate"
+            },
+            sentiment: {
+              type: Type.STRING,
+              description: "'positive' | 'neutral' | 'anxious' | 'stressed' | 'mixed'"
+            }
+          },
+          required: ["summary", "recurringThemes", "positiveHighlights", "sentiment"]
+        }
+      }
+    });
+
+    const bodyText = response.text || "{}";
+    const resultObj = JSON.parse(bodyText.trim());
+    return res.json(resultObj);
+  } catch (error: any) {
+    console.error("Gemini Reflection error:", error);
+    return res.status(500).json({
+      summary: "I parsed your journal reflection, but had an issue using Gemini. Your reflections remain safely saved locally!",
+      recurringThemes: ["General wellbeing tracking"],
+      positiveHighlights: ["Documenting reflections and prioritizing wellbeing."],
+      sentiment: "neutral"
+    });
+  }
+});
+
 /**
  * Resilient mock regex parser if GEMINI_API_KEY is not filled yet
  */
