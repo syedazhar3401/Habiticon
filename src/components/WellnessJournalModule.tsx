@@ -6,6 +6,7 @@ import {
   Type, RefreshCw, Download, ShieldAlert, Heart, ChevronLeft, ChevronRight, Bold, Italic, Underline, Strikethrough, Paintbrush,
   Undo, Redo
 } from 'lucide-react';
+import { MorphPanel } from './ui/ai-input';
 
 interface WellnessJournalModuleProps {
   entries: JournalEntry[];
@@ -397,7 +398,7 @@ export default function WellnessJournalModule({
   };
 
   // --- AI Insights Trigger (Vite Server POST) ---
-  const handleTriggerAI = async () => {
+  const handleTriggerAI = async (customPrompt?: string) => {
     if (!editContent.trim()) {
       alert('Write some content first before consulting the AI Reflections assistant!');
       return;
@@ -405,13 +406,14 @@ export default function WellnessJournalModule({
 
     setAiLoading(true);
     try {
+      const promptVal = customPrompt || "";
       const response = await fetch('/api/reflection', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          content: editContent,
+          content: `${promptVal}\n\nJournal Content:\n${editContent}`,
           moodScore: moodScore,
           wellness: {
             anxietyLevel,
@@ -1037,15 +1039,7 @@ export default function WellnessJournalModule({
                 </div>
                 
                 <div className="flex gap-2">
-                  <button 
-                    onClick={handleTriggerAI}
-                    disabled={aiLoading}
-                    className="px-3 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[10.5px] font-bold rounded-lg flex items-center gap-1 transition-all disabled:opacity-50 cursor-pointer"
-                    title="Aura AI reflections summary"
-                  >
-                    {aiLoading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-indigo-600" />}
-                    {aiLoading ? 'Analyzing Wellbeing...' : 'Ask Aura Reflections'}
-                  </button>
+                  <MorphPanel onSubmit={handleTriggerAI} isLoading={aiLoading} />
 
                   <button 
                     onClick={handleSaveEntry}

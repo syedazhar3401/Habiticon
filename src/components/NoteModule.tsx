@@ -5,6 +5,7 @@ import {
   Lock, Unlock, ShieldAlert, Sparkles, RefreshCw, Undo, Redo, ImageIcon, EyeOff
 } from 'lucide-react';
 import { Toolbar } from './ui/toolbar';
+import { MorphPanel } from './ui/ai-input';
 
 interface NoteModuleProps {
   folders: Folder[];
@@ -437,7 +438,7 @@ export default function NoteModule({
   };
 
   // --- AI Summarizer ---
-  const handleTriggerAI = async () => {
+  const handleTriggerAI = async (customPrompt?: string) => {
     if (!activeNote || !activeNote.content.trim()) {
       alert('Write some content inside your study note first before consulting Aura!');
       return;
@@ -445,13 +446,14 @@ export default function NoteModule({
 
     setAiLoading(true);
     try {
+      const promptVal = customPrompt || `Provide a study outline of this lecture note. Active Note Title: "${activeNote.title}". Content: "${activeNote.content}".`;
       const response = await fetch('/api/assistant', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          prompt: `Provide a study outline of this lecture note. Active Note Title: "${activeNote.title}". Content: "${activeNote.content}".`,
+          prompt: `${promptVal}\n\nNote Title: "${activeNote.title}"\nContent:\n${activeNote.content}`,
           context: {
             courses,
             notes
@@ -736,16 +738,8 @@ export default function NoteModule({
               </div>
 
               <div className="flex items-center gap-2.5">
-                {/* AI Review trigger */}
-                <button 
-                  onClick={handleTriggerAI}
-                  disabled={aiLoading}
-                  className="px-2.5 py-1 bg-white/10 hover:bg-white/15 text-white text-[9.5px] font-extrabold rounded-lg flex items-center gap-1 transition"
-                  title="Aura AI note summaries"
-                >
-                  {aiLoading ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3 text-indigo-300" />}
-                  {aiLoading ? 'Grounding Summary...' : 'Aura Summary'}
-                </button>
+                {/* AI Review trigger with animated MorphPanel */}
+                <MorphPanel onSubmit={handleTriggerAI} isLoading={aiLoading} />
 
                 {/* Draw on Document toggle for Rich Document editor */}
                 {noteEditTab === 'editor' && (
