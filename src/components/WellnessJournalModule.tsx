@@ -6,7 +6,6 @@ import {
   Type, RefreshCw, Download, ShieldAlert, Heart, ChevronLeft, ChevronRight, Bold, Italic, Underline, Strikethrough, Paintbrush,
   Undo, Redo
 } from 'lucide-react';
-import { MorphPanel } from './ui/ai-input';
 
 interface WellnessJournalModuleProps {
   entries: JournalEntry[];
@@ -1039,7 +1038,15 @@ export default function WellnessJournalModule({
                 </div>
                 
                 <div className="flex gap-2">
-                  <MorphPanel onSubmit={handleTriggerAI} isLoading={aiLoading} />
+                  <button 
+                    onClick={() => handleTriggerAI()}
+                    disabled={aiLoading}
+                    className="px-3 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[10.5px] font-bold rounded-lg flex items-center gap-1 transition-all disabled:opacity-50 cursor-pointer"
+                    title="Aura AI reflections summary"
+                  >
+                    {aiLoading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-indigo-600" />}
+                    {aiLoading ? 'Analyzing Wellbeing...' : 'Ask Aura Reflections'}
+                  </button>
 
                   <button 
                     onClick={handleSaveEntry}

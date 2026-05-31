@@ -5,7 +5,6 @@ import {
   Lock, Unlock, ShieldAlert, Sparkles, RefreshCw, Undo, Redo, ImageIcon, EyeOff
 } from 'lucide-react';
 import { Toolbar } from './ui/toolbar';
-import { MorphPanel } from './ui/ai-input';
 
 interface NoteModuleProps {
   folders: Folder[];
@@ -738,8 +737,16 @@ export default function NoteModule({
               </div>
 
               <div className="flex items-center gap-2.5">
-                {/* AI Review trigger with animated MorphPanel */}
-                <MorphPanel onSubmit={handleTriggerAI} isLoading={aiLoading} />
+                {/* AI Review trigger */}
+                <button 
+                  onClick={() => handleTriggerAI()}
+                  disabled={aiLoading}
+                  className="px-2.5 py-1 bg-white/10 hover:bg-white/15 text-white text-[9.5px] font-extrabold rounded-lg flex items-center gap-1 transition"
+                  title="Aura AI note summaries"
+                >
+                  {aiLoading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-indigo-300" />}
+                  {aiLoading ? 'Grounding Summary...' : 'Aura Summary'}
+                </button>
 
                 {/* Draw on Document toggle for Rich Document editor */}
                 {noteEditTab === 'editor' && (

@@ -1042,15 +1042,15 @@ export default function App() {
           top: `${fabPos.y}px`,
           touchAction: 'none'
         }}
-        className={`fixed w-14 h-14 bg-indigo-650 hover:bg-indigo-750 text-white rounded-full flex items-center justify-center shadow-2xl cursor-pointer select-none transition-all duration-150 z-40 hover:scale-105 active:scale-95 ${
-          isDragging ? 'cursor-grabbing scale-105' : 'cursor-grab'
+        className={`fixed w-14 h-14 bg-gradient-to-tr from-indigo-600 to-violet-500 text-white rounded-full flex items-center justify-center shadow-[0_4px_25px_rgba(99,102,241,0.55)] hover:shadow-[0_4px_30px_rgba(99,102,241,0.7)] border border-indigo-400/30 cursor-pointer select-none transition-all duration-200 z-40 hover:scale-110 active:scale-95 ${
+          isDragging ? 'cursor-grabbing' : 'cursor-grab'
         }`}
         title="Reposition anywhere! Click to consult Aura AI"
       >
-        <MessageSquare className="w-6.5 h-6.5" />
-        <span className="absolute -top-1 -right-1 flex h-3 w-3">
+        <Sparkles className="w-6 h-6 text-white animate-pulse" />
+        <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+          <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border border-slate-900"></span>
         </span>
       </div>
 

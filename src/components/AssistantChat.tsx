@@ -6,6 +6,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Sparkles, Send, Command, ArrowRight, CornerDownLeft, Loader2, Info } from 'lucide-react';
 import { AIMessage, Course, CalendarEvent, Task } from '../types';
+import { MorphPanel } from './ui/ai-input';
 
 interface AssistantChatProps {
   courses: Course[];
@@ -45,12 +46,18 @@ How can I help optimize your academic schedule today?`,
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading]);
 
-  const handleSend = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!prompt.trim() || loading) return;
+  const handleSend = async (e?: React.FormEvent | string) => {
+    let userMsgText = '';
+    if (typeof e === 'string') {
+      userMsgText = e.trim();
+    } else {
+      if (e) e.preventDefault();
+      if (!prompt.trim()) return;
+      userMsgText = prompt.trim();
+      setPrompt('');
+    }
 
-    const userMsgText = prompt.trim();
-    setPrompt('');
+    if (!userMsgText || loading) return;
 
     // Append user message
     const userMsg: AIMessage = {
@@ -252,24 +259,10 @@ How can I help optimize your academic schedule today?`,
         <div ref={chatEndRef} />
       </div>
 
-      {/* Input Tray */}
-      <form onSubmit={handleSend} className="p-3 bg-slate-950 border-t border-slate-800 flex gap-2 items-center">
-        <input
-          type="text"
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          placeholder="Ask Aura or issue commands..."
-          className="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
-          disabled={loading}
-        />
-        <button
-          type="submit"
-          disabled={loading || !prompt.trim()}
-          className="bg-emerald-500 hover:bg-emerald-400 disabled:opacity-30 disabled:hover:bg-emerald-500 text-slate-950 p-2.5 rounded-lg transition-all flex items-center justify-center active:scale-95"
-        >
-          <Send className="w-3.5 h-3.5" />
-        </button>
-      </form>
+      {/* Input Tray with animated MorphPanel */}
+      <div className="p-3 bg-slate-950 border-t border-slate-800 flex justify-center items-center shrink-0 min-h-[50px] relative z-40 select-none">
+        <MorphPanel onSubmit={handleSend} isLoading={loading} />
+      </div>
     </div>
   );
 }
