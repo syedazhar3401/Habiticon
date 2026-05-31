@@ -1,0 +1,8 @@
+{
+  "name": "Campus Task Manager",
+  "description": "An all-in-one productivity platform for university students combining academic calendars, course planning, Kanban tasks, Gantt tracking, rich knowledge notes, and or interactive AI study agents.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
