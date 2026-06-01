@@ -117,57 +117,95 @@ function VisionCard({
   colorIdx: number;
 }) {
   const catMeta = CATEGORY_META[vision.category];
-  const bgFallback = CARD_BG_COLORS[colorIdx % CARD_BG_COLORS.length];
+  const cardStyles = [
+    'border-2 border-black rounded-none shadow-[4px_4px_0px_#000000] bg-white p-2', // Style A (Industrial High-Contrast)
+    'border-2 border-black rounded-none shadow-[4px_4px_0px_#000000] bg-[#E85002] p-2', // Style B (Kinetic Inversion)
+    'border-2 border-black rounded-none shadow-[4px_4px_0px_#E85002] bg-[#000000] p-2 text-white', // Style C (Deep Noir)
+    'clay-card border border-[#e2e8f0]/60 bg-[#F9F9F9] p-2.5' // Style D (Soft Claymorphic)
+  ];
+  
+  const styleIdx = colorIdx % cardStyles.length;
+  const currentStyle = cardStyles[styleIdx];
+  const isStyleA = styleIdx === 0;
+  const isStyleB = styleIdx === 1;
+  const isStyleC = styleIdx === 2;
+  const isStyleD = styleIdx === 3;
+  
+  const isClay = isStyleD;
+  const isOrange = isStyleB;
+  const isDark = isStyleC;
+
+  const categoryColors: Record<string, string> = {
+    academic: 'bg-black text-white border border-black', 
+    career: 'bg-[#E85002] text-black border border-black',
+    personal_growth: 'bg-[#333333] text-white border border-black', 
+    health_wellness: 'bg-[#A7A7A7] text-black border border-black',
+    financial: 'bg-black text-[#E85002] border border-black', 
+    travel: 'bg-[#E85002] text-black border border-black',
+    creativity: 'bg-black text-white border border-black', 
+    relationships: 'bg-[#333333] text-white border border-black', 
+    custom: 'bg-[#646464] text-white border border-black'
+  };
 
   return (
     <div
-      className={`relative ${compact ? '' : 'aspect-[3/4]'} rounded-2xl overflow-hidden cursor-pointer group shadow-md hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]`}
-      style={{ minHeight: compact ? 200 : undefined }}
+      className={`relative ${compact ? '' : 'aspect-[3/4]'} cursor-pointer group transition-all duration-300 hover:scale-[1.03] flex flex-col justify-between overflow-hidden ${currentStyle}`}
+      style={{ minHeight: compact ? 220 : undefined }}
       onClick={onOpen}
     >
-      {/* Background image or gradient */}
-      {vision.imageDataUrl ? (
-        <img src={vision.imageDataUrl} alt={vision.title} className="absolute inset-0 w-full h-full object-cover" />
-      ) : (
-        <div className={`absolute inset-0 bg-gradient-to-br ${bgFallback}`} />
-      )}
+      {/* Photo Container */}
+      <div className={`w-full ${isClay ? 'h-[66%] rounded-lg' : 'h-[70%] border-2 border-black'} overflow-hidden relative bg-[#333]`}>
+        {vision.imageDataUrl ? (
+          <img src={vision.imageDataUrl} alt={vision.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        ) : (
+          <div className="w-full h-full bg-[radial-gradient(circle_at_center,_#E85002_0%,_#000000_100%)] flex items-center justify-center">
+            <ImageIcon className="w-8 h-8 text-[#A7A7A7]" />
+          </div>
+        )}
 
-      {/* Dark gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/82 via-black/25 to-transparent" />
-
-      {/* Top row badges */}
-      <div className="absolute top-3 left-3 right-3 flex items-start justify-between">
-        <span className={`text-[9px] font-bold text-white px-2 py-0.5 rounded-full ${catMeta.dot} bg-opacity-90 backdrop-blur-sm`}>
-          {catMeta.label}
-        </span>
-        <div className="flex items-center gap-1">
-          {vision.isPinned && <Pin className="w-3.5 h-3.5 text-amber-400 fill-amber-400 drop-shadow" />}
-          {vision.isArchived && <Award className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400 drop-shadow" />}
+        {/* Top row badges */}
+        <div className="absolute top-2 left-2">
+          <span className={`text-[8.5px] font-black uppercase px-2 py-0.5 ${categoryColors[vision.category] || 'bg-black text-white'}`}>
+            {catMeta.label}
+          </span>
+        </div>
+        
+        <div className="absolute top-2 right-2 flex items-center gap-1.5">
+          {vision.isPinned && (
+            <div className="w-6 h-6 bg-white border border-black rounded-none flex items-center justify-center shadow">
+              <Pin className="w-3.5 h-3.5 text-[#E85002] fill-[#E85002]" />
+            </div>
+          )}
+          {vision.isArchived && (
+            <div className="w-6 h-6 bg-black border border-black rounded-none flex items-center justify-center shadow">
+              <Award className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400" />
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Bottom content */}
-      <div className="absolute bottom-0 left-0 right-0 p-3.5">
-        <h4 className="text-white font-bold text-xs leading-snug line-clamp-2 drop-shadow">{vision.title}</h4>
+      {/* Info Container */}
+      <div className={`p-2 flex flex-col justify-between ${isClay ? 'h-[34%]' : isOrange ? 'h-[30%] bg-[#E85002]' : isDark ? 'h-[30%] bg-[#000000]' : 'h-[30%] bg-[#F9F9F9]'}`}>
+        <h4 className={`font-black text-[11px] line-clamp-1 leading-snug uppercase tracking-tight ${isDark ? 'text-white' : 'text-black'}`}>{vision.title}</h4>
         {!compact && vision.description && (
-          <p className="text-white/65 text-[10px] mt-0.5 line-clamp-2 leading-relaxed">{vision.description}</p>
+          <p className={`text-[9.5px] mt-0.5 line-clamp-1 leading-normal font-mono ${isDark ? 'text-[#A7A7A7]' : 'text-[#333333]'}`}>{vision.description}</p>
         )}
-        <div className="flex items-center justify-between mt-1.5 gap-2">
+        <div className="flex items-center justify-between mt-1 gap-2">
           {vision.targetDate && (
-            <span className="text-white/55 text-[9px] font-mono flex items-center gap-0.5">
+            <span className={`text-[8.5px] font-mono font-bold flex items-center gap-0.5 ${isDark ? 'text-[#A7A7A7]' : 'text-black/60'}`}>
               <Calendar className="w-2.5 h-2.5" />
               {new Date(vision.targetDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
             </span>
           )}
           {vision.progress !== undefined && (
-            <span className="text-white/65 text-[9px] font-bold ml-auto">{vision.progress}%</span>
+            <span className={`text-[9px] font-black font-mono ${isDark ? 'text-[#E85002]' : 'text-black'}`}>{vision.progress}%</span>
           )}
         </div>
         {vision.progress !== undefined && (
-          <div className="w-full h-[3px] bg-white/20 rounded-full overflow-hidden mt-1">
+          <div className={`w-full h-1.5 border border-black mt-1 overflow-hidden ${isDark ? 'bg-[#333333]' : 'bg-[#A7A7A7]'}`}>
             <div
-              className="h-full rounded-full bg-violet-400 transition-all"
-              style={{ width: `${vision.progress}%`, boxShadow: '0 0 6px rgba(167,139,250,0.8)' }}
+              className={`h-full ${isDark ? 'bg-[#E85002]' : 'bg-black'}`}
+              style={{ width: `${vision.progress}%` }}
             />
           </div>
         )}
@@ -175,18 +213,18 @@ function VisionCard({
 
       {/* Hover action row */}
       <div
-        className="absolute inset-x-0 bottom-0 h-10 bg-black/60 backdrop-blur-sm flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+        className="absolute inset-x-0 bottom-0 h-10 bg-black/90 border-t-2 border-black flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
         onClick={e => e.stopPropagation()}
       >
-        <button onClick={onEdit} className="text-white/80 hover:text-white transition" title="Edit"><Edit2 className="w-3.5 h-3.5" /></button>
-        <button onClick={onDuplicate} className="text-white/80 hover:text-white transition" title="Duplicate"><Copy className="w-3.5 h-3.5" /></button>
-        <button onClick={onTogglePin} className="text-white/80 hover:text-amber-400 transition" title={vision.isPinned ? 'Unpin' : 'Pin to dashboard'}>
-          {vision.isPinned ? <PinOff className="w-3.5 h-3.5" /> : <Pin className="w-3.5 h-3.5" />}
+        <button onClick={onEdit} className="text-white hover:text-[#E85002] transition cursor-pointer" title="Edit"><Edit2 className="w-3.5 h-3.5" /></button>
+        <button onClick={onDuplicate} className="text-white hover:text-[#E85002] transition cursor-pointer" title="Duplicate"><Copy className="w-3.5 h-3.5" /></button>
+        <button onClick={onTogglePin} className="text-white hover:text-amber-400 transition cursor-pointer" title={vision.isPinned ? 'Unpin' : 'Pin to dashboard'}>
+          {vision.isPinned ? <PinOff className="w-3.5 h-3.5" /> : <Pin className="w-3.5 h-3.5 text-white" />}
         </button>
-        <button onClick={onArchive} className="text-white/80 hover:text-emerald-400 transition" title={vision.isArchived ? 'Unarchive' : 'Archive'}>
+        <button onClick={onArchive} className="text-white hover:text-emerald-400 transition cursor-pointer" title={vision.isArchived ? 'Unarchive' : 'Archive'}>
           <Archive className="w-3.5 h-3.5" />
         </button>
-        <button onClick={onDelete} className="text-white/80 hover:text-rose-400 transition" title="Delete"><Trash2 className="w-3.5 h-3.5" /></button>
+        <button onClick={onDelete} className="text-white hover:text-rose-400 transition cursor-pointer" title="Delete"><Trash2 className="w-3.5 h-3.5" /></button>
       </div>
     </div>
   );

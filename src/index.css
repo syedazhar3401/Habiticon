@@ -1,6 +1,60 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: 'Outfit', 'Fira Sans', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Geist', 'Outfit', 'Fira Sans', system-ui, -apple-system, sans-serif;
   --font-mono: 'Fira Code', monospace;
+}
+
+@utility brushed-steel {
+  background: conic-gradient(from 145deg at 50% 50%, #A7A7A7 0deg, #F9F9F9 90deg, #333333 180deg, #F9F9F9 270deg, #A7A7A7 360deg);
+  box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.4), inset -1px -1px 2px rgba(0, 0, 0, 0.4);
+}
+
+@utility diagonal-stripes {
+  background: repeating-linear-gradient(45deg, #000000, #000000 8px, #E85002 8px, #E85002 16px);
+}
+
+@utility diagonal-stripes-dark {
+  background: repeating-linear-gradient(45deg, #333333, #333333 8px, #000000 8px, #000000 16px);
+}
+
+@utility clay-card {
+  background-color: #F9F9F9;
+  box-shadow: 
+    inset 2px 2px 5px rgba(255, 255, 255, 1),
+    inset -2px -2px 5px rgba(0, 0, 0, 0.05),
+    4px 4px 10px rgba(0, 0, 0, 0.06),
+    8px 8px 24px rgba(0, 0, 0, 0.08);
+  border-radius: 1rem;
+}
+
+@utility clay-input {
+  background-color: #F9F9F9;
+  box-shadow: 
+    inset 2px 2px 5px rgba(0, 0, 0, 0.05),
+    inset -2px -2px 5px rgba(255, 255, 255, 1);
+  border-radius: 0.75rem;
+}
+
+@utility neo-card-a {
+  background-color: #F9F9F9;
+  border: 2px solid #000000;
+  border-radius: 0px;
+  box-shadow: 4px 4px 0px #000000;
+}
+
+@utility neo-card-b {
+  background-color: #E85002;
+  border: 2px solid #000000;
+  border-radius: 0px;
+  box-shadow: 4px 4px 0px #000000;
+  color: #000000;
+}
+
+@utility neo-card-c {
+  background-color: #000000;
+  border: 2px solid #333333;
+  border-radius: 0px;
+  box-shadow: 4px 4px 0px #E85002;
+  color: #F9F9F9;
 }

@@ -103,24 +103,29 @@ export default function TaskModule({
     onUpdateTask(id, { status: newStatus, progress });
   };
 
-  const renderKanbanLane = (title: string, statusKey: 'not_started' | 'in_progress' | 'completed', bgStyle: string, borderStyle: string, badgeStyle: string) => {
+  const renderKanbanLane = (title: string, statusKey: 'not_started' | 'in_progress' | 'completed', laneStyle: string) => {
     const laneTasks = filteredTasks.filter(t => t.status === statusKey);
+    const isDark = statusKey === 'in_progress';
+    const isClay = statusKey === 'completed';
+
+    // Badge styling
+    const badgeBg = isDark ? 'bg-[#E85002] text-black border border-black' : 'bg-black text-white border border-black';
 
     return (
-      <div className={`flex-1 rounded-xl p-3 border ${bgStyle} ${borderStyle} flex flex-col min-h-[380px] font-sans text-slate-800`}>
-        <div className="flex justify-between items-center mb-4 pb-1 border-b border-slate-100 shrink-0">
-          <h3 className="text-xs font-bold text-slate-800 capitalize flex items-center gap-1.5">
-            <span className={`w-1.5 h-1.5 rounded-full ${statusKey === 'completed' ? 'bg-emerald-500' : statusKey === 'in_progress' ? 'bg-indigo-500' : 'bg-slate-400'}`}></span>
+      <div className={`flex-grow p-4 min-h-[420px] flex flex-col font-sans ${laneStyle}`}>
+        <div className={`flex justify-between items-center mb-4 pb-2 border-b-2 shrink-0 ${isDark ? 'border-[#333]' : isClay ? 'border-[#e2e8f0]' : 'border-black'}`}>
+          <h3 className={`text-xs font-black uppercase tracking-wider flex items-center gap-1.5 ${isDark ? 'text-[#E85002]' : 'text-black'}`}>
+            <span className={`w-2.5 h-2.5 border border-black ${statusKey === 'completed' ? 'bg-black' : statusKey === 'in_progress' ? 'bg-[#E85002]' : 'bg-[#A7A7A7]'}`}></span>
             {title}
           </h3>
-          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${badgeStyle}`}>
+          <span className={`text-[10px] font-black px-2 py-0.5 font-mono ${badgeBg}`}>
             {laneTasks.length}
           </span>
         </div>
 
         <div className="flex-grow space-y-3 overflow-y-auto pr-1">
           {laneTasks.length === 0 ? (
-            <div className="text-center py-8 text-slate-400 text-[11px] leading-relaxed select-none">
+            <div className={`text-center py-10 font-mono text-[10.5px] font-bold uppercase tracking-wider ${isDark ? 'text-[#A7A7A7]' : 'text-[#646464]'}`}>
               No tasks active
             </div>
           ) : (
@@ -129,60 +134,60 @@ export default function TaskModule({
               return (
                 <div 
                   key={task.id}
-                  className="bg-white border border-slate-200/80 p-3 rounded-lg shadow-xs hover:shadow-md hover:border-slate-350 transition-all group flex flex-col text-left"
+                  className={`border-2 border-black p-3 rounded-none shadow-[2px_2px_0px_#000000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all group flex flex-col text-left ${isDark ? 'bg-[#333333] text-white' : 'bg-white text-black'}`}
                 >
                   <div className="flex items-start justify-between gap-1">
-                    <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded uppercase ${
-                      task.priority === 'high' ? 'bg-rose-50 text-rose-600' : task.priority === 'medium' ? 'bg-indigo-50 text-indigo-600' : 'bg-slate-100 text-slate-600'
+                    <span className={`text-[9px] font-black px-1.5 py-0.5 uppercase border border-black ${
+                      task.priority === 'high' ? 'bg-[#E85002] text-black' : task.priority === 'medium' ? 'bg-black text-white' : 'bg-[#A7A7A7] text-black'
                     }`}>
                       {task.priority} Priority
                     </span>
                     <button 
                       onClick={() => onDeleteTask(task.id)}
-                      className="opacity-0 group-hover:opacity-100 hover:text-red-500 text-slate-300 rounded p-0.5 text-xs transition"
+                      className={`opacity-0 group-hover:opacity-100 hover:text-[#E85002] rounded p-0.5 text-xs transition cursor-pointer ${isDark ? 'text-[#A7A7A7]' : 'text-black'}`}
                       title="Delete assignment"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
 
-                  <h5 className="text-[11px] font-bold text-slate-800 mt-1.5 leading-snug truncate">
+                  <h5 className="text-[11.5px] font-black mt-2 leading-snug uppercase tracking-tight truncate">
                     {task.title}
                   </h5>
 
                   {crs && (
-                    <span className="text-[10px] font-semibold text-indigo-600/90 mt-1">
+                    <span className="text-[10.5px] font-black text-[#E85002] mt-1 font-mono uppercase">
                       {crs.code} - {crs.name}
                     </span>
                   )}
 
                   {task.description && (
-                    <p className="text-[10px]/snug text-slate-500 mt-1 line-clamp-2">
+                    <p className={`text-[10px]/snug mt-1.5 line-clamp-2 font-mono ${isDark ? 'text-[#A7A7A7]' : 'text-[#646464]'}`}>
                       {task.description}
                     </p>
                   )}
 
                   {/* Estimated hours & Progress */}
-                  <div className="flex items-center justify-between text-[10px] text-slate-500 mt-2.5 pb-2 border-b border-slate-50">
-                    <span className="flex items-center gap-1 font-medium">
-                      <Clock className="w-3.5 h-3.5 text-slate-400" />
+                  <div className={`flex items-center justify-between text-[10px] mt-3 pb-2 border-b font-mono font-bold ${isDark ? 'border-[#333] text-[#A7A7A7]' : 'border-black/20 text-[#333333]'}`}>
+                    <span className="flex items-center gap-1">
+                      <Clock className={`w-3.5 h-3.5 ${isDark ? 'text-white' : 'text-black'}`} />
                       {task.estimatedHours} hrs est
                     </span>
-                    <span className="font-semibold text-slate-700">
+                    <span>
                       {task.startDate ? `${task.startDate.split('-').slice(1).join('/')} to ${task.deadline.split('-').slice(1).join('/')}` : `Due ${task.deadline.split('-').slice(1).join('/')}`}
                     </span>
                   </div>
 
                   {/* Task Actions */}
-                  <div className="flex justify-between items-center mt-2.5 pt-1">
-                    <span className="text-[9px] text-slate-400 font-mono">
+                  <div className="flex justify-between items-center mt-3 pt-1">
+                    <span className={`text-[9px] font-mono font-bold ${isDark ? 'text-[#A7A7A7]' : 'text-[#646464]'}`}>
                       Proj: {task.projectName || 'Academics'}
                     </span>
                     <div className="flex gap-1.5">
                       {statusKey !== 'not_started' && (
                         <button 
                           onClick={() => handleUpdateStatus(task.id, 'not_started')}
-                          className="bg-slate-100 text-slate-600 hover:bg-slate-200 p-1 text-[9px] font-semibold rounded"
+                          className="bg-white hover:bg-[#E85002] text-black font-black px-2 py-0.5 border border-black text-[9px] transition cursor-pointer rounded-none"
                         >
                           To Todo
                         </button>
@@ -190,7 +195,7 @@ export default function TaskModule({
                       {statusKey !== 'in_progress' && (
                         <button 
                           onClick={() => handleUpdateStatus(task.id, 'in_progress')}
-                          className="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 p-1 text-[9px] font-semibold rounded"
+                          className="bg-[#E85002] hover:bg-black hover:text-[#E85002] text-black font-black px-2 py-0.5 border border-black text-[9px] transition cursor-pointer rounded-none"
                         >
                           In Dev
                         </button>
@@ -198,9 +203,9 @@ export default function TaskModule({
                       {statusKey !== 'completed' && (
                         <button 
                           onClick={() => handleUpdateStatus(task.id, 'completed')}
-                          className="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 p-1 text-[9px] font-semibold rounded"
+                          className="bg-black hover:bg-[#E85002] text-white hover:text-black font-black px-2 py-0.5 border border-black text-[9px] transition cursor-pointer rounded-none"
                         >
-                          Complete
+                          Solve
                         </button>
                       )}
                     </div>
@@ -214,163 +219,182 @@ export default function TaskModule({
     );
   };
 
+  const renderListView = () => {
+    if (filteredTasks.length === 0) {
+      return (
+        <div className="text-center py-12 text-[#A7A7A7] font-mono font-bold uppercase">No tasks match active criteria filters.</div>
+      );
+    }
+
+    return (
+      <div className="border-2 border-black rounded-none overflow-hidden shadow-[3px_3px_0px_#000000]">
+        <table className="w-full text-left border-collapse bg-white text-black font-sans">
+          <thead>
+            <tr className="bg-black text-[#F9F9F9] border-b-2 border-black text-[10px] font-black uppercase tracking-wider">
+              <th className="py-3 px-4">Subject Course</th>
+              <th className="py-3 px-4">Task Deliverable</th>
+              <th className="py-3 px-4">Milestone Category</th>
+              <th className="py-3 px-4">Priority Weight</th>
+              <th className="py-3 px-4">Target Date</th>
+              <th className="py-3 px-4 text-center">Progress Status</th>
+              <th className="py-3 px-4 text-right">Clear</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y-2 divide-black text-xs font-bold">
+            {filteredTasks.map(tk => {
+              const crs = getCourse(tk.courseId);
+              return (
+                <tr key={tk.id} className="hover:bg-[#E85002]/5 transition">
+                  <td className="py-3 px-4 font-mono font-black text-[#E85002]">
+                    {crs ? crs.code : 'Elective'}
+                  </td>
+                  <td className="py-3 px-4">
+                    <span className={tk.status === 'completed' ? 'line-through text-[#A7A7A7]' : 'text-black'}>
+                      {tk.title}
+                    </span>
+                  </td>
+                  <td className="py-3 px-4 font-mono">{tk.projectName || 'General'}</td>
+                  <td className="py-3 px-4">
+                    <span className={`px-2 py-0.5 border border-black font-black uppercase text-[9px] ${
+                      tk.priority === 'high' ? 'bg-[#E85002] text-black' : tk.priority === 'medium' ? 'bg-black text-white' : 'bg-[#A7A7A7] text-black'
+                    }`}>
+                      {tk.priority}
+                    </span>
+                  </td>
+                  <td className="py-3 px-4 font-mono">{tk.deadline}</td>
+                  <td className="py-3 px-4 text-center">
+                    <button 
+                      onClick={() => handleToggleCompletion(tk)}
+                      className={`px-3 py-1 border-2 border-black font-black text-[10px] transition cursor-pointer rounded-none uppercase ${
+                        tk.status === 'completed' ? 'bg-black text-white' : 'bg-white text-black hover:bg-[#E85002]'
+                      }`}
+                    >
+                      {tk.status.replace('_', ' ')}
+                    </button>
+                  </td>
+                  <td className="py-3 px-4 text-right">
+                    <button 
+                      onClick={() => onDeleteTask(tk.id)}
+                      className="p-1 hover:bg-[#E85002] rounded border border-black text-black transition cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
   return (
-    <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm h-full flex flex-col font-sans text-slate-800">
-      {/* Top action header */}
-      <div className="flex justify-between items-center gap-3 mb-4 shrink-0">
+    <div className="bg-[#F9F9F9] border-2 border-black rounded-none p-4 shadow-[4px_4px_0px_#000000] flex flex-col h-full font-sans text-black">
+      {/* Dynamic Header */}
+      <div className="flex flex-wrap justify-between items-center gap-3 mb-4 select-none shrink-0">
         <div>
-          <h2 className="text-sm font-bold text-indigo-950 flex items-center gap-1.5">
-            <Kanban className="w-4 h-4 text-indigo-600" />
-            University Task Board
+          <h2 className="text-sm font-black text-black flex items-center gap-1.5 uppercase tracking-wider">
+            <Kanban className="w-4 h-4 text-[#E85002]" />
+            Kanban Task Board
           </h2>
-          <p className="text-[10px] text-slate-500 font-medium">Link deadlines, estimate durations, track deliverables.</p>
+          <p className="text-[10px] text-[#333] font-mono font-bold">Monitor milestone dependencies, target estimates, and solve assignments.</p>
         </div>
 
-        {/* Filters bar */}
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Filter Course dropdown */}
-          <div className="flex items-center gap-1 bg-slate-100 px-2 py-1 rounded text-[11px] text-slate-600">
-            <Filter className="w-3.5 h-3.5 text-slate-400" />
+        {/* Action controllers */}
+        <div className="flex items-center gap-2.5 flex-wrap">
+          {/* View toggle */}
+          <div className="flex border-2 border-black bg-black p-0.5 rounded-none shadow-[2px_2px_0px_#000000]">
+            <button 
+              onClick={() => setView('kanban')}
+              className={`p-1.5 rounded-none text-[10px] font-black transition cursor-pointer ${view === 'kanban' ? 'bg-[#E85002] text-black' : 'text-white hover:text-[#E85002]'}`}
+              title="Kanban Lanes View"
+            >
+              <Kanban className="w-3.5 h-3.5" />
+            </button>
+            <button 
+              onClick={() => setView('list')}
+              className={`p-1.5 rounded-none text-[10px] font-black transition cursor-pointer ${view === 'list' ? 'bg-[#E85002] text-black' : 'text-white hover:text-[#E85002]'}`}
+              title="Database Listing View"
+            >
+              <List className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          {/* Filters */}
+          <div className="flex items-center gap-1 bg-white border-2 border-black px-2 py-1 rounded-none text-[11px] font-bold shadow-[2px_2px_0px_#000000]">
+            <Filter className="w-3 h-3 text-black" />
             <select 
               value={filterCourse}
               onChange={(e) => setFilterCourse(e.target.value)}
-              className="bg-transparent border-none outline-none font-medium text-slate-700"
+              className="bg-transparent font-black border-none outline-none cursor-pointer text-black"
             >
-              <option value="all">All Courses</option>
+              <option value="all">All Subjects</option>
               {courses.map(c => (
                 <option key={c.id} value={c.id}>{c.code}</option>
               ))}
             </select>
           </div>
 
-          {/* Filter Priority */}
-          <div className="flex items-center gap-1 bg-slate-100 px-2 py-1 rounded text-[11px] text-slate-600">
+          <div className="flex items-center gap-1 bg-white border-2 border-black px-2 py-1 rounded-none text-[11px] font-bold shadow-[2px_2px_0px_#000000]">
             <select 
               value={filterPriority}
               onChange={(e) => setFilterPriority(e.target.value)}
-              className="bg-transparent border-none outline-none font-medium text-slate-700"
+              className="bg-transparent font-black border-none outline-none cursor-pointer text-black"
             >
-              <option value="all">All Priorities</option>
+              <option value="all">All Priority</option>
               <option value="high">High Priority</option>
               <option value="medium">Medium Priority</option>
               <option value="low">Low Priority</option>
             </select>
           </div>
 
-          <div className="flex border border-slate-200 p-0.5 rounded-lg bg-slate-50">
-            <button 
-              onClick={() => setView('kanban')}
-              className={`p-1.5 rounded-md ${view === 'kanban' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-slate-700'}`}
-              title="Kanban Board View"
-            >
-              <Kanban className="w-3.5 h-3.5" />
-            </button>
-            <button 
-              onClick={() => setView('list')}
-              className={`p-1.5 rounded-md ${view === 'list' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-slate-700'}`}
-              title="Classic Task List"
-            >
-              <List className="w-3.5 h-3.5" />
-            </button>
-          </div>
-
           <button 
             onClick={() => setShowAddModal(true)}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg transition shadow-sm"
+            className="bg-[#E85002] hover:bg-black hover:text-[#E85002] text-black text-[11px] font-black px-3.5 py-1.5 border-2 border-black rounded-none shadow-[2px_2px_0px_#000000] flex items-center gap-1.5 transition cursor-pointer"
           >
-            + Task
+            <Plus className="w-3.5 h-3.5" />
+            Add Deliverable
           </button>
         </div>
       </div>
 
-      {/* Main Board display area */}
-      <div className="flex-grow overflow-hidden flex flex-col">
+      {/* View Display */}
+      <div className="flex-grow overflow-y-auto">
         {view === 'kanban' ? (
-          <div className="flex flex-col md:flex-row gap-4 flex-grow overflow-y-auto">
-            {renderKanbanLane('To Do', 'not_started', 'bg-slate-50/50', 'border-slate-100', 'bg-slate-150 text-slate-700')}
-            {renderKanbanLane('In Progress', 'in_progress', 'bg-indigo-900/5', 'border-indigo-100/40', 'bg-indigo-100 text-indigo-800')}
-            {renderKanbanLane('Completed', 'completed', 'bg-emerald-950/5', 'border-emerald-100/50', 'bg-emerald-100 text-emerald-800')}
+          <div className="flex flex-col md:flex-row gap-4 h-full">
+            {renderKanbanLane('To Do Queue', 'not_started', 'neo-card-a')}
+            {renderKanbanLane('In Development / Revise', 'in_progress', 'neo-card-c')}
+            {renderKanbanLane('Solved / Completed', 'completed', 'clay-card border border-[#e2e8f0]/60')}
           </div>
         ) : (
-          <div className="bg-white border border-slate-150 rounded-xl overflow-hidden flex-grow overflow-y-auto max-h-[380px]">
-            {filteredTasks.length === 0 ? (
-              <div className="py-12 text-center text-slate-400 text-xs">No tasks active currently.</div>
-            ) : (
-              <table className="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr className="bg-slate-50 border-b border-slate-100 text-slate-400">
-                    <th className="p-3">Title</th>
-                    <th className="p-3">Course</th>
-                    <th className="p-3">Priority</th>
-                    <th className="p-3">Estimates</th>
-                    <th className="p-3">Dates</th>
-                    <th className="p-3 text-right">Delete</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 text-slate-700">
-                  {filteredTasks.map(task => {
-                    const crs = getCourse(task.courseId);
-                    return (
-                      <tr key={task.id} className="hover:bg-slate-50 font-sans">
-                        <td className="p-3 flex items-center gap-2">
-                          <input 
-                            type="checkbox" 
-                            checked={task.status === 'completed'} 
-                            onChange={() => handleToggleCompletion(task)}
-                            className="rounded text-indigo-600 focus:ring-indigo-500"
-                          />
-                          <span className={`font-semibold ${task.status === 'completed' ? 'line-through text-slate-400' : 'text-slate-800'}`}>
-                            {task.title}
-                          </span>
-                        </td>
-                        <td className="p-3 font-semibold text-slate-650">{crs ? crs.code : 'Elective'}</td>
-                        <td className="p-3">
-                          <span className={`text-[9px] font-bold px-2 py-0.5 rounded uppercase ${
-                            task.priority === 'high' ? 'bg-rose-50 text-rose-600' : task.priority === 'medium' ? 'bg-indigo-50 text-indigo-600' : 'bg-slate-100 text-slate-600'
-                          }`}>
-                            {task.priority}
-                          </span>
-                        </td>
-                        <td className="p-3 font-semibold text-slate-650">{task.estimatedHours} hrs</td>
-                        <td className="p-3 text-slate-500 font-medium">{task.startDate ? `${task.startDate} to ${task.deadline}` : task.deadline}</td>
-                        <td className="p-3 text-right">
-                          <button onClick={() => onDeleteTask(task.id)} className="text-slate-400 hover:text-red-500">
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            )}
-          </div>
+          renderListView()
         )}
       </div>
 
       {/* Task Creation Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-          <div className="bg-white border border-slate-200 rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in duration-150 text-slate-800">
-            <div className="bg-indigo-900 text-white px-5 py-3.5 flex items-center justify-between flex-none">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+          <div className="bg-white border-4 border-black rounded-none shadow-[8px_8px_0px_#E85002] max-w-md w-full max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in duration-150 text-black">
+            <div className="bg-black text-white px-5 py-4 flex items-center justify-between flex-none border-b-4 border-black">
               <div>
-                <h3 className="font-bold text-xs">Create Academic Task &amp; Milestone</h3>
-                <p className="text-[10px] opacity-75">Structure estimates, group deliverables, and connect courses.</p>
+                <h3 className="font-black text-xs uppercase tracking-wider">Create Academic Task &amp; Milestone</h3>
+                <p className="text-[9.5px] opacity-75 mt-0.5 font-mono">Structure estimates, group deliverables, and connect courses.</p>
               </div>
-              <button onClick={() => setShowAddModal(false)} className="text-white hover:opacity-80 text-lg">×</button>
+              <button onClick={() => setShowAddModal(false)} className="text-white hover:text-[#E85002] font-black text-lg cursor-pointer">×</button>
             </div>
 
-            <form onSubmit={handleCreate} className="flex flex-col flex-1 overflow-hidden">
+            <form onSubmit={handleCreate} className="flex flex-col flex-1 overflow-hidden bg-[#F9F9F9]">
               <div className="p-5 space-y-3 flex-1 overflow-y-auto scrollbar-thin">
                 {/* Task Title */}
                 <div>
-                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Task Deliverable Name</label>
+                  <label className="block text-[10px] font-black text-black uppercase mb-1 font-mono">Task Deliverable Name</label>
                   <input 
                     type="text" 
                     value={newTitle} 
                     onChange={(e) => setNewTitle(e.target.value)} 
                     placeholder="e.g. Design Entity Relationship Diagram"
-                    className="w-full bg-slate-150 border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-white border-2 border-black rounded-none px-3 py-1.5 text-xs text-black focus:outline-none focus:border-[#E85002] shadow-[2px_2px_0px_#000000] font-mono font-bold"
                     required
                   />
                 </div>
@@ -378,11 +402,11 @@ export default function TaskModule({
                 {/* Course linking Selection */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Subject Course ID</label>
+                    <label className="block text-[10px] font-black text-black uppercase mb-1 font-mono">Subject Course ID</label>
                     <select 
                       value={newCourseId} 
                       onChange={(e) => setNewCourseId(e.target.value)}
-                      className="w-full bg-slate-150 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-indigo-500"
+                      className="w-full bg-white border-2 border-black rounded-none px-2.5 py-1.5 text-xs text-black focus:outline-none focus:border-[#E85002] shadow-[2px_2px_0px_#000000] font-black"
                     >
                       <option value="">Elective or Self study</option>
                       {courses.map(c => (
@@ -391,11 +415,11 @@ export default function TaskModule({
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Priority Weights</label>
+                    <label className="block text-[10px] font-black text-black uppercase mb-1 font-mono">Priority Weights</label>
                     <select 
                       value={newPriority} 
                       onChange={(e) => setNewPriority(e.target.value as any)}
-                      className="w-full bg-slate-150 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-indigo-500"
+                      className="w-full bg-white border-2 border-black rounded-none px-2.5 py-1.5 text-xs text-black focus:outline-none focus:border-[#E85002] shadow-[2px_2px_0px_#000000] font-black"
                     >
                       <option value="high">🔥 High stakes / Cram alarm</option>
                       <option value="medium">⚡ Medium workload</option>
@@ -407,56 +431,56 @@ export default function TaskModule({
                 {/* Estimated / Deadline */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Start Date</label>
+                    <label className="block text-[10px] font-black text-black uppercase mb-1 font-mono">Start Date</label>
                     <input 
                       type="date" 
                       value={newStartDate} 
                       onChange={(e) => setNewStartDate(e.target.value)}
-                      className="w-full bg-slate-150 border border-slate-200 rounded-lg p-1.5 text-xs text-slate-805"
+                      className="w-full bg-white border-2 border-black rounded-none p-1.5 text-xs text-black shadow-[2px_2px_0px_#000000] font-mono font-bold"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Target Deadline</label>
+                    <label className="block text-[10px] font-black text-black uppercase mb-1 font-mono">Target Deadline</label>
                     <input 
                       type="date" 
                       value={newDeadline} 
                       onChange={(e) => setNewDeadline(e.target.value)}
-                      className="w-full bg-slate-150 border border-slate-200 rounded-lg p-1.5 text-xs text-slate-805"
+                      className="w-full bg-white border-2 border-black rounded-none p-1.5 text-xs text-black shadow-[2px_2px_0px_#000000] font-mono font-bold"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1">
                   <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Est Completion time (hrs)</label>
+                    <label className="block text-[10px] font-black text-black uppercase mb-1 font-mono">Est Completion time (hrs)</label>
                     <input 
                       type="number" 
                       value={newEstimatedHours} 
                       onChange={(e) => setNewEstimatedHours(e.target.value)}
                       placeholder="4"
-                      className="w-full bg-slate-150 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs"
+                      className="w-full bg-white border-2 border-black rounded-none px-2.5 py-1.5 text-xs text-black shadow-[2px_2px_0px_#000000] font-mono font-bold"
                       min="1"
                     />
                   </div>
                 </div>
 
                 {/* Group projects & dependencies selection */}
-                <div className="grid grid-cols-1 gap-2 border-t border-slate-100 pt-2.5">
+                <div className="grid grid-cols-1 gap-2 border-t-2 border-black pt-2.5">
                   <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Sub-Project / Milestone Group</label>
+                    <label className="block text-[10px] font-black text-black uppercase mb-1 font-mono">Sub-Project / Milestone Group</label>
                     <input 
                       type="text" 
                       value={newProject} 
                       onChange={(e) => setNewProject(e.target.value)}
                       placeholder="e.g. Capstone Lab-3, Exam prep"
-                      className="w-full bg-slate-150 border border-slate-200 rounded-lg px-2.5 py-1 text-xs"
+                      className="w-full bg-white border-2 border-black rounded-none px-2.5 py-1.5 text-xs text-black shadow-[2px_2px_0px_#000000] font-mono font-bold"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Prerequisite Task Dependencies</label>
-                    <div className="max-h-[75px] overflow-y-auto bg-slate-50 border border-slate-150 rounded px-2.5 py-1.5 space-y-1">
+                    <label className="block text-[10px] font-black text-black uppercase mb-1 font-mono">Prerequisite Task Dependencies</label>
+                    <div className="max-h-[75px] overflow-y-auto bg-white border-2 border-black rounded-none px-2.5 py-1.5 space-y-1 shadow-inner">
                       {tasks.filter(t => t.id !== 'all').map(tk => (
-                        <label key={tk.id} className="flex items-center gap-1.5 text-[10px] text-slate-600 font-medium cursor-pointer">
+                        <label key={tk.id} className="flex items-center gap-1.5 text-[10px] text-black font-bold cursor-pointer font-mono uppercase">
                           <input 
                             type="checkbox"
                             checked={selectedDeps.includes(tk.id)}
@@ -467,41 +491,41 @@ export default function TaskModule({
                                 setSelectedDeps([...selectedDeps, tk.id]);
                               }
                             }}
-                            className="rounded text-indigo-650"
+                            className="rounded border-2 border-black text-[#E85002] focus:ring-black cursor-pointer"
                           />
                           <span className="truncate">{tk.title}</span>
                         </label>
                       ))}
-                      {tasks.length === 0 && <span className="text-[10px] text-slate-400">No alternate tasks active for dependency bindings.</span>}
+                      {tasks.length === 0 && <span className="text-[9px] text-[#A7A7A7] font-mono">No alternate tasks active for dependency bindings.</span>}
                     </div>
                   </div>
                 </div>
 
                 {/* Description info */}
                 <div>
-                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Outline / Instructions</label>
+                  <label className="block text-[10px] font-black text-black uppercase mb-1 font-mono">Outline / Instructions</label>
                   <textarea 
                     rows={2}
                     value={newDescription} 
                     onChange={(e) => setNewDescription(e.target.value)}
                     placeholder="Insert lab notes, assignment parameters, study links..."
-                    className="w-full bg-slate-150 border border-slate-200 rounded-lg px-2.5 py-1 text-xs"
+                    className="w-full bg-white border-2 border-black rounded-none px-2.5 py-1 text-xs text-black shadow-[2px_2px_0px_#000000] font-mono font-bold"
                   />
                 </div>
               </div>
 
               {/* Form Action buttons */}
-              <div className="flex justify-end gap-2.5 p-4 border-t border-slate-100 bg-slate-50 flex-none rounded-b-xl">
+              <div className="flex justify-end gap-2.5 p-4 border-t-4 border-black bg-white flex-none rounded-none">
                 <button 
                   type="button" 
                   onClick={resetForm}
-                  className="text-xs font-semibold text-slate-500 hover:text-slate-800 px-3 py-1.5 rounded-lg hover:bg-slate-100"
+                  className="text-xs font-black text-black border-2 border-black bg-white px-3 py-1.5 hover:bg-black hover:text-white transition shadow-[2px_2px_0px_#000000]"
                 >
                   Discard
                 </button>
                 <button 
                   type="submit"
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-1.5 rounded-lg transition"
+                  className="bg-[#E85002] hover:bg-black hover:text-[#E85002] text-black font-black text-xs px-4 py-1.5 border-2 border-black rounded-none shadow-[2px_2px_0px_#000000] transition"
                 >
                   Save Deliverable
                 </button>

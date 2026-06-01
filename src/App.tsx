@@ -707,24 +707,27 @@ export default function App() {
   };
 
   return (
-    <div className="flex h-screen w-full bg-slate-50 font-sans text-slate-800 overflow-hidden">
+    <div className="flex h-screen w-full bg-[#F9F9F9] font-sans text-black overflow-hidden selection:bg-[#E85002] selection:text-black">
 
-      {/* A. Left Navigation Rail (High Density Theme Specs - width-16, bg-indigo-950) */}
-      <nav id="nav-rail" className="w-16 flex-none bg-indigo-950 flex flex-col items-center py-4 justify-between select-none shrink-0 border-r border-indigo-900/50">
+      {/* A. Left Navigation Rail (Industrial Neo-Brutalist Theme - bg-black) */}
+      <nav id="nav-rail" className="w-20 flex-none bg-[#000000] flex flex-col items-center py-5 justify-between select-none shrink-0 border-r-4 border-black shadow-[4px_0px_0px_#E85002]">
 
         {/* Logo Icon */}
-        <div className="flex flex-col items-center gap-5 w-full">
-          <div className="w-10 h-10 bg-gradient-to-tr from-emerald-400 to-indigo-500 rounded-xl flex items-center justify-center font-black text-white text-lg shadow-inner select-none animate-pulse">
-            C
+        <div className="flex flex-col items-center gap-6 w-full">
+          <div className="w-12 h-12 bg-[#E85002] border-2 border-black flex items-center justify-center font-black text-black text-xl shadow-[2px_2px_0px_rgba(255,255,255,0.4)] select-none hover:bg-[#F9F9F9] transition duration-150">
+            H
           </div>
 
           {/* Navigation Controls Icons list */}
-          <div className="flex flex-col gap-3 w-full items-center">
+          <div className="flex flex-col gap-3.5 w-full items-center">
             {/* Dashboard button */}
             <button
               onClick={() => setActiveTab('dashboard')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${activeTab === 'dashboard' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
-                }`}
+              className={`w-12 h-12 flex items-center justify-center border-2 border-black cursor-pointer transition-all duration-150 active:translate-x-[1px] active:translate-y-[1px] ${
+                activeTab === 'dashboard'
+                  ? 'bg-[#E85002] text-black shadow-[2px_2px_0px_rgba(255,255,255,0.4)]'
+                  : 'bg-[#333333] text-[#A7A7A7] hover:bg-[#F9F9F9] hover:text-black hover:shadow-[2px_2px_0px_#E85002]'
+              }`}
               title="Dashboard Hub"
             >
               <Home className="w-5.5 h-5.5" />
@@ -733,8 +736,11 @@ export default function App() {
             {/* Calendar */}
             <button
               onClick={() => setActiveTab('calendar')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${activeTab === 'calendar' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
-                }`}
+              className={`w-12 h-12 flex items-center justify-center border-2 border-black cursor-pointer transition-all duration-150 active:translate-x-[1px] active:translate-y-[1px] ${
+                activeTab === 'calendar'
+                  ? 'bg-[#E85002] text-black shadow-[2px_2px_0px_rgba(255,255,255,0.4)]'
+                  : 'bg-[#333333] text-[#A7A7A7] hover:bg-[#F9F9F9] hover:text-black hover:shadow-[2px_2px_0px_#E85002]'
+              }`}
               title="Academic Calendar"
             >
               <CalIcon className="w-5.5 h-5.5" />
@@ -743,8 +749,11 @@ export default function App() {
             {/* Tasks & Kanban */}
             <button
               onClick={() => setActiveTab('tasks')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${activeTab === 'tasks' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
-                }`}
+              className={`w-12 h-12 flex items-center justify-center border-2 border-black cursor-pointer transition-all duration-150 active:translate-x-[1px] active:translate-y-[1px] ${
+                activeTab === 'tasks'
+                  ? 'bg-[#E85002] text-black shadow-[2px_2px_0px_rgba(255,255,255,0.4)]'
+                  : 'bg-[#333333] text-[#A7A7A7] hover:bg-[#F9F9F9] hover:text-black hover:shadow-[2px_2px_0px_#E85002]'
+              }`}
               title="Kanban Tasks Workspace"
             >
               <CheckSquare className="w-5.5 h-5.5" />
@@ -753,8 +762,11 @@ export default function App() {
             {/* Gantt chart */}
             <button
               onClick={() => setActiveTab('gantt')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${activeTab === 'gantt' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
-                }`}
+              className={`w-12 h-12 flex items-center justify-center border-2 border-black cursor-pointer transition-all duration-150 active:translate-x-[1px] active:translate-y-[1px] ${
+                activeTab === 'gantt'
+                  ? 'bg-[#E85002] text-black shadow-[2px_2px_0px_rgba(255,255,255,0.4)]'
+                  : 'bg-[#333333] text-[#A7A7A7] hover:bg-[#F9F9F9] hover:text-black hover:shadow-[2px_2px_0px_#E85002]'
+              }`}
               title="Interactive Project Timeline"
             >
               <BarChart2 className="w-5.5 h-5.5" />
@@ -763,8 +775,11 @@ export default function App() {
             {/* Course catalogs */}
             <button
               onClick={() => setActiveTab('courses')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${activeTab === 'courses' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
-                }`}
+              className={`w-12 h-12 flex items-center justify-center border-2 border-black cursor-pointer transition-all duration-150 active:translate-x-[1px] active:translate-y-[1px] ${
+                activeTab === 'courses'
+                  ? 'bg-[#E85002] text-black shadow-[2px_2px_0px_rgba(255,255,255,0.4)]'
+                  : 'bg-[#333333] text-[#A7A7A7] hover:bg-[#F9F9F9] hover:text-black hover:shadow-[2px_2px_0px_#E85002]'
+              }`}
               title="Course dashboards"
             >
               <BookOpen className="w-5.5 h-5.5" />
@@ -773,8 +788,11 @@ export default function App() {
             {/* Notes Notion */}
             <button
               onClick={() => setActiveTab('notes')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${activeTab === 'notes' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
-                }`}
+              className={`w-12 h-12 flex items-center justify-center border-2 border-black cursor-pointer transition-all duration-150 active:translate-x-[1px] active:translate-y-[1px] ${
+                activeTab === 'notes'
+                  ? 'bg-[#E85002] text-black shadow-[2px_2px_0px_rgba(255,255,255,0.4)]'
+                  : 'bg-[#333333] text-[#A7A7A7] hover:bg-[#F9F9F9] hover:text-black hover:shadow-[2px_2px_0px_#E85002]'
+              }`}
               title="Notebook and Whiteboard"
             >
               <FileText className="w-5.5 h-5.5" />
@@ -783,8 +801,11 @@ export default function App() {
             {/* Habits daily ledger tracker */}
             <button
               onClick={() => setActiveTab('habits')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${activeTab === 'habits' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
-                }`}
+              className={`w-12 h-12 flex items-center justify-center border-2 border-black cursor-pointer transition-all duration-150 active:translate-x-[1px] active:translate-y-[1px] ${
+                activeTab === 'habits'
+                  ? 'bg-[#E85002] text-black shadow-[2px_2px_0px_rgba(255,255,255,0.4)]'
+                  : 'bg-[#333333] text-[#A7A7A7] hover:bg-[#F9F9F9] hover:text-black hover:shadow-[2px_2px_0px_#E85002]'
+              }`}
               title="Daily Habits & Routines"
             >
               <Flame className="w-5.5 h-5.5 text-amber-500 animate-pulse" />
@@ -793,8 +814,11 @@ export default function App() {
             {/* Wellness & Journal Reflections */}
             <button
               onClick={() => setActiveTab('wellness')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${activeTab === 'wellness' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
-                }`}
+              className={`w-12 h-12 flex items-center justify-center border-2 border-black cursor-pointer transition-all duration-150 active:translate-x-[1px] active:translate-y-[1px] ${
+                activeTab === 'wellness'
+                  ? 'bg-[#E85002] text-black shadow-[2px_2px_0px_rgba(255,255,255,0.4)]'
+                  : 'bg-[#333333] text-[#A7A7A7] hover:bg-[#F9F9F9] hover:text-black hover:shadow-[2px_2px_0px_#E85002]'
+              }`}
               title="Journal &amp; Wellbeing reflections"
             >
               <Heart className="w-5.5 h-5.5 text-rose-450 animate-pulse" />
@@ -803,8 +827,10 @@ export default function App() {
             {/* Vision Board */}
             <button
               onClick={() => setActiveTab('visionboard')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${
-                activeTab === 'visionboard' ? 'bg-violet-600 text-white shadow-lg shadow-violet-950/40' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+              className={`w-12 h-12 flex items-center justify-center border-2 border-black cursor-pointer transition-all duration-150 active:translate-x-[1px] active:translate-y-[1px] ${
+                activeTab === 'visionboard'
+                  ? 'bg-[#E85002] text-black shadow-[2px_2px_0px_rgba(255,255,255,0.4)]'
+                  : 'bg-[#333333] text-[#A7A7A7] hover:bg-[#F9F9F9] hover:text-black hover:shadow-[2px_2px_0px_#E85002]'
               }`}
               title="Vision Board"
             >
@@ -814,8 +840,11 @@ export default function App() {
             {/* Technical Specs Engineering Blueprint */}
             <button
               onClick={() => setActiveTab('blueprint')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${activeTab === 'blueprint' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
-                }`}
+              className={`w-12 h-12 flex items-center justify-center border-2 border-black cursor-pointer transition-all duration-150 active:translate-x-[1px] active:translate-y-[1px] ${
+                activeTab === 'blueprint'
+                  ? 'bg-[#E85002] text-black shadow-[2px_2px_0px_rgba(255,255,255,0.4)]'
+                  : 'bg-[#333333] text-[#A7A7A7] hover:bg-[#F9F9F9] hover:text-black hover:shadow-[2px_2px_0px_#E85002]'
+              }`}
               title="Engineering Blueprint Docs"
             >
               <Cpu className="w-5.5 h-5.5" />
@@ -825,8 +854,8 @@ export default function App() {
 
         {/* User initials bubble bottom */}
         <div className="w-full flex-none flex justify-center">
-          <div className="w-10 h-10 rounded-full border-2 border-indigo-400 p-0.5 shadow-sm cursor-pointer hover:border-white transition">
-            <div className="w-full h-full bg-indigo-900 rounded-full flex items-center justify-center text-[11px] font-extrabold text-indigo-100">
+          <div className="w-12 h-12 border-2 border-black p-0.5 shadow-sm cursor-pointer hover:border-[#E85002] transition">
+            <div className="w-full h-full bg-[#333333] border border-black flex items-center justify-center text-[11px] font-extrabold text-white">
               JD
             </div>
           </div>
@@ -834,12 +863,12 @@ export default function App() {
       </nav>
 
       {/* C. Right Main Contents Panel */}
-      <main className="flex-1 flex flex-col min-w-0 bg-slate-50 overflow-hidden h-full">
+      <main className="flex-1 flex flex-col min-w-0 bg-[#F9F9F9] overflow-hidden h-full">
 
         {/* Top Header bar banner */}
-        <header className="h-14 border-b border-slate-200 bg-white flex items-center justify-between px-6 shrink-0 z-10 select-none">
+        <header className="h-16 border-b-4 border-black bg-white flex items-center justify-between px-6 shrink-0 z-10 select-none">
           <div>
-            <h1 className="font-bold text-base text-slate-900 capitalize flex items-center gap-1.5">
+            <h1 className="font-black text-lg text-black uppercase tracking-wider flex items-center gap-1.5">
               {activeTab === 'dashboard' && 'Classroom Command Hub'}
               {activeTab === 'calendar' && 'Academic Calendar Planner'}
               {activeTab === 'tasks' && 'Kanban Task Board'}
@@ -869,46 +898,46 @@ export default function App() {
             <div className="relative">
               <button
                 onClick={() => setShowNotifications(!showNotifications)}
-                className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-500 hover:text-indigo-650 transition relative"
+                className="p-1.5 bg-white border-2 border-black hover:bg-[#E85002] text-black hover:shadow-[2px_2px_0px_#000000] transition relative cursor-pointer"
                 title="Workspace Alerts"
               >
                 <Bell className="w-4.5 h-4.5" />
                 {notifications.length > 0 && (
-                  <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-indigo-600 animate-bounce" />
+                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#E85002] border border-black animate-ping" />
                 )}
               </button>
 
-              {/* Alert Notification list overlay Box */}
+              {/* Alert Notification list overlay Box - Style A */}
               {showNotifications && (
-                <div className="absolute right-0 mt-2 w-80 bg-white border border-slate-200 shadow-2xl rounded-xl z-50 p-3 text-left animate-in fade-in slide-in-from-top-3 duration-150 text-slate-800">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-2">
-                    <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Workspace alerts</span>
-                    <button onClick={() => setNotifications([])} className="text-[9.5px] font-bold text-indigo-600 hover:underline">Clear list</button>
+                <div className="absolute right-0 mt-2 w-80 bg-white border-2 border-black shadow-[4px_4px_0px_#000000] z-50 p-4.5 text-left animate-in fade-in slide-in-from-top-3 duration-150 text-black">
+                  <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-3">
+                    <span className="text-[10px] font-black text-black uppercase tracking-widest font-mono">Workspace alerts</span>
+                    <button onClick={() => setNotifications([])} className="text-[9.5px] font-black uppercase text-[#E85002] hover:underline bg-black text-white px-2 py-0.5 border border-black">Clear list</button>
                   </div>
 
-                  <div className="space-y-2 max-h-[220px] overflow-y-auto">
+                  <div className="space-y-2.5 max-h-[220px] overflow-y-auto">
                     {notifications.map(notif => (
                       <div
                         key={notif.id}
-                        className="p-2 border border-slate-100 rounded-lg bg-slate-50/50 flex gap-2.5 items-start justify-between"
+                        className="p-2.5 border border-black bg-[#F9F9F9] flex gap-2.5 items-start justify-between shadow-[2px_2px_0px_#000000]"
                       >
                         <div className="flex gap-2">
                           {notif.type === 'overdue' ? (
-                            <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />
+                            <AlertCircle className="w-4 h-4 text-[#E85002] mt-0.5 shrink-0" />
                           ) : notif.type === 'ai_recommendation' ? (
-                            <Sparkles className="w-4 h-4 text-indigo-500 mt-0.5 shrink-0 animate-pulse" />
+                            <Sparkles className="w-4 h-4 text-black mt-0.5 shrink-0 animate-pulse" />
                           ) : (
-                            <CheckCircle className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                            <CheckCircle className="w-4 h-4 text-black mt-0.5 shrink-0" />
                           )}
                           <div>
-                            <h5 className="text-[11px] font-bold text-slate-800 leading-tight">{notif.title}</h5>
-                            <p className="text-[10px] text-slate-550 leading-snug mt-0.5">{notif.message}</p>
+                            <h5 className="text-[11px] font-black text-black leading-tight uppercase tracking-tight">{notif.title}</h5>
+                            <p className="text-[10px] text-[#333333] leading-snug mt-1 font-mono">{notif.message}</p>
                           </div>
                         </div>
 
                         <button
                           onClick={() => handleClearNotif(notif.id)}
-                          className="text-slate-400 hover:text-slate-650 text-[10.5px] select-none"
+                          className="text-black hover:text-[#E85002] font-black text-[12px] select-none cursor-pointer"
                         >
                           ×
                         </button>
@@ -916,7 +945,7 @@ export default function App() {
                     ))}
 
                     {notifications.length === 0 && (
-                      <div className="py-6 text-center text-slate-400 text-xs">No notifications on file.</div>
+                      <div className="py-6 text-center text-[#A7A7A7] text-xs font-bold font-mono">No alerts pending.</div>
                     )}
                   </div>
                 </div>
@@ -926,7 +955,7 @@ export default function App() {
             {/* Direct creation trigger */}
             <button
               onClick={() => setActiveTab('tasks')}
-              className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] rounded-lg font-bold shadow-sm transition active:scale-95"
+              className="px-3.5 py-1.5 bg-[#E85002] hover:bg-black hover:text-[#E85002] text-black text-[11px] font-black border-2 border-black rounded-none shadow-[2px_2px_0px_#000000] transition duration-150 active:translate-x-[1px] active:translate-y-[1px] cursor-pointer"
             >
               + New Task
             </button>
@@ -1086,17 +1115,17 @@ export default function App() {
           top: `${fabPos.y}px`,
           touchAction: 'none'
         }}
-        className={`fixed w-[130px] h-9 bg-indigo-900 border border-indigo-800 text-white rounded-full flex items-center justify-between px-3 shadow-[0_4px_20px_rgba(99,102,241,0.5)] hover:shadow-[0_4px_25px_rgba(99,102,241,0.65)] cursor-pointer select-none transition-all duration-200 z-40 hover:scale-105 active:scale-95 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'
+        className={`fixed w-[130px] h-10 bg-black border-2 border-black text-[#F9F9F9] rounded-none flex items-center justify-between px-3 shadow-[3px_3px_0px_#E85002] hover:bg-[#E85002] hover:text-black hover:shadow-[3px_3px_0px_#000000] cursor-pointer select-none transition-all duration-200 z-40 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'
           }`}
         title="Reposition anywhere! Click to consult Gemmi AI"
       >
         <div className="flex items-center gap-2 select-none pointer-events-none">
           <ColorOrb dimension="20px" tones={{ base: "oklch(22.64% 0 0)" }} className="shrink-0" />
-          <span className="font-bold text-[10.5px] tracking-wide text-white select-none">Ask Gemmi</span>
+          <span className="font-black text-[10.5px] uppercase tracking-wide select-none">Ask Gemmi</span>
         </div>
         <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border border-indigo-950"></span>
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E85002] opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-3 w-3 bg-[#E85002] border border-black"></span>
         </span>
       </div>
 
@@ -1108,7 +1137,7 @@ export default function App() {
           width: '360px',
           height: '460px'
         }}
-        className={`fixed z-50 rounded-2xl overflow-hidden bg-slate-900 shadow-2xl border border-indigo-900/60 flex flex-col transition-all duration-300 origin-bottom ${showAIWidget
+        className={`fixed z-50 rounded-none overflow-hidden bg-black shadow-2xl border-4 border-black shadow-[8px_8px_0px_#E85002] flex flex-col transition-all duration-300 origin-bottom ${showAIWidget
             ? 'scale-100 opacity-100 pointer-events-auto'
             : 'scale-90 opacity-0 pointer-events-none'
           }`}

@@ -503,19 +503,19 @@ export default function NoteModule({
   const readingTime = Math.max(1, Math.round(wordsCount / 225));
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl shadow-sm h-full flex overflow-hidden font-sans text-slate-800 relative">
+    <div className="bg-[#F9F9F9] border-2 border-black rounded-none h-full flex overflow-hidden font-sans text-black relative">
       
       {/* SECURITY ACCESS PANEL: Private Folder Locked */}
       {activeFolderIsLocked && (
-        <div className="absolute inset-0 bg-indigo-950/95 backdrop-blur-md rounded-2xl z-50 flex items-center justify-center p-6 text-white text-center select-none animate-in fade-in duration-200">
-          <div className="max-w-xs w-full bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-2xl flex flex-col items-center gap-4">
-            <div className="w-12 h-12 bg-rose-500/10 border border-rose-500/20 text-rose-450 rounded-full flex items-center justify-center">
+        <div className="absolute inset-0 bg-[#333333]/90 backdrop-blur-xs z-50 flex items-center justify-center p-6 text-white text-center select-none animate-in fade-in duration-200">
+          <div className="max-w-xs w-full bg-black border-2 border-white p-6 rounded-none shadow-[4px_4px_0px_#E85002] flex flex-col items-center gap-4 text-white">
+            <div className="w-12 h-12 bg-[#E85002]/10 border border-[#E85002]/20 text-[#E85002] rounded-full flex items-center justify-center">
               <Lock className="w-6 h-6 animate-pulse" />
             </div>
             
             <div>
-              <h3 className="font-extrabold text-sm tracking-tight text-white">Academic folder locked</h3>
-              <p className="text-[10px] text-slate-400 mt-1 leading-snug">Input your 4-digit code to reveal study segments.</p>
+              <h3 className="font-extrabold text-sm tracking-tight text-white font-mono uppercase">Academic folder locked</h3>
+              <p className="text-[10px] text-[#A7A7A7] mt-1 leading-snug font-mono">Input your 4-digit code to reveal study segments.</p>
             </div>
 
             <form onSubmit={handleUnlock} className="w-full space-y-3 mt-1">
@@ -528,16 +528,16 @@ export default function NoteModule({
                   if (/^\d*$/.test(val)) setPasscodeInput(val);
                 }}
                 placeholder="••••"
-                className="w-full text-center tracking-widest text-lg font-black bg-slate-950 border border-slate-800 rounded-lg py-2 text-white focus:outline-none focus:border-rose-500"
+                className="w-full text-center tracking-widest text-lg font-black bg-[#333333] border-2 border-white rounded-none py-2 text-white focus:outline-none focus:border-[#E85002] font-mono"
                 required
                 autoFocus
               />
               {passcodeError && (
-                <span className="text-[9.5px] text-red-400 font-bold block">{passcodeError}</span>
+                <span className="text-[9.5px] text-red-400 font-bold block font-mono">{passcodeError}</span>
               )}
               <button 
                 type="submit" 
-                className="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs py-2 rounded-lg transition active:scale-95 cursor-pointer"
+                className="w-full bg-[#E85002] hover:bg-[#E85002]/90 border-2 border-white text-black font-extrabold text-xs py-2 rounded-none transition active:translate-x-[2px] active:translate-y-[2px] cursor-pointer font-mono uppercase"
               >
                 Unlock Folder
               </button>
@@ -547,23 +547,23 @@ export default function NoteModule({
       )}
 
       {/* 1. Left Folders Explorer (Compact) */}
-      <div className="w-56 border-r border-slate-200 bg-slate-50/55 p-3 flex flex-col h-full shrink-0 select-none">
+      <div className="w-56 border-r-2 border-black bg-[#F9F9F9] p-3 flex flex-col h-full shrink-0 select-none">
         <div className="flex justify-between items-center mb-3">
-          <h3 className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-            <BookOpen className="w-3.5 h-3.5 text-indigo-600 animate-pulse" />
+          <h3 className="text-[10px] font-black text-black uppercase tracking-widest flex items-center gap-1.5 font-mono">
+            <BookOpen className="w-3.5 h-3.5 text-[#E85002] animate-pulse" />
             Folders explorer
           </h3>
           <div className="flex items-center gap-1">
             <button 
               onClick={() => setShowLockSettings(true)}
-              className="p-1 hover:bg-slate-200 text-slate-400 hover:text-slate-650 rounded"
+              className="p-1 hover:bg-[#A7A7A7]/20 text-black rounded transition"
               title="Vault Settings"
             >
               <Lock className="w-3.5 h-3.5" />
             </button>
             <button 
               onClick={() => setShowFolderModal(true)}
-              className="p-1 hover:bg-slate-200 text-slate-500 hover:text-indigo-650 rounded transition cursor-pointer"
+              className="p-1 hover:bg-[#E85002] text-black hover:text-black border border-black rounded-none bg-white transition cursor-pointer shadow-[1px_1px_0px_#000000] active:translate-x-[0.5px] active:translate-y-[0.5px] active:shadow-none"
               title="Add Library folder"
             >
               <FolderPlus className="w-3.5 h-3.5" />
@@ -572,13 +572,13 @@ export default function NoteModule({
         </div>
 
         {/* Directory paths list */}
-        <div className="flex-1 overflow-y-auto space-y-1.5 pr-0.5 scrollbar-thin">
+        <div className="flex-1 overflow-y-auto space-y-2 pr-0.5 scrollbar-thin">
           <button
             onClick={() => setActiveFolderId('all')}
-            className={`w-full text-left px-2 py-1.5 rounded-lg text-xs font-semibold flex items-center justify-between transition cursor-pointer ${
+            className={`w-full text-left px-2 py-1.5 rounded-none text-xs font-black flex items-center justify-between transition cursor-pointer border-2 border-black font-mono uppercase ${
               activeFolderId === 'all' 
-                ? 'bg-slate-950 text-white shadow' 
-                : 'text-slate-600 hover:bg-slate-200'
+                ? 'bg-black text-[#F9F9F9] shadow-[2px_2px_0px_#E85002]' 
+                : 'bg-white text-black hover:bg-[#A7A7A7]/20 shadow-[2px_2px_0px_#000000]'
             }`}
           >
             <span className="truncate">📁 All Notebooks</span>
@@ -591,26 +591,26 @@ export default function NoteModule({
             const isFolderLocked = lockedFolders.includes(f.id);
 
             return (
-              <div key={f.id} className="group flex flex-col rounded-lg relative">
+              <div key={f.id} className="group flex flex-col rounded-none relative">
                 <button
                   onClick={() => {
                     setActiveFolderId(f.id);
                     if (isFolderLocked) setIsLocked(true);
                   }}
-                  className={`w-full text-left px-2 py-1.5 rounded-lg text-xs font-semibold flex flex-col gap-0.5 transition cursor-pointer ${
+                  className={`w-full text-left px-2 py-1.5 rounded-none text-xs font-black flex flex-col gap-0.5 transition cursor-pointer border-2 border-black font-mono uppercase ${
                     activeFolderId === f.id 
-                      ? 'bg-slate-950 text-white shadow' 
-                      : 'text-slate-600 hover:bg-slate-200'
+                      ? 'bg-[#E85002] text-black shadow-[2px_2px_0px_#000000]' 
+                      : 'bg-white text-black hover:bg-[#A7A7A7]/20 shadow-[2px_2px_0px_#000000]'
                   }`}
                 >
                   <div className="flex justify-between w-full items-center">
-                    <span className="truncate font-bold flex items-center gap-1">
+                    <span className="truncate font-black flex items-center gap-1">
                       {isFolderLocked ? '🔒' : '📂'} {f.name}
                     </span>
-                    <span className="text-[10px] opacity-80 font-mono">({count})</span>
+                    <span className="text-[10px] font-mono">({count})</span>
                   </div>
                   {courseRef && (
-                    <span className={`text-[8.5px] uppercase tracking-wider ${activeFolderId === f.id ? 'text-slate-400' : 'text-slate-500'}`}>
+                    <span className="text-[8.5px] uppercase tracking-wider opacity-85 font-mono">
                       {courseRef.code} Associated
                     </span>
                   )}
@@ -619,10 +619,10 @@ export default function NoteModule({
                 {/* Inline Lock toggle for folder */}
                 <button
                   onClick={(e) => { e.stopPropagation(); toggleFolderLock(f.id); }}
-                  className="absolute right-1 top-2.5 opacity-0 group-hover:opacity-100 p-0.5 bg-slate-100 hover:bg-slate-200 rounded border border-slate-200 transition text-slate-500"
+                  className="absolute right-1 top-2.5 opacity-0 group-hover:opacity-100 p-0.5 bg-[#F9F9F9] hover:bg-[#E85002] rounded-none border border-black transition text-black"
                   title={isFolderLocked ? "Remove Folder Lock" : "Passcode Lock Folder"}
                 >
-                  {isFolderLocked ? <Unlock className="w-2.5 h-2.5 text-rose-600" /> : <Lock className="w-2.5 h-2.5" />}
+                  {isFolderLocked ? <Unlock className="w-2.5 h-2.5 text-red-650" /> : <Lock className="w-2.5 h-2.5" />}
                 </button>
               </div>
             );
@@ -630,10 +630,10 @@ export default function NoteModule({
         </div>
 
         {/* Export / Backup button bottom */}
-        <div className="pt-2 border-t border-slate-200/60 shrink-0">
+        <div className="pt-2 border-t-2 border-black shrink-0">
           <button
             onClick={handleExportNotes}
-            className="w-full py-1 text-slate-500 hover:text-indigo-650 hover:bg-slate-100 border border-slate-200 rounded-lg text-[9.5px] font-bold transition flex items-center justify-center gap-1 shrink-0"
+            className="w-full py-1.5 text-black bg-[#F9F9F9] hover:bg-[#E85002] border-2 border-black rounded-none text-[9.5px] font-black tracking-widest uppercase transition flex items-center justify-center gap-1 shrink-0 font-mono shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#000000] cursor-pointer"
             title="Backup database JSON"
           >
             <Download className="w-3.5 h-3.5" />
@@ -643,12 +643,12 @@ export default function NoteModule({
       </div>
 
       {/* 2. Middle Notes List Index */}
-      <div className="w-56 border-r border-slate-200 p-3 flex flex-col h-full shrink-0 select-none">
+      <div className="w-56 border-r-2 border-black bg-[#F9F9F9] p-3 flex flex-col h-full shrink-0 select-none">
         <div className="flex justify-between items-center mb-3">
-          <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block">Active Notes</span>
+          <span className="text-[10px] font-black text-black uppercase tracking-widest block font-mono">Active Notes</span>
           <button 
             onClick={handleCreateNote}
-            className="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[10px] font-bold px-2 py-1 rounded flex items-center gap-1 transition"
+            className="bg-[#E85002] hover:bg-[#E85002]/90 border-2 border-black text-black text-[10px] font-black px-2.5 py-1 rounded-none flex items-center gap-1 transition font-mono uppercase shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer"
           >
             <Plus className="w-3 h-3" /> Note
           </button>
@@ -661,52 +661,64 @@ export default function NoteModule({
             placeholder="Search keywords..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full text-[10.5px] bg-slate-50 border border-slate-200 rounded-lg py-1 pl-7 focus:outline-none focus:border-indigo-500"
+            className="w-full text-[10.5px] bg-[#F9F9F9] border-2 border-black rounded-none py-1.5 pl-7 focus:outline-none focus:border-[#E85002] placeholder-black/50 text-black font-semibold font-mono"
           />
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2 top-1.2" />
+          <Search className="w-3.5 h-3.5 text-black absolute left-2 top-2" />
         </div>
 
-        <div className="flex-1 overflow-y-auto space-y-1.5 pr-0.5 scrollbar-thin">
+        <div className="flex-1 overflow-y-auto space-y-2 pr-0.5 scrollbar-thin">
           {filteredNotes.length === 0 ? (
-            <div className="text-center py-10 text-[10px] text-slate-400">No notes indexed.</div>
+            <div className="text-center py-10 text-[10px] text-black font-mono uppercase">No notes indexed.</div>
           ) : (
-            filteredNotes.map(n => {
+            filteredNotes.map((n, idx) => {
               const isActive = activeNote && activeNote.id === n.id;
+              
+              // Dynamic asymmetrical bento styles
+              let itemClass = "";
+              if (isActive) {
+                itemClass = "bg-[#E85002] border-2 border-black text-black shadow-[4px_4px_0px_#000000]";
+              } else {
+                const cycle = idx % 3;
+                if (cycle === 0) {
+                  itemClass = "bg-[#F9F9F9] border-2 border-black text-black shadow-[2px_2px_0px_#000000] hover:bg-[#A7A7A7]/10";
+                } else if (cycle === 1) {
+                  itemClass = "clay-card border-2 border-black text-black hover:shadow-lg transition duration-200 rounded-none";
+                } else {
+                  itemClass = "bg-[#000000] border-2 border-[#333333] text-[#F9F9F9] shadow-[2px_2px_0px_#E85002] hover:bg-[#333333]/90";
+                }
+              }
+
               return (
                 <div
                   key={n.id}
                   onClick={() => onSelectNote(n.id)}
-                  className={`p-2.5 rounded-lg cursor-pointer transition flex flex-col text-left border ${
-                    isActive 
-                      ? 'bg-slate-950 border-slate-800 text-white' 
-                      : 'bg-white border-slate-150 text-slate-800 hover:border-slate-350'
-                  }`}
+                  className={`p-2.5 cursor-pointer transition flex flex-col text-left ${itemClass}`}
                 >
                   <div className="flex items-start justify-between gap-1">
-                    <h5 className="text-[10px] font-bold line-clamp-1 flex-grow">
+                    <h5 className="text-[10px] font-black line-clamp-1 flex-grow font-mono uppercase">
                       {n.title || 'Draft note'}
                     </h5>
                     <button 
                       onClick={(e) => { e.stopPropagation(); onUpdateNote(n.id, { isFavorite: !n.isFavorite }); }}
-                      className={`${n.isFavorite ? 'text-amber-500' : 'text-slate-300 hover:text-amber-500'} transition shrink-0`}
+                      className={`${n.isFavorite ? 'text-amber-500' : isActive ? 'text-black/40 hover:text-amber-500' : 'text-slate-400 hover:text-amber-500'} transition shrink-0`}
                     >
                       <Star className="w-3 h-3 fill-current" />
                     </button>
                   </div>
                   
                   {/* content snippet */}
-                  <span className="text-[9px] text-slate-450 truncate mt-1">
+                  <span className={`text-[9px] truncate mt-1 ${isActive ? 'text-black/75' : idx % 3 === 2 ? 'text-[#A7A7A7]' : 'text-[#333333]'}`}>
                     {n.content.replace(/<[^>]*>/g, '').slice(0, 30) || 'Empty outline draft.'}
                   </span>
 
-                  <div className="flex justify-between items-center mt-2.5 pt-1.5 border-t border-slate-200/20 text-[8px] font-mono text-slate-400">
+                  <div className={`flex justify-between items-center mt-2.5 pt-1.5 border-t text-[8px] font-mono ${isActive ? 'border-black/20 text-black/75' : idx % 3 === 2 ? 'border-white/20 text-[#A7A7A7]' : 'border-black/20 text-[#333333]'}`}>
                     <span className="flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5" />
+                      <Clock className="w-3 h-3" />
                       {new Date(n.updatedAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
                     </span>
                     <button 
                       onClick={(e) => { e.stopPropagation(); onDeleteNote(n.id); }}
-                      className="text-slate-450 hover:text-red-500 opacity-60 hover:opacity-100 transition"
+                      className={`transition ${isActive ? 'text-black/80 hover:text-red-700' : idx % 3 === 2 ? 'text-[#F9F9F9] hover:text-rose-500' : 'text-[#333333] hover:text-red-655'}`}
                       title="Trash notebook"
                     >
                       <Trash2 className="w-3 h-3" />
@@ -720,19 +732,19 @@ export default function NoteModule({
       </div>
 
       {/* 3. Right Focused Content Pad / Editor */}
-      <div className="flex-grow flex flex-col h-full bg-slate-50/30">
+      <div className="flex-grow flex flex-col h-full bg-[#F9F9F9]">
         {activeNote ? (
           <div className="flex flex-col h-full">
             
             {/* Note Editor Header */}
-            <div className="bg-slate-950 text-white p-3 border-b border-slate-800 flex items-center justify-between shrink-0 select-none">
+            <div className="bg-black text-[#F9F9F9] p-3 border-b-2 border-black flex items-center justify-between shrink-0 select-none font-mono">
               <div className="flex items-center gap-2">
-                <FileText className="w-4 h-4 text-indigo-400 shrink-0" />
+                <FileText className="w-4 h-4 text-[#E85002] shrink-0" />
                 <input 
                   type="text" 
                   value={activeNote.title}
                   onChange={(e) => onUpdateNote(activeNote.id, { title: e.target.value, updatedAt: new Date().toISOString() })}
-                  className="bg-transparent border-none focus:outline-none font-bold text-xs text-white max-w-[180px] md:max-w-xs"
+                  className="bg-transparent border-none focus:outline-none font-black text-xs text-white max-w-[180px] md:max-w-xs font-mono uppercase tracking-wide"
                 />
               </div>
 
@@ -741,10 +753,10 @@ export default function NoteModule({
                 <button 
                   onClick={() => handleTriggerAI()}
                   disabled={aiLoading}
-                  className="px-2.5 py-1 bg-white/10 hover:bg-white/15 text-white text-[9.5px] font-extrabold rounded-lg flex items-center gap-1 transition"
+                  className="px-2.5 py-1 bg-[#E85002] hover:bg-[#E85002]/90 border border-black text-black text-[9.5px] font-black rounded-none flex items-center gap-1 transition uppercase font-mono shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer"
                   title="Aura AI note summaries"
                 >
-                  {aiLoading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-indigo-300" />}
+                  {aiLoading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-black" />}
                   {aiLoading ? 'Grounding Summary...' : 'Aura Summary'}
                 </button>
 
@@ -752,10 +764,10 @@ export default function NoteModule({
                 {noteEditTab === 'editor' && (
                   <button
                     onClick={() => setDrawMode(!drawMode)}
-                    className={`px-2.5 py-1 rounded-lg text-[9.5px] font-bold transition flex items-center gap-1.5 cursor-pointer border ${
+                    className={`px-2.5 py-1 rounded-none text-[9.5px] font-black tracking-wider uppercase transition flex items-center gap-1.5 cursor-pointer border-2 border-black font-mono ${
                       drawMode 
-                        ? 'bg-rose-600 border-rose-500 text-white shadow-md animate-pulse' 
-                        : 'bg-white/10 border-white/20 text-indigo-200 hover:bg-white/15 hover:text-white'
+                        ? 'bg-rose-600 border-black text-white shadow-[2px_2px_0px_#000000] animate-pulse' 
+                        : 'bg-[#F9F9F9] border-black text-black shadow-[2px_2px_0px_#000000] hover:bg-[#A7A7A7]/20'
                     }`}
                     title="Draw stylus vector lines transparently on top of document"
                   >
@@ -765,19 +777,19 @@ export default function NoteModule({
                 )}
 
                 {/* View/Canvas Switcher */}
-                <div className="flex border border-slate-800 p-0.5 rounded-lg bg-slate-900 shrink-0">
+                <div className="flex border-2 border-black p-0.5 rounded-none bg-black shrink-0">
                   <button
                     onClick={() => setNoteEditTab('editor')}
-                    className={`px-2 py-1 rounded text-[9.5px] font-bold transition flex items-center gap-1 cursor-pointer ${
-                      noteEditTab === 'editor' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'
+                    className={`px-2 py-1 rounded-none text-[9.5px] font-black transition flex items-center gap-1 cursor-pointer font-mono uppercase ${
+                      noteEditTab === 'editor' ? 'bg-[#E85002] text-black border border-black shadow-[1px_1px_0px_#000000]' : 'text-slate-400 hover:text-white'
                     }`}
                   >
                     <Edit3 className="w-3 h-3" /> Rich Document
                   </button>
                   <button
                     onClick={() => { setNoteEditTab('canvas'); setDrawMode(false); }}
-                    className={`px-2 py-1 rounded text-[9.5px] font-bold transition flex items-center gap-1 cursor-pointer ${
-                      noteEditTab === 'canvas' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'
+                    className={`px-2 py-1 rounded-none text-[9.5px] font-black transition flex items-center gap-1 cursor-pointer font-mono uppercase ${
+                      noteEditTab === 'canvas' ? 'bg-[#E85002] text-black border border-black shadow-[1px_1px_0px_#000000]' : 'text-slate-400 hover:text-white'
                     }`}
                   >
                     <Paintbrush className="w-3 h-3" /> Stylus Whiteboard
@@ -787,7 +799,7 @@ export default function NoteModule({
             </div>
 
             {/* Note Body Editing Panel */}
-            <div className="flex-grow p-4 min-h-0 bg-white flex flex-col">
+            <div className="flex-grow p-4 min-h-0 bg-[#F9F9F9] flex flex-col border-t border-black">
               {noteEditTab === 'editor' ? (
                 <div className="flex-grow flex flex-col md:flex-row gap-4 h-full min-h-0 text-left">
                   
@@ -816,16 +828,16 @@ export default function NoteModule({
 
                       {/* Overlays Draw Mode brush controls */}
                       {drawMode && (
-                        <div className="bg-rose-500/5 border border-rose-500/10 p-2 rounded-xl flex flex-wrap items-center justify-between gap-3 animate-in slide-in-from-top-3 duration-250 shrink-0 text-slate-700 select-none">
+                        <div className="bg-rose-500/5 border-2 border-black p-2 rounded-none flex flex-wrap items-center justify-between gap-3 animate-in slide-in-from-top-3 duration-250 shrink-0 text-black select-none font-mono">
                           <div className="flex items-center gap-2">
-                            <span className="text-[9.5px] font-extrabold text-rose-800 uppercase tracking-wider">Stylus Overlays:</span>
+                            <span className="text-[9.5px] font-black text-black uppercase tracking-wider">Stylus Overlays:</span>
                             <div className="flex gap-1">
                               {['#000000', '#4f46e5', '#3b82f6', '#10b981', '#ef4444'].map(clr => (
                                 <button
                                   key={clr}
                                   type="button"
                                   onClick={() => { setBrushColor(clr); setEraserMode(false); }}
-                                  className={`w-4 h-4 rounded-full border transition hover:scale-110 cursor-pointer ${brushColor === clr && !eraserMode ? 'scale-125 ring-1.5 ring-rose-500' : 'border-slate-200'}`}
+                                  className={`w-4 h-4 rounded-full border-2 border-black transition hover:scale-110 cursor-pointer ${brushColor === clr && !eraserMode ? 'scale-125 ring-2 ring-[#E85002]' : ''}`}
                                   style={{ backgroundColor: clr }}
                                 />
                               ))}
@@ -838,14 +850,14 @@ export default function NoteModule({
                                 type="checkbox"
                                 checked={eraserMode}
                                 onChange={(e) => setEraserMode(e.target.checked)}
-                                className="rounded text-rose-600 focus:ring-rose-500 font-bold"
+                                className="rounded-none border-2 border-black text-[#E85002] focus:ring-[#E85002] font-black"
                               />
-                              <span className="text-[10px] font-semibold text-slate-650 flex items-center gap-1">
+                              <span className="text-[10px] font-black text-black flex items-center gap-1 uppercase">
                                 <Eraser className="w-3.5 h-3.5" /> Eraser Overlay
                               </span>
                             </label>
 
-                            <div className="flex items-center gap-1 text-[10px] font-semibold text-slate-500">
+                            <div className="flex items-center gap-1 text-[10px] font-black text-black uppercase">
                               <span>Stroke:</span>
                               <input 
                                 type="range" 
@@ -853,7 +865,7 @@ export default function NoteModule({
                                 max="10" 
                                 value={brushSize}
                                 onChange={(e) => setBrushSize(Number(e.target.value))}
-                                className="w-16 h-1 bg-slate-200 rounded-lg cursor-pointer accent-rose-600"
+                                className="w-16 h-1 bg-black rounded-none cursor-pointer accent-[#E85002]"
                               />
                               <span className="font-mono text-[9px]">{brushSize}px</span>
                             </div>
@@ -862,7 +874,7 @@ export default function NoteModule({
                           <button
                             type="button"
                             onClick={clearCanvasBoard}
-                            className="bg-rose-50 hover:bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-1 rounded border border-rose-200 transition flex items-center gap-1 cursor-pointer"
+                            className="bg-white hover:bg-rose-50 text-black text-[10px] font-black px-2.5 py-1 border-2 border-black rounded-none transition flex items-center gap-1 cursor-pointer uppercase shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px]"
                           >
                             × Clear Overlay
                           </button>
@@ -871,30 +883,30 @@ export default function NoteModule({
                     </div>
 
                     {/* Metadata bar: Date backdating and category parameters */}
-                    <div className="grid grid-cols-2 gap-3 mb-2.5 pb-2.5 border-b border-slate-100 shrink-0">
+                    <div className="grid grid-cols-2 gap-3 mb-2.5 pb-2.5 border-b border-black/10 shrink-0 select-none">
                       <div>
-                        <label className="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Last Update Date</label>
+                        <label className="block text-[8px] font-black text-black uppercase tracking-widest mb-1 font-mono">Last Update Date</label>
                         <input 
                           type="date"
                           value={editDate}
                           onChange={(e) => handleDateChange(e.target.value)}
-                          className="w-full bg-slate-50 border border-slate-200 rounded px-2 py-0.5 text-[10px] font-bold text-slate-650 focus:outline-none"
+                          className="w-full bg-[#F9F9F9] border-2 border-black rounded-none px-2 py-1 text-[10px] font-bold text-black focus:outline-none focus:border-[#E85002] font-mono"
                         />
                       </div>
                       <div>
-                        <label className="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Tags (Comma Sep)</label>
+                        <label className="block text-[8px] font-black text-black uppercase tracking-widest mb-1 font-mono">Tags (Comma Sep)</label>
                         <input 
                           type="text"
                           placeholder="e.g. exams, discrete"
                           value={activeNote.tags.join(', ')}
                           onChange={(e) => onUpdateNote(activeNote.id, { tags: e.target.value.split(',').map(s => s.trim()).filter(Boolean), updatedAt: new Date().toISOString() })}
-                          className="w-full bg-slate-50 border border-slate-200 rounded px-2 py-0.5 text-[10px] font-semibold text-slate-700 focus:outline-none"
+                          className="w-full bg-[#F9F9F9] border-2 border-black rounded-none px-2 py-1 text-[10px] font-semibold text-black focus:outline-none focus:border-[#E85002] font-mono"
                         />
                       </div>
                     </div>
 
                     {/* Rich text document area */}
-                    <div className="flex-grow overflow-y-auto min-h-0 relative border-b border-slate-100 pr-1" id="scrolling-editor-container">
+                    <div className="flex-grow overflow-y-auto min-h-0 relative pr-1 clay-card p-4 border border-black/15 bg-white shadow-inner rounded-lg" id="scrolling-editor-container">
                       <div className="relative w-full min-h-full">
                         <div
                           id="rich-note-editor"
@@ -928,29 +940,29 @@ export default function NoteModule({
                     </div>
 
                     {/* Attachments Section */}
-                    <div className="mt-2.5 shrink-0 select-none">
+                    <div className="mt-2.5 shrink-0 select-none border-t border-black/10 pt-2.5">
                       <div className="flex justify-between items-center mb-1">
-                        <span className="text-[9px] font-bold text-slate-400 uppercase flex items-center gap-1.5">
-                          <ImageIcon className="w-3.5 h-3.5 text-slate-400" />
+                        <span className="text-[9px] font-black text-black uppercase flex items-center gap-1.5 font-mono">
+                          <ImageIcon className="w-3.5 h-3.5 text-black" />
                           Document Attachments ({(attachedImages[activeNote.id] || []).length})
                         </span>
                         <button 
                           onClick={() => setShowImageMockPicker(true)}
-                          className="text-[9px] text-indigo-650 font-bold hover:underline"
+                          className="text-[9px] text-[#E85002] font-black hover:underline uppercase font-mono tracking-wider"
                         >
                           + Attach Preset Image
                         </button>
                       </div>
 
                       {showImageMockPicker && (
-                        <div className="p-2 border border-slate-200 bg-slate-50/50 rounded-xl mb-2 flex gap-2 overflow-x-auto">
+                        <div className="p-2 border-2 border-black bg-[#F9F9F9] rounded-none mb-2 flex gap-2 overflow-x-auto shadow-[2px_2px_0px_#000000]">
                           {mockImagePresets.map(url => (
                             <img 
                               key={url} 
                               src={url} 
                               alt="Preset" 
                               onClick={() => handleAddMockImage(url)}
-                              className="w-12 h-10 object-cover rounded border border-slate-200 cursor-pointer hover:border-indigo-500 transition shrink-0" 
+                              className="w-12 h-10 object-cover border-2 border-black cursor-pointer hover:border-[#E85002] transition shrink-0" 
                             />
                           ))}
                         </div>
@@ -959,11 +971,11 @@ export default function NoteModule({
                       {attachedImages[activeNote.id]?.length > 0 && (
                         <div className="flex flex-wrap gap-2 pt-1">
                           {attachedImages[activeNote.id].map((url, index) => (
-                            <div key={index} className="relative group shrink-0 w-16 h-12 rounded border border-slate-200 overflow-hidden bg-slate-100">
+                            <div key={index} className="relative group shrink-0 w-16 h-12 border-2 border-black overflow-hidden bg-white shadow-[2px_2px_0px_#000000]">
                               <img src={url} alt="Attached" className="w-full h-full object-cover" />
                               <button 
                                 onClick={() => handleRemoveImage(url)}
-                                className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs font-bold transition cursor-pointer"
+                                className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs font-black transition cursor-pointer"
                               >
                                 ×
                               </button>
@@ -974,34 +986,34 @@ export default function NoteModule({
                     </div>
 
                     {/* Editor Footer Stats */}
-                    <div className="flex justify-between items-center text-[9px] text-slate-400 pt-2 shrink-0 select-none font-mono">
+                    <div className="flex justify-between items-center text-[9px] text-black pt-2 shrink-0 select-none font-mono">
                       <div className="flex gap-3">
                         <span>Words: <strong>{wordsCount}</strong></span>
                         <span>Characters: <strong>{charsCount}</strong></span>
                         <span>Reading: <strong>~{readingTime}m</strong></span>
                       </div>
-                      <span>Notebook Database Backup Active</span>
+                      <span className="uppercase opacity-75">Notebook Database Backup Active</span>
                     </div>
 
                   </div>
 
                   {/* Right Column: Aura AI summaries side block */}
                   {aiAnalysis && (
-                    <div className="w-full md:w-60 bg-indigo-900 text-white rounded-xl p-3 shadow-md flex flex-col gap-3 shrink-0 animate-in fade-in slide-in-from-right-3 duration-150 overflow-y-auto scrollbar-thin">
-                      <div className="flex justify-between items-start">
-                        <span className="text-[8.5px] font-black uppercase tracking-widest text-emerald-400">Aura Study Guide</span>
-                        <button onClick={() => setAiAnalysis(null)} className="text-indigo-200 hover:text-white font-bold">×</button>
+                    <div className="w-full md:w-60 bg-black text-white border-2 border-[#333333] p-3 shadow-[4px_4px_0px_#E85002] flex flex-col gap-3 shrink-0 animate-in fade-in slide-in-from-right-3 duration-150 overflow-y-auto scrollbar-thin rounded-none">
+                      <div className="flex justify-between items-start border-b border-[#333333] pb-1.5">
+                        <span className="text-[9px] font-black uppercase tracking-widest text-[#E85002] font-mono">Aura Study Guide</span>
+                        <button onClick={() => setAiAnalysis(null)} className="text-white hover:text-[#E85002] font-bold">×</button>
                       </div>
 
                       <div>
-                        <span className="font-extrabold text-[8px] uppercase tracking-wider text-slate-400 block">AI summary</span>
-                        <p className="mt-0.5 text-[10.5px]/relaxed leading-relaxed font-semibold text-indigo-100">{aiAnalysis.summary}</p>
+                        <span className="font-extrabold text-[8px] uppercase tracking-wider text-[#A7A7A7] block font-mono">AI summary</span>
+                        <p className="mt-0.5 text-[10.5px]/relaxed leading-relaxed font-semibold text-white">{aiAnalysis.summary}</p>
                       </div>
 
                       {aiAnalysis.keyOutlines.length > 0 && (
                         <div>
-                          <span className="font-extrabold text-[8px] uppercase tracking-wider text-slate-400 block">Key Themes Outlines</span>
-                          <ul className="list-disc pl-3.5 space-y-0.5 mt-0.5 text-[9.5px]/snug text-indigo-200">
+                          <span className="font-extrabold text-[8px] uppercase tracking-wider text-[#A7A7A7] block font-mono">Key Themes Outlines</span>
+                          <ul className="list-disc pl-3.5 space-y-0.5 mt-0.5 text-[9.5px]/snug text-white font-mono">
                             {aiAnalysis.keyOutlines.map((o, idx) => <li key={idx}>{o}</li>)}
                           </ul>
                         </div>
@@ -1009,8 +1021,8 @@ export default function NoteModule({
 
                       {aiAnalysis.actionSteps.length > 0 && (
                         <div>
-                          <span className="font-extrabold text-[8px] uppercase tracking-wider text-slate-400 block">Recommended Review Steps</span>
-                          <ul className="list-disc pl-3.5 space-y-0.5 mt-0.5 text-[9.5px]/snug text-indigo-200">
+                          <span className="font-extrabold text-[8px] uppercase tracking-wider text-[#A7A7A7] block font-mono">Recommended Review Steps</span>
+                          <ul className="list-disc pl-3.5 space-y-0.5 mt-0.5 text-[9.5px]/snug text-white font-mono">
                             {aiAnalysis.actionSteps.map((s, idx) => <li key={idx}>{s}</li>)}
                           </ul>
                         </div>
@@ -1022,17 +1034,17 @@ export default function NoteModule({
               ) : (
                 // Stylus whiteboard Canvas elements (Retina dynamic scaled)
                 <div className="flex flex-col h-full gap-3 text-left select-none">
-                  <div className="bg-slate-100/60 p-2 border border-slate-200/80 rounded-xl flex flex-wrap items-center justify-between gap-3 shrink-0">
+                  <div className="bg-[#F9F9F9] p-2 border-2 border-black rounded-none flex flex-wrap items-center justify-between gap-3 shrink-0">
                     
                     {/* Brush Colors */}
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[9.5px] font-bold text-slate-500 uppercase">Brush:</span>
+                    <div className="flex items-center gap-1.5 font-mono">
+                      <span className="text-[9.5px] font-black text-black uppercase">Brush:</span>
                       <div className="flex gap-1">
                         {['#000000', '#4f46e5', '#3b82f6', '#10b981', '#ef4444'].map(clr => (
                           <button
                             key={clr}
                             onClick={() => { setBrushColor(clr); setEraserMode(false); }}
-                            className={`w-4 h-4 rounded-full border transition cursor-pointer ${brushColor === clr && !eraserMode ? 'scale-125 ring-1.5 ring-indigo-500' : ''}`}
+                            className={`w-4 h-4 rounded-full border border-black transition cursor-pointer ${brushColor === clr && !eraserMode ? 'scale-125 ring-2 ring-[#E85002]' : ''}`}
                             style={{ backgroundColor: clr }}
                           />
                         ))}
@@ -1040,20 +1052,20 @@ export default function NoteModule({
                     </div>
 
                     {/* Eraser and Stroke controls */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 font-mono">
                       <label className="flex items-center gap-1 cursor-pointer select-none">
                         <input 
                           type="checkbox"
                           checked={eraserMode}
                           onChange={(e) => setEraserMode(e.target.checked)}
-                          className="rounded text-indigo-650 focus:ring-indigo-500 font-bold"
+                          className="rounded-none border-2 border-black text-[#E85002] focus:ring-[#E85002] font-black"
                         />
-                        <span className="text-[10px] font-semibold text-slate-650 flex items-center gap-1">
+                        <span className="text-[10px] font-black text-black flex items-center gap-1 uppercase">
                           <Eraser className="w-3.5 h-3.5" /> Eraser Mode
                         </span>
                       </label>
 
-                      <div className="flex items-center gap-1 text-[10px] font-semibold text-slate-500">
+                      <div className="flex items-center gap-1 text-[10px] font-black text-black uppercase">
                         <span>Stroke:</span>
                         <input 
                           type="range" 
@@ -1061,7 +1073,7 @@ export default function NoteModule({
                           max="10" 
                           value={brushSize}
                           onChange={(e) => setBrushSize(Number(e.target.value))}
-                          className="w-16 h-1 bg-slate-250 rounded-lg cursor-pointer accent-indigo-600"
+                          className="w-16 h-1 bg-black rounded-none cursor-pointer accent-[#E85002]"
                         />
                         <span className="font-mono text-[9px]">{brushSize}px</span>
                       </div>
@@ -1069,14 +1081,14 @@ export default function NoteModule({
 
                     <button
                       onClick={clearCanvasBoard}
-                      className="bg-rose-50 hover:bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-1 rounded border border-rose-200 transition flex items-center gap-1 cursor-pointer"
+                      className="bg-white hover:bg-rose-50 border-2 border-black text-black text-[10px] font-black px-2.5 py-1 rounded-none transition flex items-center gap-1 cursor-pointer uppercase font-mono shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px]"
                     >
                       × Clear Canvas
                     </button>
                   </div>
 
                   {/* Interactive canvas pad (High-resolution display scaling) */}
-                  <div className="flex-1 bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-inner relative min-h-[300px]">
+                  <div className="flex-1 bg-white border-2 border-black rounded-none overflow-hidden shadow-inner relative min-h-[300px]">
                     <canvas
                       ref={canvasRef}
                       onMouseDown={startCanvasDrawing}
@@ -1085,7 +1097,7 @@ export default function NoteModule({
                       onMouseLeave={stopCanvasDrawing}
                       className="absolute inset-0 w-full h-full cursor-crosshair bg-white"
                     />
-                    <div className="absolute top-2.5 left-2.5 pointer-events-none bg-slate-900/50 backdrop-blur-xs text-white text-[8px] font-mono px-2 py-0.5 rounded-full">
+                    <div className="absolute top-2.5 left-2.5 pointer-events-none bg-black text-white text-[8px] font-mono px-2 py-0.5 rounded-none border border-white">
                       Whiteboard Vector Canvas: Stylus / Pen Active (High-Resolution Backing)
                     </div>
                   </div>
@@ -1094,8 +1106,8 @@ export default function NoteModule({
             </div>
           </div>
         ) : (
-          <div className="flex-grow flex flex-col items-center justify-center text-slate-400 py-20 text-xs select-none">
-            <BookOpen className="w-10 h-10 text-slate-300 animate-pulse mb-2" />
+          <div className="flex-grow flex flex-col items-center justify-center text-black/60 py-20 text-xs select-none font-mono uppercase">
+            <BookOpen className="w-10 h-10 text-black animate-pulse mb-2" />
             <span>Select a folder partition or add a lecture note to begin reviews.</span>
           </div>
         )}
@@ -1103,35 +1115,35 @@ export default function NoteModule({
 
       {/* New Folder Creation Popup */}
       {showFolderModal && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans select-none">
-          <div className="bg-white border border-slate-250 rounded-xl shadow-2xl max-w-sm w-full overflow-hidden text-slate-800 animate-in fade-in zoom-in duration-150">
-            <div className="bg-indigo-900 text-white px-4 py-3 flex items-center justify-between">
+        <div className="fixed inset-0 bg-[#333333]/80 backdrop-blur-xs flex items-center justify-center z-50 p-4 font-sans select-none">
+          <div className="bg-[#F9F9F9] border-2 border-black rounded-none shadow-[6px_6px_0px_#000000] max-w-sm w-full overflow-hidden text-black animate-in fade-in zoom-in duration-150">
+            <div className="bg-black text-[#F9F9F9] px-4 py-3 flex items-center justify-between border-b-2 border-black">
               <div>
-                <h4 className="font-bold text-xs">Create Academic folder partition</h4>
-                <p className="text-[10px] opacity-75">Syllabus segments, capstones, and homework reviews.</p>
+                <h4 className="font-black text-xs uppercase tracking-wider font-mono">Create Academic folder partition</h4>
+                <p className="text-[10px] opacity-75 font-mono">Syllabus segments, capstones, and homework reviews.</p>
               </div>
-              <button onClick={() => setShowFolderModal(false)} className="text-white hover:opacity-80">×</button>
+              <button onClick={() => setShowFolderModal(false)} className="text-white hover:text-[#E85002] font-bold">×</button>
             </div>
 
             <form onSubmit={handleCreateFolder} className="p-4 space-y-3.5 text-left">
               <div>
-                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Folder Partition Name</label>
+                <label className="block text-[10px] font-black text-black uppercase mb-1 font-mono">Folder Partition Name</label>
                 <input 
                   type="text" 
                   value={folderName} 
                   onChange={(e) => setFolderName(e.target.value)} 
                   placeholder="e.g. Software Testing Lab Notes"
-                  className="w-full bg-slate-150 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none"
+                  className="w-full bg-white border-2 border-black rounded-none px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#E85002] font-mono"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Link to Course ID</label>
+                <label className="block text-[10px] font-black text-black uppercase mb-1 font-mono">Link to Course ID</label>
                 <select 
                   value={folderCourseId} 
                   onChange={(e) => setFolderCourseId(e.target.value)}
-                  className="w-full bg-slate-150 border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-800 focus:outline-none"
+                  className="w-full bg-white border-2 border-black rounded-none px-2 py-1.5 text-xs text-black focus:outline-none focus:border-[#E85002] font-mono uppercase"
                 >
                   <option value="">No Course Linkage</option>
                   {courses.map(c => (
@@ -1140,19 +1152,19 @@ export default function NoteModule({
                 </select>
               </div>
 
-              <div className="flex justify-end gap-2.5 pt-1.5 border-t border-slate-100">
+              <div className="flex justify-end gap-2.5 pt-3 border-t border-black/10 font-mono">
                 <button 
                   type="button" 
                   onClick={() => setShowFolderModal(false)}
-                  className="text-xs font-semibold text-slate-505 px-3 py-1.5 hover:bg-slate-50 rounded"
+                  className="text-xs font-black text-black px-3 py-1.5 hover:bg-[#A7A7A7]/20 border border-transparent rounded-none uppercase"
                 >
                   Discard
                 </button>
                 <button 
                   type="submit"
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-1.5 rounded-lg transition"
+                  className="bg-[#E85002] hover:bg-[#E85002]/90 border-2 border-black text-black font-black text-xs px-4 py-1.5 rounded-none transition shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] uppercase"
                 >
-                  Confirm Group Folder
+                  Confirm Folder
                 </button>
               </div>
             </form>
@@ -1162,30 +1174,30 @@ export default function NoteModule({
 
       {/* Security settings popout overlay card */}
       {showLockSettings && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 select-none">
-          <form onSubmit={handleSaveLockSettings} className="max-w-xs w-full bg-white border border-slate-200 p-5 rounded-xl shadow-2xl space-y-3.5 animate-in zoom-in duration-150 text-slate-800 text-left">
-            <div className="flex justify-between items-center">
-              <h4 className="text-xs font-black uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-                <Lock className="w-3.5 h-3.5 text-indigo-650" />
+        <div className="fixed inset-0 bg-[#333333]/80 backdrop-blur-xs flex items-center justify-center z-50 p-4 select-none">
+          <form onSubmit={handleSaveLockSettings} className="max-w-sm w-full bg-[#F9F9F9] border-2 border-black p-5 rounded-none shadow-[6px_6px_0px_#000000] space-y-3.5 animate-in zoom-in duration-150 text-black text-left">
+            <div className="flex justify-between items-center border-b-2 border-black pb-2">
+              <h4 className="text-xs font-black uppercase tracking-wider text-black flex items-center gap-1.5 font-mono">
+                <Lock className="w-3.5 h-3.5 text-[#E85002]" />
                 Notebook settings
               </h4>
-              <button type="button" onClick={() => setShowLockSettings(false)} className="text-slate-400 hover:text-slate-700 font-bold">×</button>
+              <button type="button" onClick={() => setShowLockSettings(false)} className="text-black hover:text-[#E85002] font-bold">×</button>
             </div>
 
             <div className="space-y-3.5 py-1">
-              <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer">
+              <label className="flex items-center gap-2 text-xs font-black text-black cursor-pointer font-mono uppercase">
                 <input 
                   type="checkbox"
                   checked={isPasscodeEnabled}
                   onChange={(e) => setIsPasscodeEnabled(e.target.checked)}
-                  className="rounded text-indigo-650 animate-pulse"
+                  className="rounded-none border-2 border-black text-[#E85002] focus:ring-[#E85002]"
                 />
                 Enable 4-Digit Passcode Locker
               </label>
 
               {isPasscodeEnabled && (
                 <div>
-                  <label className="block text-[9.5px] font-bold text-slate-500 uppercase mb-1">Enter 4-Digit Passcode</label>
+                  <label className="block text-[9.5px] font-black text-black uppercase mb-1 font-mono">Enter 4-Digit Passcode</label>
                   <input 
                     type="password"
                     maxLength={4}
@@ -1195,16 +1207,16 @@ export default function NoteModule({
                       if (/^\d*$/.test(val)) setNewPasscode(val);
                     }}
                     placeholder="e.g. 1234"
-                    className="w-full bg-slate-100 border border-slate-200 rounded px-2.5 py-1 text-xs tracking-widest text-center"
+                    className="w-full bg-white border-2 border-black rounded-none px-2.5 py-1.5 text-xs tracking-widest text-center focus:outline-none focus:border-[#E85002] font-mono font-bold"
                     required={isPasscodeEnabled}
                   />
                 </div>
               )}
             </div>
 
-            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 shrink-0">
-              <button type="button" onClick={() => setShowLockSettings(false)} className="text-xs text-slate-455 px-2.5 py-1.5 rounded hover:bg-slate-50">Cancel</button>
-              <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg transition active:scale-95 cursor-pointer">Save Vault</button>
+            <div className="flex justify-end gap-2 pt-3 border-t border-black/10 font-mono">
+              <button type="button" onClick={() => setShowLockSettings(false)} className="text-xs font-black text-black px-2.5 py-1.5 rounded-none hover:bg-[#A7A7A7]/20 uppercase">Cancel</button>
+              <button type="submit" className="bg-[#E85002] hover:bg-[#E85002]/90 border-2 border-black text-black font-black text-xs px-3.5 py-1.5 rounded-none transition active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_#000000] uppercase">Save Vault</button>
             </div>
           </form>
         </div>

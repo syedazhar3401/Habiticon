@@ -177,31 +177,31 @@ How can I help optimize your academic schedule today?`,
   };
 
   return (
-    <div className="flex flex-col h-full bg-indigo-950 border border-indigo-900/60 rounded-2xl overflow-hidden shadow-[0_8px_32px_rgba(99,102,241,0.25)] font-sans">
+    <div className="flex flex-col h-full bg-black border-4 border-black text-[#F9F9F9] overflow-hidden font-sans">
       {/* Bot Chat Header */}
-      <div className="bg-indigo-950 px-4 py-3 flex items-center justify-between border-b border-indigo-900/40 shrink-0">
+      <div className="bg-black px-4 py-3 flex items-center justify-between border-b-4 border-black shrink-0 relative">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center shadow-inner">
+          <div className="w-8 h-8 rounded-none overflow-hidden flex items-center justify-center border border-black shadow">
             <ColorOrb dimension="22px" tones={{ base: "oklch(22.64% 0 0)" }} className="scale-115" />
           </div>
           <div>
-            <div className="text-xs font-bold text-white flex items-center gap-1.5 select-none">
+            <div className="text-xs font-black text-white flex items-center gap-1.5 select-none uppercase tracking-wider">
               Gemmi Assistant
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#E85002] animate-pulse"></span>
             </div>
-            <div className="text-[9px] text-indigo-400/70 font-mono select-none">Grounded Task NLU Model</div>
+            <div className="text-[9px] text-[#A7A7A7] font-mono select-none font-bold">Grounded Task NLU Model</div>
           </div>
         </div>
 
         <div className="flex items-center gap-1.5">
-          <div className="text-[9.5px] text-indigo-200 flex items-center gap-1 bg-indigo-900/50 border border-indigo-850 px-2 py-0.5 rounded select-none">
-            <Command className="w-2.5 h-2.5 text-indigo-300" />
+          <div className="text-[9.5px] text-white flex items-center gap-1 bg-[#333333] border-2 border-black px-2 py-0.5 rounded-none select-none font-bold">
+            <Command className="w-2.5 h-2.5 text-[#E85002]" />
             Workspace NLU
           </div>
           {onClose && (
             <button 
               onClick={onClose}
-              className="p-1 hover:bg-indigo-900 rounded text-indigo-300 hover:text-white transition font-black text-sm cursor-pointer ml-1 select-none"
+              className="p-1 hover:bg-[#E85002] hover:text-black border-2 border-black bg-white text-black transition font-black text-xs cursor-pointer ml-1 select-none flex items-center justify-center w-6 h-6 rounded-none shadow"
               title="Close Assistant"
             >
               &times;
@@ -211,26 +211,28 @@ How can I help optimize your academic schedule today?`,
       </div>
 
       {/* Message history panel */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-indigo-900 scrollbar-track-transparent">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin bg-black">
         {messages.map((msg) => (
           <div 
             key={msg.id} 
             className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
           >
-            <div className={`max-w-[85%] rounded-xl px-4 py-3 border text-xs shadow-md transition-all ${
+            <div className={`max-w-[85%] rounded-none px-4 py-3 border-2 border-black text-xs shadow-md transition-all ${
               msg.sender === 'user' 
-                ? 'bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white border-indigo-500/20 rounded-tr-none shadow-[0_2px_12px_rgba(99,102,241,0.15)]' 
-                : 'bg-indigo-900/40 text-slate-200 border-indigo-900/60 rounded-tl-none shadow-[0_2px_10px_rgba(0,0,0,0.2)]'
+                ? 'bg-[#F9F9F9] text-black shadow-[3px_3px_0px_#A7A7A7]' 
+                : 'bg-[#333333] text-[#F9F9F9] shadow-[3px_3px_0px_#E85002]'
             }`}>
               {/* Message author designation */}
-              <div className="text-[9px] text-indigo-400/80 mb-1 font-mono uppercase tracking-wider">
+              <div className={`text-[9px] mb-1 font-mono uppercase tracking-wider font-bold ${
+                msg.sender === 'user' ? 'text-[#646464]' : 'text-[#E85002]'
+              }`}>
                 {msg.sender === 'user' ? 'Me' : 'Gemmi AI'} • {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </div>
 
               {/* Message body content */}
-              <div className="space-y-1">
+              <div className="space-y-1 leading-relaxed">
                 {msg.sender === 'user' ? (
-                  <p className="whitespace-pre-wrap">{msg.content}</p>
+                  <p className="whitespace-pre-wrap font-mono font-semibold">{msg.content}</p>
                 ) : (
                   formatMarkdown(msg.content)
                 )}
@@ -238,9 +240,9 @@ How can I help optimize your academic schedule today?`,
 
               {/* Action Suggestion capsules */}
               {msg.suggestedActions && msg.suggestedActions.length > 0 && (
-                <div className="mt-3 pt-3 border-t border-indigo-900/50 space-y-2">
-                  <div className="text-[9px] font-mono text-emerald-450 flex items-center gap-1">
-                    <Info className="w-3 h-3 text-emerald-450" />
+                <div className="mt-3 pt-3 border-t-2 border-black space-y-2">
+                  <div className="text-[9px] font-mono text-[#E85002] flex items-center gap-1 font-black tracking-wider">
+                    <Info className="w-3 h-3 text-[#E85002]" />
                     RECOMMENDED ACADEMIC TRANSACTIONS:
                   </div>
                   <div className="flex flex-col gap-1.5">
@@ -248,7 +250,7 @@ How can I help optimize your academic schedule today?`,
                       <button
                         key={index}
                         onClick={() => onTriggerAction(act.type, act.payload)}
-                        className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold px-3 py-1.5 rounded text-[11px] text-left transition-all flex items-center justify-between shadow active:scale-[0.98]"
+                        className="bg-[#E85002] hover:bg-white text-black font-black px-3 py-1.5 border-2 border-black rounded-none text-[11px] text-left transition-all flex items-center justify-between shadow active:translate-x-[1px] active:translate-y-[1px] cursor-pointer"
                       >
                         <span className="truncate">{act.label}</span>
                         <ArrowRight className="w-3.5 h-3.5 flex-shrink-0 ml-2" />
@@ -263,9 +265,9 @@ How can I help optimize your academic schedule today?`,
 
         {loading && (
           <div className="flex justify-start">
-            <div className="bg-indigo-900/40 border border-indigo-900/60 rounded-xl rounded-tl-none px-4 py-3 flex items-center gap-2.5 text-indigo-200/80 text-xs shadow">
-              <Loader2 className="w-3.5 h-3.5 text-emerald-400 animate-spin" />
-              <span>Gemmi is indexing course directories...</span>
+            <div className="bg-[#333333] border-2 border-black text-[#F9F9F9] rounded-none px-4 py-3 flex items-center gap-2.5 text-xs shadow-[3px_3px_0px_#E85002]">
+              <Loader2 className="w-3.5 h-3.5 text-[#E85002] animate-spin" />
+              <span className="font-mono font-bold">Gemmi is indexing course directories...</span>
             </div>
           </div>
         )}
@@ -275,9 +277,9 @@ How can I help optimize your academic schedule today?`,
       {/* Integrated Prompt Textarea Bottom Panel */}
       <form 
         onSubmit={(e) => { e.preventDefault(); handleSend(); }} 
-        className="p-3 bg-indigo-950 border-t border-indigo-900/40 flex flex-col gap-2 shrink-0 relative z-40 select-none"
+        className="p-3 bg-black border-t-4 border-black flex flex-col gap-2 shrink-0 relative z-40 select-none"
       >
-        <div className="relative flex items-center bg-indigo-950 border border-indigo-900 rounded-xl overflow-hidden focus-within:border-indigo-700 transition-all shadow-inner">
+        <div className="relative flex items-center bg-[#333333] border-2 border-black rounded-none overflow-hidden focus-within:border-[#E85002] transition-all shadow-inner">
           <textarea
             placeholder="Ask Gemmi anything... (e.g. summarize notes)"
             value={prompt}
@@ -289,13 +291,13 @@ How can I help optimize your academic schedule today?`,
               }
             }}
             disabled={loading}
-            className="w-full h-16 resize-none bg-transparent outline-none border-none p-2.5 text-white text-xs placeholder-indigo-300/60 leading-relaxed scrollbar-thin"
+            className="w-full h-16 resize-none bg-transparent outline-none border-none p-2.5 text-white text-xs placeholder-[#A7A7A7]/60 leading-relaxed font-mono font-semibold"
             spellCheck={false}
           />
           <button
             type="submit"
             disabled={loading || !prompt.trim()}
-            className="absolute bottom-2.5 right-2.5 p-1.5 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-950/50 text-white disabled:text-indigo-400/40 rounded-lg transition-all active:scale-95 cursor-pointer border-none flex items-center justify-center"
+            className="absolute bottom-2.5 right-2.5 p-1.5 bg-[#E85002] hover:bg-white text-black disabled:bg-black disabled:text-[#A7A7A7] border-2 border-black rounded-none transition-all active:translate-x-[1px] active:translate-y-[1px] cursor-pointer flex items-center justify-center"
             title="Send to Gemmi"
           >
             {loading ? (
@@ -306,12 +308,12 @@ How can I help optimize your academic schedule today?`,
           </button>
         </div>
         <div className="flex justify-between items-center px-1">
-          <span className="text-[9px] text-indigo-400 font-mono flex items-center gap-1.5 select-none">
-            <span className="w-1 h-1 rounded-full bg-emerald-450 animate-pulse"></span>
+          <span className="text-[9px] text-[#A7A7A7] font-mono flex items-center gap-1.5 select-none font-bold">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E85002] animate-pulse"></span>
             Gemmi Engine v2
           </span>
-          <span className="text-[9px] text-indigo-400 font-mono flex items-center gap-1 select-none">
-            Press Enter <CornerDownLeft className="inline w-2 h-2 text-indigo-400" />
+          <span className="text-[9px] text-[#A7A7A7] font-mono flex items-center gap-1 select-none font-bold">
+            Press Enter <CornerDownLeft className="inline w-2 h-2 text-[#A7A7A7]" />
           </span>
         </div>
       </form>

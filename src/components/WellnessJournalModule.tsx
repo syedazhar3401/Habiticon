@@ -708,19 +708,19 @@ export default function WellnessJournalModule({
   };
 
   return (
-    <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col h-full font-sans text-slate-800 relative">
+    <div className="bg-[#F9F9F9] border-2 border-black rounded-none p-5 h-full flex flex-col font-sans text-black relative">
       
       {/* SECURITY ACCESS PANEL: Private Passcode Lock Challenge */}
       {isLocked && (
-        <div className="absolute inset-0 bg-indigo-950/95 backdrop-blur-md rounded-2xl z-50 flex items-center justify-center p-6 text-white text-center select-none animate-in fade-in duration-200">
-          <div className="max-w-xs w-full bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-2xl flex flex-col items-center gap-4">
-            <div className="w-12 h-12 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-full flex items-center justify-center">
+        <div className="absolute inset-0 bg-[#333333]/90 backdrop-blur-xs z-50 flex items-center justify-center p-6 text-white text-center select-none animate-in fade-in duration-200">
+          <div className="max-w-xs w-full bg-black border-2 border-white p-6 rounded-none shadow-[4px_4px_0px_#E85002] flex flex-col items-center gap-4 text-white">
+            <div className="w-12 h-12 bg-[#E85002]/10 border border-[#E85002]/20 text-[#E85002] rounded-full flex items-center justify-center">
               <Lock className="w-6 h-6 animate-pulse" />
             </div>
             
             <div>
-              <h3 className="font-extrabold text-sm tracking-tight">Private Wellbeing Ledger Locked</h3>
-              <p className="text-[10px] text-slate-400 mt-1 leading-snug">Input your 4-digit security code to reveal secure daily reflection timeline.</p>
+              <h3 className="font-extrabold text-sm tracking-tight font-mono uppercase text-white">Private Wellbeing Ledger Locked</h3>
+              <p className="text-[10px] text-[#A7A7A7] mt-1 leading-snug font-mono">Input your 4-digit security code to reveal secure daily reflection timeline.</p>
             </div>
 
             <form onSubmit={handleUnlock} className="w-full space-y-3 mt-1">
@@ -733,16 +733,16 @@ export default function WellnessJournalModule({
                   if (/^\d*$/.test(val)) setPasscodeInput(val);
                 }}
                 placeholder="••••"
-                className="w-full text-center tracking-widest text-lg font-black bg-slate-950 border border-slate-800 rounded-lg py-2.5 text-white focus:outline-none focus:border-rose-500"
+                className="w-full text-center tracking-widest text-lg font-black bg-[#333333] border-2 border-white rounded-none py-2 text-white focus:outline-none focus:border-[#E85002] font-mono"
                 required
                 autoFocus
               />
               {passcodeError && (
-                <span className="text-[9.5px] text-red-400 font-bold block leading-snug">{passcodeError}</span>
+                <span className="text-[9.5px] text-red-400 font-bold block font-mono">{passcodeError}</span>
               )}
               <button 
                 type="submit" 
-                className="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs py-2 rounded-lg transition active:scale-95 cursor-pointer"
+                className="w-full bg-[#E85002] hover:bg-[#E85002]/90 border-2 border-white text-black font-extrabold text-xs py-2 rounded-none transition active:translate-x-[2px] active:translate-y-[2px] cursor-pointer font-mono uppercase"
               >
                 Unlock Secure Workspace
               </button>
@@ -752,28 +752,36 @@ export default function WellnessJournalModule({
       )}
 
       {/* 1. Header Toolbar */}
-      <div className="flex flex-wrap justify-between items-center border-b border-slate-200/50 pb-4 mb-4 gap-3 shrink-0">
+      <div className="flex flex-wrap justify-between items-center border-b-2 border-black pb-4 mb-4 gap-3 shrink-0">
         <div>
-          <h2 className="text-sm font-bold text-indigo-950 flex items-center gap-1.5">
+          <h2 className="text-sm font-black text-black tracking-wider flex items-center gap-1.5 font-mono uppercase">
             <Heart className="w-4.5 h-4.5 text-rose-500 animate-pulse" />
             Journal &amp; Wellbeing reflections Hub
           </h2>
-          <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider mt-0.5">Explore emotional trends • Write daily gratitude logs • Consult Aura AI</p>
+          <p className="text-[10px] text-[#333333] font-bold uppercase tracking-wider mt-0.5 font-mono">Explore emotional trends • Write daily gratitude logs • Consult Aura AI</p>
         </div>
 
         <div className="flex items-center gap-2">
           {/* Main Views switcher */}
-          <div className="flex bg-slate-100 p-0.5 border border-slate-200 rounded-lg text-xs font-semibold text-slate-650 shrink-0">
+          <div className="flex bg-black p-1 border-2 border-black rounded-none text-xs font-semibold text-white shrink-0 shadow-[2px_2px_0px_#000000]">
             <button 
               onClick={() => setActiveView('timeline')}
-              className={`px-3 py-1.5 rounded-md transition flex items-center gap-1 cursor-pointer ${activeView === 'timeline' ? 'bg-white text-indigo-700 font-bold shadow-sm' : 'hover:text-slate-900'}`}
+              className={`px-3 py-1.5 rounded-none transition flex items-center gap-1 cursor-pointer font-mono uppercase ${
+                activeView === 'timeline' 
+                  ? 'bg-[#E85002] text-black border border-black shadow-[1px_1px_0px_#000000] font-black' 
+                  : 'text-white hover:text-[#E85002]'
+              }`}
             >
               <Calendar className="w-3.5 h-3.5" />
               Timeline Logs
             </button>
             <button 
               onClick={() => setActiveView('analytics')}
-              className={`px-3 py-1.5 rounded-md transition flex items-center gap-1 cursor-pointer ${activeView === 'analytics' ? 'bg-white text-indigo-700 font-bold shadow-sm' : 'hover:text-slate-900'}`}
+              className={`px-3 py-1.5 rounded-none transition flex items-center gap-1 cursor-pointer font-mono uppercase ${
+                activeView === 'analytics' 
+                  ? 'bg-[#E85002] text-black border border-black shadow-[1px_1px_0px_#000000] font-black' 
+                  : 'text-white hover:text-[#E85002]'
+              }`}
             >
               <BarChart2 className="w-3.5 h-3.5" />
               Wellness Analytics
@@ -782,15 +790,15 @@ export default function WellnessJournalModule({
 
           <button 
             onClick={() => setShowLockSettings(!showLockSettings)}
-            className="p-2 hover:bg-slate-200 rounded-lg text-slate-500 transition shrink-0 cursor-pointer"
+            className="p-2 hover:bg-[#A7A7A7]/20 border-2 border-black rounded-none bg-white transition shrink-0 cursor-pointer shadow-[2px_2px_0px_#000000] active:translate-x-[0.5px] active:translate-y-[0.5px]"
             title="Privacy Guard Settings"
           >
-            <Settings className="w-4 h-4" />
+            <Settings className="w-4 h-4 text-black" />
           </button>
 
           <button 
             onClick={handleNewEntryClick}
-            className="bg-rose-600 hover:bg-rose-700 text-white font-bold text-[10.5px] px-3 py-2 rounded-lg flex items-center gap-1 transition shadow-sm shrink-0 cursor-pointer"
+            className="bg-[#E85002] hover:bg-[#E85002]/95 border-2 border-black text-black font-black text-[10.5px] px-3 py-2 rounded-none flex items-center gap-1 transition shadow-[2px_2px_0px_#000000] shrink-0 cursor-pointer uppercase font-mono hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-0 active:translate-y-0 active:shadow-none"
           >
             <Plus className="w-4 h-4" />
             + New Reflection
@@ -798,91 +806,41 @@ export default function WellnessJournalModule({
         </div>
       </div>
 
-      {/* Security settings popout overlay card */}
-      {showLockSettings && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-40 p-4">
-          <form onSubmit={handleSaveLockSettings} className="max-w-xs w-full bg-white border border-slate-200 p-5 rounded-xl shadow-2xl space-y-3.5 animate-in zoom-in duration-150 text-slate-800 text-left">
-            <div className="flex justify-between items-center">
-              <h4 className="text-xs font-black uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-                <Lock className="w-3.5 h-3.5 text-indigo-650" />
-                Journal Lock settings
-              </h4>
-              <button type="button" onClick={() => setShowLockSettings(false)} className="text-slate-400 hover:text-slate-700 font-bold">×</button>
-            </div>
-
-            <div className="space-y-3.5 py-1">
-              <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer">
-                <input 
-                  type="checkbox"
-                  checked={isPasscodeEnabled}
-                  onChange={(e) => setIsPasscodeEnabled(e.target.checked)}
-                  className="rounded text-indigo-650"
-                />
-                Enable 4-Digit Passcode Guard
-              </label>
-
-              {isPasscodeEnabled && (
-                <div>
-                  <label className="block text-[9.5px] font-bold text-slate-500 uppercase mb-1">Enter 4-Digit Passcode</label>
-                  <input 
-                    type="password"
-                    maxLength={4}
-                    value={newPasscode}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      if (/^\d*$/.test(val)) setNewPasscode(val);
-                    }}
-                    placeholder="e.g. 1234"
-                    className="w-full bg-slate-100 border border-slate-200 rounded px-2.5 py-1 text-xs tracking-widest text-center"
-                    required={isPasscodeEnabled}
-                  />
-                </div>
-              )}
-            </div>
-
-            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 shrink-0">
-              <button type="button" onClick={() => setShowLockSettings(false)} className="text-xs text-slate-455 px-2.5 py-1.5 rounded hover:bg-slate-50">Cancel</button>
-              <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg transition active:scale-95 cursor-pointer">Save Vault</button>
-            </div>
-          </form>
-        </div>
-      )}
-
       {/* 2. Main Content Panels */}
       <div className="flex-grow overflow-hidden h-full">
         {activeView === 'timeline' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 h-full overflow-hidden">
             
             {/* Timeline Column (Col-4) */}
-            <div className="lg:col-span-4 bg-white border border-slate-200 rounded-xl p-3.5 flex flex-col h-full overflow-hidden">
-              <div className="flex justify-between items-center mb-3 shrink-0">
-                <h3 className="text-xs font-bold text-slate-805 flex items-center gap-1.5">
-                  <Sliders className="w-3.5 h-3.5 text-slate-400" />
+            <div className="lg:col-span-4 bg-[#F9F9F9] border-2 border-black rounded-none p-3.5 flex flex-col h-full overflow-hidden shadow-[3px_3px_0px_#000000]">
+              <div className="flex justify-between items-center mb-3 shrink-0 font-mono text-black">
+                <h3 className="text-xs font-black flex items-center gap-1.5 uppercase">
+                  <Sliders className="w-3.5 h-3.5 text-black" />
                   Filter Reflections
                 </h3>
-                <span className="text-[9.5px] bg-slate-100 text-slate-500 font-bold px-2 py-0.5 rounded-full">{filteredEntries.length} Saved</span>
+                <span className="text-[9.5px] bg-[#E85002] text-black font-black border border-black px-2 py-0.5 rounded-none shadow-[1px_1px_0px_#000000]">{filteredEntries.length} Saved</span>
               </div>
 
               {/* Tag filters bar / Search */}
-              <div className="space-y-2 shrink-0 pb-3 border-b border-slate-100">
+              <div className="space-y-2 shrink-0 pb-3 border-b-2 border-black font-mono">
                 <div className="relative">
                   <input 
                     type="text" 
                     placeholder="Search keywords..." 
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full text-[11px] bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 pl-7 focus:outline-none focus:border-indigo-500"
+                    className="w-full text-[11px] bg-white border-2 border-black rounded-none px-2.5 py-1.5 pl-7 focus:outline-none focus:border-[#E85002] placeholder-black/50 text-black font-semibold"
                   />
-                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                  <Search className="w-3.5 h-3.5 text-black absolute left-2.5 top-1/2 -translate-y-1/2" />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <select 
                     value={filterType}
                     onChange={(e) => setFilterType(e.target.value)}
-                    className="text-[10px] bg-slate-50 border border-slate-200 rounded p-1 text-slate-650 font-semibold focus:outline-none"
+                    className="text-[10px] bg-white border-2 border-black rounded-none p-1 text-black font-black focus:outline-none uppercase"
                   >
-                    <option value="all">All Reflection Types</option>
+                    <option value="all">All Types</option>
                     <option value="daily">Daily Journals</option>
                     <option value="reflection">Reflections</option>
                     <option value="goal_review">Goal Reviews</option>
@@ -894,9 +852,9 @@ export default function WellnessJournalModule({
                   <select 
                     value={filterMood}
                     onChange={(e) => setFilterMood(e.target.value)}
-                    className="text-[10px] bg-slate-50 border border-slate-200 rounded p-1 text-slate-650 font-semibold focus:outline-none"
+                    className="text-[10px] bg-white border-2 border-black rounded-none p-1 text-black font-black focus:outline-none uppercase"
                   >
-                    <option value="all">All Emotional States</option>
+                    <option value="all">All Moods</option>
                     <option value="very_happy">Very Happy 😄</option>
                     <option value="happy">Happy 🙂</option>
                     <option value="neutral">Neutral 😐</option>
@@ -909,7 +867,11 @@ export default function WellnessJournalModule({
                   <div className="flex flex-wrap gap-1 pt-1.5">
                     <button 
                       onClick={() => setFilterTag('all')}
-                      className={`text-[8.5px] font-bold px-2 py-0.5 rounded-full border transition cursor-pointer ${filterTag === 'all' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'}`}
+                      className={`text-[8.5px] font-black px-2 py-0.5 rounded-none border border-black transition cursor-pointer font-mono uppercase ${
+                        filterTag === 'all' 
+                          ? 'bg-[#E85002] text-black shadow-[1px_1px_0px_#000000]' 
+                          : 'bg-white text-black hover:bg-[#A7A7A7]/25 shadow-[1px_1px_0px_#000000]'
+                      }`}
                     >
                       # All
                     </button>
@@ -917,7 +879,11 @@ export default function WellnessJournalModule({
                       <button 
                         key={tagVal}
                         onClick={() => setFilterTag(tagVal)}
-                        className={`text-[8.5px] font-bold px-2 py-0.5 rounded-full border transition cursor-pointer ${filterTag === tagVal ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'}`}
+                        className={`text-[8.5px] font-black px-2 py-0.5 rounded-none border border-black transition cursor-pointer font-mono uppercase ${
+                          filterTag === tagVal 
+                            ? 'bg-[#E85002] text-black shadow-[1px_1px_0px_#000000]' 
+                            : 'bg-white text-black hover:bg-[#A7A7A7]/25 shadow-[1px_1px_0px_#000000]'
+                        }`}
                       >
                         #{tagVal}
                       </button>
@@ -926,54 +892,71 @@ export default function WellnessJournalModule({
                 )}
               </div>
 
-              {/* Timeline feed */}
-              <div className="flex-grow space-y-2.5 overflow-y-auto mt-3 pr-1 scrollbar-thin">
-                {filteredEntries.map(entry => (
-                  <div 
-                    key={entry.id} 
-                    onClick={() => handleOpenEntry(entry)}
-                    className="p-3 bg-slate-50 hover:bg-white border border-slate-100 hover:border-rose-200 rounded-xl cursor-pointer transition-all duration-200 shadow-xs flex flex-col gap-2 group text-left"
-                  >
-                    <div className="flex items-start justify-between">
-                      <span className="text-[8.5px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700">
-                        {entry.type.replace('_', ' ')}
-                      </span>
-                      <span className="text-[13px]" title={`Mood index: ${entry.mood.score}/10`}>
-                        {entry.mood.type === 'very_happy' && '😄'}
-                        {entry.mood.type === 'happy' && '🙂'}
-                        {entry.mood.type === 'neutral' && '😐'}
-                        {entry.mood.type === 'stressed' && '😣'}
-                        {entry.mood.type === 'sad' && '😢'}
-                      </span>
-                    </div>
+              {/* Timeline feed: Physical Polaroid entry log lists */}
+              <div className="flex-grow space-y-3 overflow-y-auto mt-3 pr-1 scrollbar-thin">
+                {filteredEntries.map((entry, entryIdx) => {
+                  const cycle = entryIdx % 3;
+                  let itemClass = "";
+                  
+                  if (cycle === 0) {
+                    itemClass = "bg-white border-2 border-black text-black shadow-[2px_2px_0px_#000000] hover:bg-[#A7A7A7]/10";
+                  } else if (cycle === 1) {
+                    itemClass = "bg-[#F9F9F9] border-2 border-black text-black shadow-[2px_2px_0px_#E85002] hover:bg-white";
+                  } else {
+                    itemClass = "bg-black border-2 border-[#333333] text-white shadow-[2px_2px_0px_#E85002] hover:bg-[#333333]";
+                  }
 
-                    <div>
-                      <h4 className="text-[11px] font-bold text-slate-800 line-clamp-1 group-hover:text-indigo-650 transition-colors">
-                        {entry.title}
-                      </h4>
-                      <p className="text-[10px]/snug text-slate-500 mt-0.5 line-clamp-2">
-                        {entry.content.replace(/<[^>]*>/g, '')} {/* Strip tags */}
-                      </p>
-                    </div>
+                  return (
+                    <div 
+                      key={entry.id} 
+                      onClick={() => handleOpenEntry(entry)}
+                      className={`p-3 cursor-pointer transition-all duration-150 flex flex-col gap-2 text-left rounded-none pb-5 ${itemClass}`}
+                    >
+                      <div className="flex items-start justify-between">
+                        <span className={`text-[8.5px] font-black uppercase px-1.5 py-0.5 rounded-none border border-black shadow-[1px_1px_0px_#000000] ${
+                          cycle === 2 ? 'bg-[#E85002] text-black' : 'bg-black text-[#F9F9F9]'
+                        }`}>
+                          {entry.type.replace('_', ' ')}
+                        </span>
+                        <span className="text-[13px]" title={`Mood index: ${entry.mood.score}/10`}>
+                          {entry.mood.type === 'very_happy' && '😄'}
+                          {entry.mood.type === 'happy' && '🙂'}
+                          {entry.mood.type === 'neutral' && '😐'}
+                          {entry.mood.type === 'stressed' && '😣'}
+                          {entry.mood.type === 'sad' && '😢'}
+                        </span>
+                      </div>
 
-                    <div className="flex justify-between items-center text-[9px] text-slate-400 font-mono pt-1.5 border-t border-slate-200/40">
-                      <span>{formatDateDisplay(entry.dateCreated)}</span>
-                      <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div>
+                        <h4 className={`text-[11px] font-black uppercase tracking-wider line-clamp-1 font-mono ${
+                          cycle === 2 ? 'text-[#E85002]' : 'text-black'
+                        }`}>
+                          {entry.title}
+                        </h4>
+                        <p className={`text-[10px]/snug mt-0.5 line-clamp-2 ${cycle === 2 ? 'text-[#A7A7A7]' : 'text-[#333333]'}`}>
+                          {entry.content.replace(/<[^>]*>/g, '')}
+                        </p>
+                      </div>
+
+                      <div className={`flex justify-between items-center text-[9px] font-mono pt-1.5 border-t ${
+                        cycle === 2 ? 'border-white/10 text-[#A7A7A7]' : 'border-black/10 text-black'
+                      }`}>
+                        <span>{formatDateDisplay(entry.dateCreated)}</span>
                         <button 
                           onClick={(e) => { e.stopPropagation(); handleDeleteEntry(entry.id); }}
-                          className="text-slate-400 hover:text-red-500 transition"
+                          className={`hover:text-red-500 transition ${cycle === 2 ? 'text-white/60' : 'text-black/60'}`}
                           title="Delete entry"
                         >
                           <Trash2 className="w-3 h-3" />
                         </button>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
 
                 {filteredEntries.length === 0 && (
-                  <div className="text-center py-16 text-slate-400 text-xs flex flex-col items-center gap-1 select-none">
-                    <Sliders className="w-8 h-8 text-slate-200" />
+                  <div className="text-center py-16 text-black/60 text-xs flex flex-col items-center gap-1 select-none font-mono uppercase">
+                    <Sliders className="w-8 h-8 text-black" />
                     <span>No reflection logs matching query filters.</span>
                   </div>
                 )}
@@ -981,36 +964,36 @@ export default function WellnessJournalModule({
             </div>
 
             {/* Reflection details panel / dashboard mockup if none selected (Col-8) */}
-            <div className="lg:col-span-8 bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-center items-center h-full overflow-hidden text-center select-none text-slate-800">
+            <div className="lg:col-span-8 bg-white border-2 border-black rounded-none p-4 flex flex-col justify-center items-center h-full overflow-hidden text-center select-none text-black shadow-[4px_4px_0px_#000000]">
               <div className="max-w-md space-y-4">
-                <div className="w-14 h-14 bg-rose-500/10 border border-rose-500/20 text-rose-450 rounded-full flex items-center justify-center mx-auto animate-pulse">
-                  <Heart className="w-6 h-6 fill-rose-500" />
+                <div className="w-14 h-14 bg-[#E85002]/10 border-2 border-black text-[#E85002] rounded-none flex items-center justify-center mx-auto shadow-[3px_3px_0px_#000000]">
+                  <Heart className="w-6 h-6 fill-[#E85002]" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-sm text-slate-900 tracking-tight">Select or Create a Wellbeing Reflection</h3>
-                  <p className="text-[10.5px] text-slate-500 max-w-xs mx-auto leading-relaxed mt-1">
+                  <h3 className="font-black text-sm text-black tracking-widest uppercase font-mono">Select or Create a Wellbeing Reflection</h3>
+                  <p className="text-[10.5px] text-[#333333] max-w-xs mx-auto leading-relaxed mt-1.5 uppercase font-mono font-bold">
                     Keep a dedicated personal journal, complete wellness indicators, record items of gratitude, and let Aura AI highlight emotional stress trajectories.
                   </p>
                 </div>
                 
                 {/* Journal Streak banner info */}
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-700 rounded-full text-[10px] font-extrabold">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-black text-[#E85002] border-2 border-[#E85002] rounded-none text-[10px] font-black uppercase tracking-wider font-mono shadow-[3px_3px_0px_#000000]">
                   <Flame className="w-4 h-4 text-amber-500 fill-amber-500 animate-bounce" />
                   Active Journaling: {reflectionStreak} Days Streak
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-slate-100 text-left">
+                <div className="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-black/10 text-left font-mono">
                   <button 
                     onClick={handleNewEntryClick}
-                    className="p-3 bg-slate-50 hover:bg-indigo-50 border border-slate-100 hover:border-indigo-200 rounded-xl text-xs font-bold text-indigo-700 transition cursor-pointer"
+                    className="p-3 bg-white hover:bg-[#E85002] border-2 border-black rounded-none text-xs font-black text-black transition cursor-pointer shadow-[3px_3px_0px_#000000] uppercase hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-0 active:translate-y-0 active:shadow-none"
                   >
-                    ✍️ Create Reflection Entry
+                    ✍️ Create Entry
                   </button>
                   <button 
                     onClick={() => setActiveView('analytics')}
-                    className="p-3 bg-slate-50 hover:bg-rose-50 border border-slate-100 hover:border-rose-200 rounded-xl text-xs font-bold text-rose-700 transition cursor-pointer"
+                    className="p-3 bg-white hover:bg-[#E85002] border-2 border-black rounded-none text-xs font-black text-black transition cursor-pointer shadow-[3px_3px_0px_#000000] uppercase hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-0 active:translate-y-0 active:shadow-none"
                   >
-                    📊 Check Long-Term Wellbeing
+                    📊 Check Analytics
                   </button>
                 </div>
               </div>
@@ -1024,15 +1007,19 @@ export default function WellnessJournalModule({
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 h-full overflow-hidden">
             
             {/* Editor Workspace Column (Col-8) */}
-            <div className="lg:col-span-8 bg-white border border-slate-200 rounded-xl p-4 flex flex-col h-full overflow-hidden text-left relative">
+            <div className="lg:col-span-8 bg-[#F9F9F9] border-2 border-black rounded-none p-4 flex flex-col h-full overflow-hidden text-left relative shadow-[4px_4px_0px_#000000]">
               
               {/* Header Editor status indicator bar */}
-              <div className="flex justify-between items-center pb-2 border-b border-slate-100 shrink-0">
+              <div className="flex justify-between items-center pb-2 border-b-2 border-black shrink-0 font-mono uppercase">
                 <div className="flex items-center gap-2">
-                  <span className="text-[9.5px] bg-slate-100 border border-slate-200 text-slate-500 px-2 py-0.5 rounded uppercase font-bold flex items-center gap-0.5">
+                  <span className="text-[9.5px] bg-black border border-black text-[#F9F9F9] px-2 py-0.5 rounded-none shadow-[1px_1px_0px_#000000] font-black">
                     {editType} log
                   </span>
-                  <span className={`text-[9px] font-bold font-mono px-2 py-0.5 rounded-full ${saveStatus === 'Saved' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200 animate-pulse'}`}>
+                  <span className={`text-[9px] font-black px-2 py-0.5 rounded-none border-2 border-black shadow-[1px_1px_0px_#000000] ${
+                    saveStatus === 'Saved' 
+                      ? 'bg-[#E85002] text-black' 
+                      : 'bg-white text-black animate-pulse'
+                  }`}>
                     {saveStatus}
                   </span>
                 </div>
@@ -1041,16 +1028,16 @@ export default function WellnessJournalModule({
                   <button 
                     onClick={() => handleTriggerAI()}
                     disabled={aiLoading}
-                    className="px-3 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[10.5px] font-bold rounded-lg flex items-center gap-1 transition-all disabled:opacity-50 cursor-pointer"
+                    className="px-3 py-1 bg-black hover:bg-[#333333] border-2 border-black text-[#E85002] text-[10.5px] font-black rounded-none flex items-center gap-1 transition-all disabled:opacity-50 cursor-pointer shadow-[2px_2px_0px_#E85002] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
                     title="Aura AI reflections summary"
                   >
-                    {aiLoading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-indigo-600" />}
-                    {aiLoading ? 'Analyzing Wellbeing...' : 'Ask Aura Reflections'}
+                    {aiLoading ? <RefreshCw className="w-3.5 h-3.5 animate-spin animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-[#E85002]" />}
+                    {aiLoading ? 'Grounding...' : 'Ask Aura reflections'}
                   </button>
 
                   <button 
                     onClick={handleSaveEntry}
-                    className="px-3.5 py-1 bg-rose-600 hover:bg-rose-700 text-white text-[10.5px] font-bold rounded-lg flex items-center gap-0.5 transition shadow-sm cursor-pointer"
+                    className="px-3.5 py-1 bg-[#E85002] hover:bg-[#E85002]/90 border-2 border-black text-black text-[10.5px] font-black rounded-none flex items-center gap-0.5 transition shadow-[2px_2px_0px_#000000] cursor-pointer hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-0 active:translate-y-0 active:shadow-none"
                   >
                     <Check className="w-3.5 h-3.5" />
                     Save Entry
@@ -1058,7 +1045,7 @@ export default function WellnessJournalModule({
 
                   <button 
                     onClick={() => setActiveView('timeline')}
-                    className="p-1 hover:bg-slate-100 rounded text-slate-400 hover:text-slate-650"
+                    className="p-1 hover:bg-[#A7A7A7]/25 border-2 border-black rounded-none bg-white shadow-[1px_1px_0px_#000000] text-black"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -1066,12 +1053,12 @@ export default function WellnessJournalModule({
               </div>
 
               {/* Formatting Textbar Header */}
-              <div className="flex flex-wrap gap-1.5 py-2.5 border-b border-slate-100 bg-slate-50/50 rounded px-2 mt-2 shrink-0 select-none items-center text-xs">
+              <div className="flex flex-wrap gap-1.5 py-2 px-3 border-2 border-black bg-black rounded-none mt-2 shrink-0 select-none items-center text-xs font-mono text-white shadow-[2px_2px_0px_#E85002] z-30">
                 {/* Font typography select */}
                 <select 
                   value={editorFont}
                   onChange={(e) => setEditorFont(e.target.value)}
-                  className="bg-white border border-slate-200 rounded p-1 text-[10px] font-bold text-slate-650 focus:outline-none"
+                  className="bg-white border border-slate-200 rounded-none p-1 text-[10px] font-bold text-slate-700 focus:outline-none"
                   title="Typography Font"
                 >
                   <option value="'Outfit', sans-serif">Outfit</option>
@@ -1083,31 +1070,31 @@ export default function WellnessJournalModule({
                 </select>
 
                 {/* Font Size controls */}
-                <div className="flex items-center gap-1 bg-white border border-slate-200 rounded p-0.5 font-mono text-[9px] font-bold">
+                <div className="flex items-center gap-1 bg-white border border-slate-200 rounded-none p-0.5 font-mono text-[9px] font-bold text-slate-800">
                   <button onClick={() => setEditorSize(String(Math.max(8, parseInt(editorSize) - 1)))} className="p-0.5 hover:bg-slate-100 rounded text-slate-450 cursor-pointer">-</button>
                   <span className="px-1 text-slate-800">{editorSize}pt</span>
                   <button onClick={() => setEditorSize(String(Math.min(72, parseInt(editorSize) + 1)))} className="p-0.5 hover:bg-slate-100 rounded text-slate-450 cursor-pointer">+</button>
                 </div>
 
-                <div className="w-px h-5 bg-slate-200 mx-1"></div>
+                <div className="w-px h-5 bg-white/20 mx-1"></div>
 
                 {/* Bold Italic Underline Strikethrough buttons */}
-                <button onClick={() => execFormat('bold')} className="p-1 hover:bg-slate-200 rounded text-slate-600 cursor-pointer" title="Bold text"><Bold className="w-3.5 h-3.5" /></button>
-                <button onClick={() => execFormat('italic')} className="p-1 hover:bg-slate-200 rounded text-slate-600 cursor-pointer" title="Italic text"><Italic className="w-3.5 h-3.5" /></button>
-                <button onClick={() => execFormat('underline')} className="p-1 hover:bg-slate-200 rounded text-slate-600 cursor-pointer" title="Underline text"><Underline className="w-3.5 h-3.5" /></button>
-                <button onClick={() => execFormat('strikeThrough')} className="p-1 hover:bg-slate-200 rounded text-slate-600 cursor-pointer" title="Strikethrough text"><Strikethrough className="w-3.5 h-3.5" /></button>
+                <button onClick={() => execFormat('bold')} className="p-1 hover:bg-[#E85002] rounded-none hover:text-black transition cursor-pointer text-white" title="Bold text"><Bold className="w-3.5 h-3.5" /></button>
+                <button onClick={() => execFormat('italic')} className="p-1 hover:bg-[#E85002] rounded-none hover:text-black transition cursor-pointer text-white" title="Italic text"><Italic className="w-3.5 h-3.5" /></button>
+                <button onClick={() => execFormat('underline')} className="p-1 hover:bg-[#E85002] rounded-none hover:text-black transition cursor-pointer text-white" title="Underline text"><Underline className="w-3.5 h-3.5" /></button>
+                <button onClick={() => execFormat('strikeThrough')} className="p-1 hover:bg-[#E85002] rounded-none hover:text-black transition cursor-pointer text-white" title="Strikethrough text"><Strikethrough className="w-3.5 h-3.5" /></button>
                 
                 {/* Undo Redo buttons */}
-                <button onClick={() => execFormat('undo')} className="p-1 hover:bg-slate-200 rounded text-slate-600 cursor-pointer" title="Undo"><Undo className="w-3.5 h-3.5" /></button>
-                <button onClick={() => execFormat('redo')} className="p-1 hover:bg-slate-200 rounded text-slate-600 cursor-pointer" title="Redo"><Redo className="w-3.5 h-3.5" /></button>
+                <button onClick={() => execFormat('undo')} className="p-1 hover:bg-[#E85002] rounded-none hover:text-black transition cursor-pointer text-white" title="Undo"><Undo className="w-3.5 h-3.5" /></button>
+                <button onClick={() => execFormat('redo')} className="p-1 hover:bg-[#E85002] rounded-none hover:text-black transition cursor-pointer text-white" title="Redo"><Redo className="w-3.5 h-3.5" /></button>
 
-                <div className="w-px h-5 bg-slate-200 mx-1"></div>
+                <div className="w-px h-5 bg-white/20 mx-1"></div>
 
                 {/* Text Colors */}
                 <select 
                   value={editorColor}
                   onChange={(e) => { setEditorColor(e.target.value); execFormat('foreColor', e.target.value); }}
-                  className="bg-white border border-slate-200 rounded p-0.5 text-[9px] focus:outline-none"
+                  className="bg-white border border-slate-200 rounded p-0.5 text-[9px] focus:outline-none text-slate-700"
                   title="Text Color"
                 >
                   <option value="#1e293b">Dark Slate</option>
@@ -1121,7 +1108,7 @@ export default function WellnessJournalModule({
                 <select 
                   value={editorBgColor}
                   onChange={(e) => { setEditorBgColor(e.target.value); execFormat('backColor', e.target.value); }}
-                  className="bg-white border border-slate-200 rounded p-0.5 text-[9px] focus:outline-none"
+                  className="bg-white border border-slate-200 rounded p-0.5 text-[9px] focus:outline-none text-slate-700"
                   title="Highlight Color"
                 >
                   <option value="transparent">No Highlight</option>
@@ -1131,27 +1118,27 @@ export default function WellnessJournalModule({
                   <option value="#bfdbfe">Blue Glow</option>
                 </select>
 
-                <div className="w-px h-5 bg-slate-200 mx-1"></div>
+                <div className="w-px h-5 bg-white/20 mx-1"></div>
 
                 {/* Headings */}
-                <button onClick={() => execFormat('formatBlock', '<h1>')} className="px-1.5 py-0.5 hover:bg-slate-200 rounded font-black text-[10px] text-slate-700 cursor-pointer" title="H1 Title">H1</button>
-                <button onClick={() => execFormat('formatBlock', '<h2>')} className="px-1.5 py-0.5 hover:bg-slate-200 rounded font-black text-[10px] text-slate-700 cursor-pointer" title="H2 Section">H2</button>
-                <button onClick={() => execFormat('formatBlock', '<blockquote>')} className="px-1.5 py-0.5 hover:bg-slate-200 rounded font-black text-[10px] text-slate-700 cursor-pointer" title="Quote Block">""</button>
-                <button onClick={() => execFormat('insertHorizontalRule')} className="px-1 py-0.5 hover:bg-slate-200 rounded font-bold text-[10px] text-slate-700 cursor-pointer" title="Horizontal divider">—</button>
+                <button onClick={() => execFormat('formatBlock', '<h1>')} className="px-1.5 py-0.5 hover:bg-[#E85002] rounded-none hover:text-black font-black text-[10px] text-white cursor-pointer" title="H1 Title">H1</button>
+                <button onClick={() => execFormat('formatBlock', '<h2>')} className="px-1.5 py-0.5 hover:bg-[#E85002] rounded-none hover:text-black font-black text-[10px] text-white cursor-pointer" title="H2 Section">H2</button>
+                <button onClick={() => execFormat('formatBlock', '<blockquote>')} className="px-1.5 py-0.5 hover:bg-[#E85002] rounded-none hover:text-black font-black text-[10px] text-white cursor-pointer" title="Quote Block">""</button>
+                <button onClick={() => execFormat('insertHorizontalRule')} className="px-1 py-0.5 hover:bg-[#E85002] rounded-none hover:text-black font-bold text-[10px] text-white cursor-pointer" title="Horizontal divider">—</button>
 
-                <div className="w-px h-5 bg-slate-200 mx-1"></div>
+                <div className="w-px h-5 bg-white/20 mx-1"></div>
 
                 {/* Paragraph Alignments */}
-                <button onClick={() => { setEditorAlignment('left'); execFormat('justifyLeft'); }} className={`p-1 hover:bg-slate-200 rounded cursor-pointer ${editorAlignment === 'left' ? 'text-indigo-600 bg-slate-100' : 'text-slate-500'}`}><AlignLeft className="w-3.5 h-3.5" /></button>
-                <button onClick={() => { setEditorAlignment('center'); execFormat('justifyCenter'); }} className={`p-1 hover:bg-slate-200 rounded cursor-pointer ${editorAlignment === 'center' ? 'text-indigo-600 bg-slate-100' : 'text-slate-500'}`}><AlignCenter className="w-3.5 h-3.5" /></button>
-                <button onClick={() => { setEditorAlignment('right'); execFormat('justifyRight'); }} className={`p-1 hover:bg-slate-200 rounded cursor-pointer ${editorAlignment === 'right' ? 'text-indigo-600 bg-slate-100' : 'text-slate-500'}`}><AlignRight className="w-3.5 h-3.5" /></button>
-                <button onClick={() => { setEditorAlignment('justify'); execFormat('justifyFull'); }} className={`p-1 hover:bg-slate-200 rounded cursor-pointer ${editorAlignment === 'justify' ? 'text-indigo-600 bg-slate-100' : 'text-slate-500'}`}><AlignJustify className="w-3.5 h-3.5" /></button>
+                <button onClick={() => { setEditorAlignment('left'); execFormat('justifyLeft'); }} className={`p-1 hover:bg-[#E85002] rounded-none cursor-pointer ${editorAlignment === 'left' ? 'text-[#E85002]' : 'text-white'}`}><AlignLeft className="w-3.5 h-3.5" /></button>
+                <button onClick={() => { setEditorAlignment('center'); execFormat('justifyCenter'); }} className={`p-1 hover:bg-[#E85002] rounded-none cursor-pointer ${editorAlignment === 'center' ? 'text-[#E85002]' : 'text-white'}`}><AlignCenter className="w-3.5 h-3.5" /></button>
+                <button onClick={() => { setEditorAlignment('right'); execFormat('justifyRight'); }} className={`p-1 hover:bg-[#E85002] rounded-none cursor-pointer ${editorAlignment === 'right' ? 'text-[#E85002]' : 'text-white'}`}><AlignRight className="w-3.5 h-3.5" /></button>
+                <button onClick={() => { setEditorAlignment('justify'); execFormat('justifyFull'); }} className={`p-1 hover:bg-[#E85002] rounded-none cursor-pointer ${editorAlignment === 'justify' ? 'text-[#E85002]' : 'text-white'}`}><AlignJustify className="w-3.5 h-3.5" /></button>
 
-                <div className="w-px h-5 bg-slate-200 mx-1"></div>
+                <div className="w-px h-5 bg-white/20 mx-1"></div>
 
                 {/* Lists */}
-                <button onClick={() => execFormat('insertUnorderedList')} className="px-1.5 py-0.5 hover:bg-slate-200 rounded font-bold text-[10px] text-slate-700 cursor-pointer" title="Bullet Lists">• List</button>
-                <button onClick={() => execFormat('insertOrderedList')} className="px-1.5 py-0.5 hover:bg-slate-200 rounded font-bold text-[10px] text-slate-700 cursor-pointer" title="Numbered Lists">1. List</button>
+                <button onClick={() => execFormat('insertUnorderedList')} className="px-1.5 py-0.5 hover:bg-[#E85002] rounded-none hover:text-black font-bold text-[10px] text-white cursor-pointer" title="Bullet Lists">• List</button>
+                <button onClick={() => execFormat('insertOrderedList')} className="px-1.5 py-0.5 hover:bg-[#E85002] rounded-none hover:text-black font-bold text-[10px] text-white cursor-pointer" title="Numbered Lists">1. List</button>
               </div>
 
               {/* Scrollable Entry Body Editor */}
@@ -1163,17 +1150,17 @@ export default function WellnessJournalModule({
                     placeholder="Reflections Title..."
                     value={editTitle}
                     onChange={(e) => { setEditTitle(e.target.value); notifyUnsaved(); }}
-                    className="w-full text-sm font-extrabold text-slate-900 border-none outline-none placeholder-slate-300 py-1"
+                    className="w-full text-base font-black border-none outline-none placeholder-black/45 py-1 text-black font-mono uppercase tracking-widest border-b border-black"
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pb-3 border-b border-slate-150">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pb-3 border-b-2 border-black/10">
                   <div>
-                    <label className="block text-[9.5px] font-bold text-slate-400 uppercase mb-1">Reflection Category Type</label>
+                    <label className="block text-[8.5px] font-black text-black uppercase mb-1 font-mono">Reflection Category Type</label>
                     <select 
                       value={editType}
                       onChange={(e) => { setEditType(e.target.value as any); notifyUnsaved(); }}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs font-semibold focus:outline-none"
+                      className="w-full bg-white border-2 border-black rounded-none px-2.5 py-1 text-xs font-black focus:outline-none font-mono uppercase"
                     >
                       <option value="daily">Daily Reflection log</option>
                       <option value="reflection">Deeper Mental analysis</option>
@@ -1185,31 +1172,31 @@ export default function WellnessJournalModule({
                   </div>
 
                   <div>
-                    <label className="block text-[9.5px] font-bold text-slate-400 uppercase mb-1">Log Date</label>
+                    <label className="block text-[8.5px] font-black text-black uppercase mb-1 font-mono">Log Date</label>
                     <input 
                       type="date"
                       value={editDate}
                       onChange={(e) => { setEditDate(e.target.value); notifyUnsaved(); }}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs font-semibold focus:outline-none"
+                      className="w-full bg-white border-2 border-black rounded-none px-2.5 py-1 text-xs font-black focus:outline-none font-mono text-black"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[9.5px] font-bold text-slate-400 uppercase mb-1">Entry Tags (Press Enter)</label>
+                    <label className="block text-[8.5px] font-black text-black uppercase mb-1 font-mono">Entry Tags (Press Enter)</label>
                     <input 
                       type="text"
                       placeholder="Add tag... (e.g. Exams, Health)"
                       value={tagInput}
                       onChange={(e) => setTagInput(e.target.value)}
                       onKeyDown={handleAddTag}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs focus:outline-none"
+                      className="w-full bg-white border-2 border-black rounded-none px-2.5 py-1.5 text-xs focus:outline-none font-mono"
                     />
                     {entryTags.length > 0 && (
                       <div className="flex flex-wrap gap-1 mt-1.5">
                         {entryTags.map(tagVal => (
-                          <span key={tagVal} className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded-md bg-indigo-50 border border-indigo-150 text-indigo-700 text-[8.5px] font-bold">
+                          <span key={tagVal} className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-none bg-black text-[#F9F9F9] border border-black text-[8.5px] font-black uppercase font-mono">
                             #{tagVal}
-                            <button type="button" onClick={() => handleRemoveTag(tagVal)} className="text-[10px] text-indigo-400 hover:text-indigo-700">×</button>
+                            <button type="button" onClick={() => handleRemoveTag(tagVal)} className="text-[10px] text-[#E85002] hover:text-white">×</button>
                           </span>
                         ))}
                       </div>
@@ -1217,7 +1204,7 @@ export default function WellnessJournalModule({
                   </div>
                 </div>
 
-                {/* Actual Custom Content-Editable text document */}
+                {/* Actual Custom Content-Editable text document: Physical Clay paper shadow */}
                 <div 
                   id="rich-reflections-editor"
                   ref={editorRef}
@@ -1232,47 +1219,47 @@ export default function WellnessJournalModule({
                     textAlign: editorAlignment,
                     minHeight: '160px'
                   }}
-                  className="outline-none focus:outline-none text-slate-800 leading-relaxed py-2 w-full prose max-w-none border-b border-slate-100"
+                  className="outline-none focus:outline-none text-black leading-relaxed py-2 w-full prose max-w-none border-b border-black/10 clay-card p-5 bg-white min-h-[250px] rounded-lg shadow-inner"
                 />
 
                 {/* Guided Gratitude Prompts Exercises */}
-                <div className="bg-rose-500/5 border border-rose-500/10 rounded-2xl p-4 space-y-3">
-                  <h4 className="text-xs font-black text-rose-950 flex items-center gap-1.5">
-                    <Heart className="w-4 h-4 text-rose-500 fill-rose-500 animate-pulse" />
+                <div className="bg-white border-2 border-black rounded-none p-4 space-y-3 shadow-[3px_3px_0px_#000000] font-mono uppercase text-black">
+                  <h4 className="text-xs font-black text-black flex items-center gap-1.5 font-mono">
+                    <Heart className="w-4 h-4 text-[#E85002] fill-[#E85002]" />
                     Guided Reflections &amp; Gratitude Prompts (Optional)
                   </h4>
                   
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     <div>
-                      <label className="block text-[9.5px] text-slate-500 font-semibold mb-1">1. What are three things you are grateful for today?</label>
+                      <label className="block text-[8.5px] text-black font-black mb-1">1. What are three things you are grateful for today?</label>
                       <input 
                         type="text" 
                         placeholder="Today, I am grateful for..."
                         value={gratitude1}
                         onChange={(e) => { setGratitude1(e.target.value); notifyUnsaved(); }}
-                        className="w-full bg-white border border-slate-200/80 rounded-lg px-2.5 py-1 text-xs text-slate-800 focus:outline-none"
+                        className="w-full bg-[#F9F9F9] border-2 border-black rounded-none px-2.5 py-1.5 text-xs text-black focus:outline-none focus:border-[#E85002] font-semibold"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[9.5px] text-slate-500 font-semibold mb-1">2. What went well today / what made you smile?</label>
+                      <label className="block text-[8.5px] text-black font-black mb-1">2. What went well today / what made you smile?</label>
                       <input 
                         type="text" 
                         placeholder="I smiled today because..."
                         value={gratitude2}
                         onChange={(e) => { setGratitude2(e.target.value); notifyUnsaved(); }}
-                        className="w-full bg-white border border-slate-200/80 rounded-lg px-2.5 py-1 text-xs text-slate-800 focus:outline-none"
+                        className="w-full bg-[#F9F9F9] border-2 border-black rounded-none px-2.5 py-1.5 text-xs text-black focus:outline-none focus:border-[#E85002] font-semibold"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[9.5px] text-slate-500 font-semibold mb-1">3. What achievement are you proud of today?</label>
+                      <label className="block text-[8.5px] text-black font-black mb-1">3. What achievement are you proud of today?</label>
                       <input 
                         type="text" 
                         placeholder="I am proud of accomplishing..."
                         value={gratitude3}
                         onChange={(e) => { setGratitude3(e.target.value); notifyUnsaved(); }}
-                        className="w-full bg-white border border-slate-200/80 rounded-lg px-2.5 py-1 text-xs text-slate-800 focus:outline-none"
+                        className="w-full bg-[#F9F9F9] border-2 border-black rounded-none px-2.5 py-1.5 text-xs text-black focus:outline-none focus:border-[#E85002] font-semibold"
                       />
                     </div>
                   </div>
@@ -1281,24 +1268,24 @@ export default function WellnessJournalModule({
                 {/* Media Image Gallery */}
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
-                    <h4 className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                      <ImageIcon className="w-4 h-4 text-slate-400" />
+                    <h4 className="text-xs font-black text-black flex items-center gap-1.5 uppercase font-mono">
+                      <ImageIcon className="w-4 h-4 text-black" />
                       Reflection Galleries ({attachedImages.length} attached)
                     </h4>
                     <button 
                       type="button"
                       onClick={() => setShowImageMockPicker(true)}
-                      className="text-[9.5px] text-indigo-600 font-extrabold hover:underline"
+                      className="text-[9.5px] text-[#E85002] font-black hover:underline uppercase font-mono tracking-widest"
                     >
                       + Attach Image
                     </button>
                   </div>
 
                   {showImageMockPicker && (
-                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                    <div className="p-3 bg-[#F9F9F9] border-2 border-black rounded-none space-y-3 shadow-[2px_2px_0px_#000000] font-mono uppercase text-black">
                       <div className="flex justify-between items-center shrink-0">
-                        <span className="text-[10px] font-bold text-slate-500 uppercase">Select Mock Reflection Image</span>
-                        <button type="button" onClick={() => setShowImageMockPicker(false)} className="text-slate-400 hover:text-slate-700">×</button>
+                        <span className="text-[10px] font-black text-black uppercase">Select Mock Reflection Image</span>
+                        <button type="button" onClick={() => setShowImageMockPicker(false)} className="text-black hover:text-[#E85002] font-bold">×</button>
                       </div>
 
                       <div className="grid grid-cols-4 gap-2">
@@ -1306,10 +1293,10 @@ export default function WellnessJournalModule({
                           <div 
                             key={preset.url}
                             onClick={() => handleAddMockImage(preset.url, preset.caption)}
-                            className="bg-white border border-slate-100 rounded-lg overflow-hidden cursor-pointer hover:border-indigo-400 transition"
+                            className="bg-white border-2 border-black rounded-none overflow-hidden cursor-pointer hover:border-[#E85002] transition"
                           >
                             <img src={preset.url} alt="preset" className="w-full h-14 object-cover" />
-                            <span className="text-[7.5px] font-semibold text-slate-500 p-1 block truncate">{preset.caption}</span>
+                            <span className="text-[7.5px] font-semibold text-black p-1 block truncate">{preset.caption}</span>
                           </div>
                         ))}
                       </div>
@@ -1319,13 +1306,13 @@ export default function WellnessJournalModule({
                   {attachedImages.length > 0 && (
                     <div className="grid grid-cols-3 gap-3">
                       {attachedImages.map(img => (
-                        <div key={img.id} className="bg-slate-50 border border-slate-100 rounded-xl overflow-hidden relative group">
-                          <img src={img.url} alt={img.caption} className="w-full h-24 object-cover" />
-                          <span className="text-[8.5px] font-semibold text-slate-600 p-1.5 block truncate bg-white/90">{img.caption}</span>
+                        <div key={img.id} className="bg-[#F9F9F9] border-2 border-black rounded-none p-2 pb-6 shadow-[2px_2px_0px_#000000] overflow-hidden relative group">
+                          <img src={img.url} alt={img.caption} className="w-full h-24 object-cover border border-black" />
+                          <span className="text-[8.5px] font-black text-black pt-2 block truncate bg-[#F9F9F9] font-mono uppercase">{img.caption}</span>
                           <button 
                             type="button"
                             onClick={() => handleRemoveImage(img.id)}
-                            className="absolute top-1 right-1 w-5 h-5 rounded-full bg-slate-900/60 hover:bg-slate-950 text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="absolute top-3 right-3 w-5 h-5 rounded-none bg-black border border-white text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer font-black"
                           >
                             ×
                           </button>
@@ -1338,27 +1325,27 @@ export default function WellnessJournalModule({
               </div>
 
               {/* Bottom statistics panel */}
-              <div className="flex justify-between items-center text-[9.5px] text-slate-400 pt-2 border-t border-slate-100 mt-auto shrink-0 select-none font-mono">
+              <div className="flex justify-between items-center text-[9.5px] text-black pt-2 border-t border-black/10 mt-auto shrink-0 select-none font-mono uppercase">
                 <div className="flex gap-4">
                   <span>Words: <strong>{wordsCount}</strong></span>
                   <span>Characters: <strong>{charsCount}</strong></span>
                   <span>Reading: <strong>~{readingTime}m</strong></span>
                 </div>
-                <span>Sync persists securely in browser sandbox cache.</span>
+                <span className="opacity-75">Sync persists securely in browser sandbox cache.</span>
               </div>
             </div>
 
             {/* Check-ins & AI reflections side drawer (Col-4) */}
-            <div className="lg:col-span-4 bg-white border border-slate-200 rounded-xl p-4 flex flex-col h-full overflow-y-auto space-y-5 text-left scrollbar-thin">
+            <div className="lg:col-span-4 bg-[#F9F9F9] border-2 border-black rounded-none p-4 flex flex-col h-full overflow-y-auto space-y-5 text-left scrollbar-thin shadow-[3px_3px_0px_#000000]">
               
               {/* Mood HUD scale checkin */}
-              <div className="space-y-3 pb-3 border-b border-slate-100">
-                <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                  <Sun className="w-4 h-4 text-amber-500 animate-pulse" />
+              <div className="space-y-3 pb-3 border-b-2 border-black/10">
+                <h4 className="text-xs font-black text-black uppercase tracking-wider flex items-center gap-1.5 font-mono">
+                  <Sun className="w-4 h-4 text-[#E85002] animate-spin" />
                   Mood Indicators
                 </h4>
 
-                <div className="grid grid-cols-5 gap-1.5 text-center">
+                <div className="grid grid-cols-5 gap-1.5 text-center font-mono">
                   {[
                     { key: 'very_happy', val: 9, label: '😄 Very Happy' },
                     { key: 'happy', val: 7, label: '🙂 Happy' },
@@ -1369,106 +1356,106 @@ export default function WellnessJournalModule({
                     <button
                       key={m.key}
                       onClick={() => { setMoodType(m.key as any); setMoodScore(m.val); notifyUnsaved(); }}
-                      className={`p-2 border rounded-xl flex flex-col items-center gap-1.5 transition duration-150 cursor-pointer ${
+                      className={`p-2 border-2 rounded-none flex flex-col items-center gap-1.5 transition duration-150 cursor-pointer ${
                         moodType === m.key 
-                          ? 'bg-rose-50 border-rose-200 font-bold text-rose-700' 
-                          : 'bg-slate-50/50 border-slate-100 hover:bg-slate-50'
+                          ? 'bg-[#E85002] border-2 border-black font-black text-black shadow-[2px_2px_0px_#000000]' 
+                          : 'bg-white border-2 border-black hover:bg-[#A7A7A7]/10 text-black font-bold'
                       }`}
                     >
                       <span className="text-lg">{m.label.split(' ')[0]}</span>
-                      <span className="text-[7.5px] font-bold block truncate">{m.label.split(' ').slice(1).join(' ')}</span>
+                      <span className="text-[7.5px] font-black block truncate">{m.label.split(' ').slice(1).join(' ')}</span>
                     </button>
                   ))}
                 </div>
 
                 <div className="grid grid-cols-2 gap-3.5 pt-2">
                   <div>
-                    <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Energy Rating ({energyLevel}/10)</label>
+                    <label className="block text-[8.5px] font-black text-black uppercase mb-1 font-mono">Energy Rating ({energyLevel}/10)</label>
                     <input 
                       type="range" 
                       min="1" 
                       max="10" 
                       value={energyLevel}
                       onChange={(e) => { setEnergyLevel(Number(e.target.value)); notifyUnsaved(); }}
-                      className="w-full accent-rose-500 cursor-pointer"
+                      className="w-full bg-black border-2 border-black rounded-none h-2.5 cursor-pointer accent-[#E85002]"
                     />
                   </div>
                   <div>
-                    <label className="block text-[9px] font-bold text-slate-500 uppercase mb-1">Motivation Rating ({motivationLevel}/10)</label>
+                    <label className="block text-[8.5px] font-black text-black uppercase mb-1 font-mono">Motivation Rating ({motivationLevel}/10)</label>
                     <input 
                       type="range" 
                       min="1" 
                       max="10" 
                       value={motivationLevel}
                       onChange={(e) => { setMotivationLevel(Number(e.target.value)); notifyUnsaved(); }}
-                      className="w-full accent-rose-500 cursor-pointer"
+                      className="w-full bg-black border-2 border-black rounded-none h-2.5 cursor-pointer accent-[#E85002]"
                     />
                   </div>
                 </div>
               </div>
 
-              {/* Wellness Check-in Optional Questions */}
-              <div className="space-y-3 pb-3 border-b border-slate-100">
-                <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                  <Sliders className="w-4 h-4 text-indigo-500" />
+              {/* Wellness Check-in Optional Questions: Claymorphic Volumetric Sliders */}
+              <div className="space-y-3 pb-3 border-b-2 border-black/10">
+                <h4 className="text-xs font-black text-black uppercase tracking-wider flex items-center gap-1.5 font-mono">
+                  <Sliders className="w-4 h-4 text-black" />
                   Wellness Ratings HUD
                 </h4>
 
-                <div className="space-y-3">
+                <div className="space-y-3 font-mono">
                   <div>
-                    <div className="flex justify-between text-[9px] font-bold text-slate-500 uppercase mb-1">
+                    <div className="flex justify-between text-[9px] font-black text-black uppercase mb-1">
                       <span>Anxiety Levels</span>
                       <span>{anxietyLevel}/10</span>
                     </div>
                     <input 
                       type="range" min="1" max="10" value={anxietyLevel}
                       onChange={(e) => { setAnxietyLevel(Number(e.target.value)); notifyUnsaved(); }}
-                      className="w-full accent-indigo-600 cursor-pointer"
+                      className="w-full bg-black border-2 border-black rounded-none h-2.5 cursor-pointer accent-[#E85002]"
                     />
                   </div>
 
                   <div>
-                    <div className="flex justify-between text-[9px] font-bold text-slate-500 uppercase mb-1">
+                    <div className="flex justify-between text-[9px] font-black text-black uppercase mb-1">
                       <span>Sleep Quality</span>
                       <span>{sleepQuality}/10</span>
                     </div>
                     <input 
                       type="range" min="1" max="10" value={sleepQuality}
                       onChange={(e) => { setSleepQuality(Number(e.target.value)); notifyUnsaved(); }}
-                      className="w-full accent-indigo-600 cursor-pointer"
+                      className="w-full bg-black border-2 border-black rounded-none h-2.5 cursor-pointer accent-[#E85002]"
                     />
                   </div>
 
                   <div>
-                    <div className="flex justify-between text-[9px] font-bold text-slate-500 uppercase mb-1">
+                    <div className="flex justify-between text-[9px] font-black text-black uppercase mb-1">
                       <span>Workload Stress Level</span>
                       <span>{workloadPressure}/10</span>
                     </div>
                     <input 
                       type="range" min="1" max="10" value={workloadPressure}
                       onChange={(e) => { setWorkloadPressure(Number(e.target.value)); notifyUnsaved(); }}
-                      className="w-full accent-indigo-600 cursor-pointer"
+                      className="w-full bg-black border-2 border-black rounded-none h-2.5 cursor-pointer accent-[#E85002]"
                     />
                   </div>
 
                   <div>
-                    <div className="flex justify-between text-[9px] font-bold text-slate-500 uppercase mb-1">
+                    <div className="flex justify-between text-[9px] font-black text-black uppercase mb-1">
                       <span>Assignment Confidence</span>
                       <span>{assignmentConfidence}/10</span>
                     </div>
                     <input 
                       type="range" min="1" max="10" value={assignmentConfidence}
                       onChange={(e) => { setAssignmentConfidence(Number(e.target.value)); notifyUnsaved(); }}
-                      className="w-full accent-indigo-600 cursor-pointer"
+                      className="w-full bg-black border-2 border-black rounded-none h-2.5 cursor-pointer accent-[#E85002]"
                     />
                   </div>
 
-                  <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer mt-1">
+                  <label className="flex items-center gap-2 text-xs font-black text-black cursor-pointer mt-1.5 uppercase">
                     <input 
                       type="checkbox"
                       checked={exerciseCompleted}
                       onChange={(e) => { setExerciseCompleted(e.target.checked); notifyUnsaved(); }}
-                      className="rounded text-rose-500"
+                      className="rounded-none border-2 border-black text-[#E85002] focus:ring-[#E85002]"
                     />
                     Daily Physical Exercise Completed
                   </label>
@@ -1476,23 +1463,23 @@ export default function WellnessJournalModule({
               </div>
 
               {/* Aura AI reflections panel */}
-              <div className="bg-indigo-900 border border-indigo-950 text-white rounded-2xl p-4 space-y-3.5 shadow-md">
+              <div className="bg-black border-2 border-[#333333] text-white rounded-none p-4 space-y-3.5 shadow-[4px_4px_0px_#E85002] font-mono">
                 <h4 className="text-xs font-black text-white uppercase tracking-wider flex items-center gap-1.5">
-                  <Sparkles className="w-4.5 h-4.5 text-emerald-400 animate-bounce" />
+                  <Sparkles className="w-4.5 h-4.5 text-[#E85002] animate-bounce" />
                   Aura AI reflections Assistant
                 </h4>
 
                 {aiAnalysis ? (
-                  <div className="space-y-3 text-[10.5px]/relaxed text-indigo-150">
+                  <div className="space-y-3 text-[10.5px]/relaxed text-[#F9F9F9]">
                     <div>
-                      <span className="font-extrabold text-[9px] uppercase tracking-widest text-emerald-400 block">AI Summary</span>
-                      <p className="mt-0.5 font-medium leading-relaxed">{aiAnalysis.summary}</p>
+                      <span className="font-black text-[9px] uppercase tracking-widest text-[#E85002] block">AI Summary</span>
+                      <p className="mt-0.5 font-bold leading-relaxed">{aiAnalysis.summary}</p>
                     </div>
 
                     {aiAnalysis.recurringThemes.length > 0 && (
                       <div>
-                        <span className="font-extrabold text-[9px] uppercase tracking-widest text-emerald-400 block">Identified Themes</span>
-                        <ul className="list-disc pl-3.5 space-y-0.5 mt-0.5">
+                        <span className="font-black text-[9px] uppercase tracking-widest text-[#E85002] block">Identified Themes</span>
+                        <ul className="list-disc pl-3.5 space-y-0.5 mt-0.5 font-bold">
                           {aiAnalysis.recurringThemes.map((t, idx) => <li key={idx}>{t}</li>)}
                         </ul>
                       </div>
@@ -1500,32 +1487,32 @@ export default function WellnessJournalModule({
 
                     {aiAnalysis.positiveHighlights.length > 0 && (
                       <div>
-                        <span className="font-extrabold text-[9px] uppercase tracking-widest text-emerald-400 block">Accomplishments to Celebrate</span>
-                        <ul className="list-disc pl-3.5 space-y-0.5 mt-0.5">
+                        <span className="font-black text-[9px] uppercase tracking-widest text-[#E85002] block">Accomplishments to Celebrate</span>
+                        <ul className="list-disc pl-3.5 space-y-0.5 mt-0.5 font-bold">
                           {aiAnalysis.positiveHighlights.map((h, idx) => <li key={idx}>{h}</li>)}
                         </ul>
                       </div>
                     )}
 
-                    <div className="flex justify-between items-center text-[8.5px] uppercase font-bold pt-2 border-t border-indigo-900/60 font-mono">
+                    <div className="flex justify-between items-center text-[8.5px] uppercase font-bold pt-2 border-t border-white/10 font-mono">
                       <span>Sentiment: <strong className="text-white">{aiAnalysis.sentiment}</strong></span>
                       <button 
                         type="button" 
                         onClick={() => setAiAnalysis(null)}
-                        className="text-slate-400 hover:text-white"
+                        className="text-[#E85002] hover:text-white"
                       >
                         Clear Insights
                       </button>
                     </div>
                   </div>
                 ) : (
-                  <div className="text-center py-6 text-[10.5px] text-indigo-200 space-y-3 font-medium">
+                  <div className="text-center py-6 text-[10.5px] text-[#A7A7A7] space-y-3 font-semibold">
                     <p>Trigger Aura AI reflections to extract supportive summaries, sentiment trackers, and recurring stress topics securely.</p>
                     <button
                       type="button"
                       onClick={handleTriggerAI}
                       disabled={aiLoading}
-                      className="w-full py-2 bg-white/10 hover:bg-white/15 rounded-lg text-white font-bold text-xs transition cursor-pointer"
+                      className="w-full py-2 bg-[#E85002] hover:bg-[#E85002]/90 rounded-none text-black font-black text-xs border border-black shadow-[2px_2px_0px_#000000] transition cursor-pointer uppercase active:translate-x-[1px] active:translate-y-[1px]"
                     >
                       {aiLoading ? 'Grounding Reflections...' : 'Generate AI Reflections'}
                     </button>
@@ -1539,45 +1526,49 @@ export default function WellnessJournalModule({
 
         {/* 4. Analytics & Curves Dashboard View */}
         {activeView === 'analytics' && (
-          <div className="space-y-4 h-full overflow-y-auto pr-1">
+          <div className="space-y-6 h-full overflow-y-auto pr-1">
             
-            {/* Stats row */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-white border border-slate-200 rounded-xl p-4 flex items-center justify-between shadow-sm">
+            {/* Stats row: Asymmetrical bento grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 font-mono uppercase text-black">
+              {/* Stat 1: Style B (Kinetic Orange block inversion) */}
+              <div className="bg-[#E85002] border-2 border-black rounded-none p-4 flex items-center justify-between shadow-[4px_4px_0px_#000000]">
                 <div>
-                  <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block">Reflection Streak</span>
-                  <div className="text-xl font-black text-slate-800 mt-1 flex items-baseline gap-1">
-                    <Flame className="w-5.5 h-5.5 text-amber-500 fill-amber-500" />
+                  <span className="text-[10px] font-black text-black uppercase tracking-widest block">Reflection Streak</span>
+                  <div className="text-xl font-black text-black mt-1 flex items-baseline gap-1">
+                    <Flame className="w-5.5 h-5.5 text-black fill-black" />
                     <span>{reflectionStreak} Days</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white border border-slate-200 rounded-xl p-4 flex items-center justify-between shadow-sm">
+              {/* Stat 2: Style C (Noir mode black block, orange shadow) */}
+              <div className="bg-black border-2 border-[#333333] rounded-none p-4 flex items-center justify-between shadow-[4px_4px_0px_#E85002] text-white">
                 <div>
-                  <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block">Total Logs Saved</span>
-                  <div className="text-xl font-black text-slate-800 mt-1 flex items-baseline gap-1">
-                    <Trophy className="w-5.5 h-5.5 text-indigo-600" />
+                  <span className="text-[10px] font-black text-[#A7A7A7] uppercase tracking-widest block">Total Logs Saved</span>
+                  <div className="text-xl font-black text-[#E85002] mt-1 flex items-baseline gap-1">
+                    <Trophy className="w-5.5 h-5.5 text-[#E85002]" />
                     <span>{entries.length} Entries</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white border border-slate-200 rounded-xl p-4 flex items-center justify-between shadow-sm">
+              {/* Stat 3: Style A (Industrial white card, crisp border, black shadow) */}
+              <div className="bg-white border-2 border-black rounded-none p-4 flex items-center justify-between shadow-[4px_4px_0px_#000000]">
                 <div>
-                  <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block">Gratitude logged</span>
-                  <div className="text-xl font-black text-slate-800 mt-1 flex items-baseline gap-1">
-                    <Heart className="w-5.5 h-5.5 text-rose-500 fill-rose-500" />
+                  <span className="text-[10px] font-black text-black uppercase tracking-widest block">Gratitude logged</span>
+                  <div className="text-xl font-black text-black mt-1 flex items-baseline gap-1">
+                    <Heart className="w-5.5 h-5.5 text-black fill-black" />
                     <span>{entries.filter(e => e.gratitudeItems && e.gratitudeItems.length > 0).length} Entries</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white border border-slate-200 rounded-xl p-4 flex items-center justify-between shadow-sm">
+              {/* Stat 4: Style D (Tactile clay card volumetric shadow) */}
+              <div className="clay-card border-2 border-black/10 rounded-none bg-[#F9F9F9] p-4 flex items-center justify-between shadow-lg">
                 <div>
-                  <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block">Passcode Vault</span>
-                  <div className="text-xl font-black text-slate-800 mt-1 flex items-baseline gap-1">
-                    <Unlock className="w-5.5 h-5.5 text-slate-500" />
+                  <span className="text-[10px] font-black text-black uppercase tracking-widest block">Passcode Vault</span>
+                  <div className="text-xl font-black text-black mt-1 flex items-baseline gap-1">
+                    <Unlock className="w-5.5 h-5.5 text-black" />
                     <span>{passcode ? 'Enabled' : 'Disabled'}</span>
                   </div>
                 </div>
@@ -1585,55 +1576,55 @@ export default function WellnessJournalModule({
             </div>
 
             {/* Diagrams Curves row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Canvas line mood diagram */}
-              <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col items-center">
-                <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest mb-3 self-start">
+              <div className="bg-white border-2 border-black rounded-none p-4 shadow-[4px_4px_0px_#000000] flex flex-col items-center">
+                <h4 className="text-xs font-black text-black uppercase tracking-widest mb-3 self-start font-mono">
                   📈 Weekly Mood Rating Curves (Avg. Tracker)
                 </h4>
                 <canvas 
                   ref={moodCanvasRef} 
-                  className="w-full bg-slate-50 rounded-lg border border-slate-100"
+                  className="w-full bg-[#F9F9F9] border-2 border-black rounded-none shadow-inner"
                   style={{ height: '190px' }}
                 />
-                <span className="text-[9px] text-slate-400 mt-2 block">Drawn dynamically on HTML5 Canvas. Line highlights relative day logs.</span>
+                <span className="text-[9px] text-[#333333] mt-2 block font-mono">Drawn dynamically on HTML5 Canvas. Line highlights relative day logs.</span>
               </div>
 
               {/* Canvas line wellness correlation diagram */}
-              <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col items-center">
-                <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest mb-3 self-start">
+              <div className="bg-white border-2 border-black rounded-none p-4 shadow-[4px_4px_0px_#000000] flex flex-col items-center">
+                <h4 className="text-xs font-black text-black uppercase tracking-widest mb-3 self-start font-mono">
                   📊 Anxiety vs Focus wellbeing correlations
                 </h4>
                 <canvas 
                   ref={wellnessCanvasRef} 
-                  className="w-full bg-slate-50 rounded-lg border border-slate-100"
+                  className="w-full bg-[#F9F9F9] border-2 border-black rounded-none shadow-inner"
                   style={{ height: '190px' }}
                 />
-                <span className="text-[9px] text-slate-400 mt-2 block">Tracks daily academic pressure impact alongside focus levels.</span>
+                <span className="text-[9px] text-[#333333] mt-2 block font-mono">Tracks daily academic pressure impact alongside focus levels.</span>
               </div>
             </div>
 
-            {/* Administration & secure data purge keys */}
-            <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm space-y-3.5 text-left">
-              <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest flex items-center gap-1.5">
-                <ShieldAlert className="w-4.5 h-4.5 text-rose-600 animate-pulse" />
+            {/* Administration & secure data purge keys Warning Bento Block */}
+            <div className="bg-white border-2 border-black rounded-none p-4 shadow-[4px_4px_0px_#E85002] space-y-3.5 text-left font-mono">
+              <h4 className="text-xs font-black text-black uppercase tracking-widest flex items-center gap-1.5 border-b-2 border-black pb-2">
+                <ShieldAlert className="w-4.5 h-4.5 text-[#E85002] animate-pulse" />
                 Ledger Administration &amp; Secure Backups
               </h4>
-              <p className="text-[10px] text-slate-500 max-w-lg leading-relaxed mt-1">
+              <p className="text-[10px] text-[#333333] max-w-lg leading-relaxed mt-1 font-bold uppercase">
                 Your reflections and wellness logs are stored natively. You can backup your logs to a JSON document or complete a master wipe of all reflection records here.
               </p>
 
               <div className="flex gap-3">
                 <button 
                   onClick={handleExportData}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-lg flex items-center gap-1.5 transition active:scale-95 cursor-pointer shadow-sm"
+                  className="px-4 py-2.5 bg-[#E85002] hover:bg-[#E85002]/95 text-black border-2 border-black font-black text-xs rounded-none flex items-center gap-1.5 transition active:translate-x-[1px] active:translate-y-[1px] cursor-pointer shadow-[2px_2px_0px_#000000] uppercase"
                 >
                   <Download className="w-3.5 h-3.5" />
                   Export Reflections Backup
                 </button>
                 <button 
                   onClick={handlePurgeLogs}
-                  className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-lg flex items-center gap-1.5 transition active:scale-95 cursor-pointer shadow-sm"
+                  className="px-4 py-2.5 bg-red-650 hover:bg-red-700 text-white border-2 border-black font-black text-xs rounded-none flex items-center gap-1.5 transition active:translate-x-[1px] active:translate-y-[1px] cursor-pointer shadow-[2px_2px_0px_#000000] uppercase"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                   Purge Reflection Ledger
