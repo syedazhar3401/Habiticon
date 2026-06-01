@@ -155,3 +155,58 @@ export interface JournalEntry {
   };
 }
 
+// ── Vision Board ──────────────────────────────────────────────
+
+export type VisionCategory =
+  | 'academic'
+  | 'career'
+  | 'personal_growth'
+  | 'health_wellness'
+  | 'financial'
+  | 'travel'
+  | 'creativity'
+  | 'relationships'
+  | 'custom';
+
+export type VisionStatus =
+  | 'dreaming'      // Not yet started
+  | 'planning'      // Actively planning
+  | 'in_progress'   // Working on it
+  | 'achieved';     // Completed/archived
+
+export interface VisionMilestone {
+  id: string;
+  visionId: string;
+  title: string;
+  description?: string;
+  dueDate?: string;         // YYYY-MM-DD
+  isCompleted: boolean;
+  completedAt?: string;     // ISO string
+}
+
+export interface VisionItem {
+  id: string;
+  title: string;
+  description: string;
+  motivationStatement?: string;   // Personal "why" affirmation
+  imageDataUrl: string;           // Base64-compressed (max 800×600)
+  category: VisionCategory;
+  customCategory?: string;        // Used when category === 'custom'
+  status: VisionStatus;
+  priority: 'low' | 'medium' | 'high';
+  progress?: number;              // 0–100, optional
+  targetDate?: string;            // YYYY-MM-DD
+  tags: string[];
+  milestones: VisionMilestone[];
+  isPinned: boolean;              // Pinned → appears on dashboard
+  isArchived: boolean;            // Achieved visions archived here
+  linkedTaskIds: string[];        // Cross-ref with TaskModule
+  linkedJournalIds: string[];     // Cross-ref with WellnessJournalModule
+  createdAt: string;              // ISO string
+  updatedAt: string;              // ISO string
+}
+
+export interface DashboardVisionPin {
+  visionId: string;
+  displayOrder: number;           // 0-3 for dashboard slots
+}

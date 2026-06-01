@@ -4,8 +4,9 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Course, CalendarEvent, Task, Folder, Note, AIMessage, AppNotification, HabitCategory, HabitLog, JournalEntry 
+import {
+  Course, CalendarEvent, Task, Folder, Note, AIMessage, AppNotification, HabitCategory, HabitLog, JournalEntry,
+  VisionItem, DashboardVisionPin
 } from './types';
 import AssistantChat from './components/AssistantChat';
 import BlueprintDocs from './components/BlueprintDocs';
@@ -17,14 +18,15 @@ import DashboardModule from './components/DashboardModule';
 import CourseModule from './components/CourseModule';
 import HabitTracker from './components/HabitTracker';
 import WellnessJournalModule from './components/WellnessJournalModule';
+import VisionBoardModule from './components/VisionBoardModule';
 import { ColorOrb } from './components/ui/ai-input';
 
-import { 
-  Home, Calendar as CalIcon, CheckSquare, BarChart2, BookOpen, FileText, Cpu, Bell, CheckCircle, Sparkles, AlertCircle, MessageSquare, Flame, Heart
+import {
+  Home, Calendar as CalIcon, CheckSquare, BarChart2, BookOpen, FileText, Cpu, Bell, CheckCircle, Sparkles, AlertCircle, MessageSquare, Flame, Heart, Image as ImageIcon
 } from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'calendar' | 'tasks' | 'gantt' | 'courses' | 'notes' | 'blueprint' | 'habits' | 'wellness'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'calendar' | 'tasks' | 'gantt' | 'courses' | 'notes' | 'blueprint' | 'habits' | 'wellness' | 'visionboard'>('dashboard');
   const [showNotifications, setShowNotifications] = useState(false);
 
   // --- Habits State Initialization & Persistence ---
@@ -181,11 +183,30 @@ export default function App() {
     localStorage.setItem('journal_entries', JSON.stringify(journalEntries));
   }, [journalEntries]);
 
+  // --- Vision Board State Initialization & Persistence ---
+  const [visionItems, setVisionItems] = useState<VisionItem[]>(() => {
+    const saved = localStorage.getItem('vision_items');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [dashboardPins, setDashboardPins] = useState<DashboardVisionPin[]>(() => {
+    const saved = localStorage.getItem('vision_dashboard_pins');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('vision_items', JSON.stringify(visionItems));
+  }, [visionItems]);
+
+  useEffect(() => {
+    localStorage.setItem('vision_dashboard_pins', JSON.stringify(dashboardPins));
+  }, [dashboardPins]);
+
+
   // --- Floating Draggable AI Assistant Widget State & Logic ---
   const [showAIWidget, setShowAIWidget] = useState(false);
   const [fabPos, setFabPos] = useState({ x: window.innerWidth - 80, y: window.innerHeight - 80 });
   const [isDragging, setIsDragging] = useState(false);
-  
+
   const dragStart = useRef({ x: 0, y: 0 });
   const dragOffset = useRef({ x: 0, y: 0 });
   const hasMoved = useRef(false);
@@ -226,7 +247,7 @@ export default function App() {
       if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
         hasMoved.current = true;
       }
-      
+
       const newX = Math.max(20, Math.min(e.clientX - dragOffset.current.x, window.innerWidth - 150));
       const newY = Math.max(20, Math.min(e.clientY - dragOffset.current.y, window.innerHeight - 56));
       setFabPos({ x: newX, y: newY });
@@ -240,7 +261,7 @@ export default function App() {
       if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
         hasMoved.current = true;
       }
-      
+
       const newX = Math.max(20, Math.min(touch.clientX - dragOffset.current.x, window.innerWidth - 150));
       const newY = Math.max(20, Math.min(touch.clientY - dragOffset.current.y, window.innerHeight - 56));
       setFabPos({ x: newX, y: newY });
@@ -687,10 +708,10 @@ export default function App() {
 
   return (
     <div className="flex h-screen w-full bg-slate-50 font-sans text-slate-800 overflow-hidden">
-      
+
       {/* A. Left Navigation Rail (High Density Theme Specs - width-16, bg-indigo-950) */}
       <nav id="nav-rail" className="w-16 flex-none bg-indigo-950 flex flex-col items-center py-4 justify-between select-none shrink-0 border-r border-indigo-900/50">
-        
+
         {/* Logo Icon */}
         <div className="flex flex-col items-center gap-5 w-full">
           <div className="w-10 h-10 bg-gradient-to-tr from-emerald-400 to-indigo-500 rounded-xl flex items-center justify-center font-black text-white text-lg shadow-inner select-none animate-pulse">
@@ -700,99 +721,101 @@ export default function App() {
           {/* Navigation Controls Icons list */}
           <div className="flex flex-col gap-3 w-full items-center">
             {/* Dashboard button */}
-            <button 
+            <button
               onClick={() => setActiveTab('dashboard')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${
-                activeTab === 'dashboard' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
-              }`}
+              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${activeTab === 'dashboard' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+                }`}
               title="Dashboard Hub"
             >
               <Home className="w-5.5 h-5.5" />
             </button>
 
             {/* Calendar */}
-            <button 
+            <button
               onClick={() => setActiveTab('calendar')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${
-                activeTab === 'calendar' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
-              }`}
+              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${activeTab === 'calendar' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+                }`}
               title="Academic Calendar"
             >
               <CalIcon className="w-5.5 h-5.5" />
             </button>
 
             {/* Tasks & Kanban */}
-            <button 
+            <button
               onClick={() => setActiveTab('tasks')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${
-                activeTab === 'tasks' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
-              }`}
+              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${activeTab === 'tasks' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+                }`}
               title="Kanban Tasks Workspace"
             >
               <CheckSquare className="w-5.5 h-5.5" />
             </button>
 
             {/* Gantt chart */}
-            <button 
+            <button
               onClick={() => setActiveTab('gantt')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${
-                activeTab === 'gantt' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
-              }`}
+              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${activeTab === 'gantt' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+                }`}
               title="Interactive Project Timeline"
             >
               <BarChart2 className="w-5.5 h-5.5" />
             </button>
 
             {/* Course catalogs */}
-            <button 
+            <button
               onClick={() => setActiveTab('courses')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${
-                activeTab === 'courses' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
-              }`}
+              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${activeTab === 'courses' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+                }`}
               title="Course dashboards"
             >
               <BookOpen className="w-5.5 h-5.5" />
             </button>
 
             {/* Notes Notion */}
-            <button 
+            <button
               onClick={() => setActiveTab('notes')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${
-                activeTab === 'notes' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
-              }`}
+              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${activeTab === 'notes' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+                }`}
               title="Notebook and Whiteboard"
             >
               <FileText className="w-5.5 h-5.5" />
             </button>
 
             {/* Habits daily ledger tracker */}
-            <button 
+            <button
               onClick={() => setActiveTab('habits')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${
-                activeTab === 'habits' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
-              }`}
+              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${activeTab === 'habits' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+                }`}
               title="Daily Habits & Routines"
             >
               <Flame className="w-5.5 h-5.5 text-amber-500 animate-pulse" />
             </button>
 
             {/* Wellness & Journal Reflections */}
-            <button 
+            <button
               onClick={() => setActiveTab('wellness')}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${
-                activeTab === 'wellness' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
-              }`}
+              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${activeTab === 'wellness' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+                }`}
               title="Journal &amp; Wellbeing reflections"
             >
               <Heart className="w-5.5 h-5.5 text-rose-450 animate-pulse" />
             </button>
 
-            {/* Technical Specs Engineering Blueprint */}
-            <button 
-              onClick={() => setActiveTab('blueprint')}
+            {/* Vision Board */}
+            <button
+              onClick={() => setActiveTab('visionboard')}
               className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${
-                activeTab === 'blueprint' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+                activeTab === 'visionboard' ? 'bg-violet-600 text-white shadow-lg shadow-violet-950/40' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
               }`}
+              title="Vision Board"
+            >
+              <ImageIcon className="w-5 h-5" />
+            </button>
+
+            {/* Technical Specs Engineering Blueprint */}
+            <button
+              onClick={() => setActiveTab('blueprint')}
+              className={`w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${activeTab === 'blueprint' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-950/30' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+                }`}
               title="Engineering Blueprint Docs"
             >
               <Cpu className="w-5.5 h-5.5" />
@@ -812,7 +835,7 @@ export default function App() {
 
       {/* C. Right Main Contents Panel */}
       <main className="flex-1 flex flex-col min-w-0 bg-slate-50 overflow-hidden h-full">
-        
+
         {/* Top Header bar banner */}
         <header className="h-14 border-b border-slate-200 bg-white flex items-center justify-between px-6 shrink-0 z-10 select-none">
           <div>
@@ -820,9 +843,12 @@ export default function App() {
               {activeTab === 'dashboard' && 'Classroom Command Hub'}
               {activeTab === 'calendar' && 'Academic Calendar Planner'}
               {activeTab === 'tasks' && 'Kanban Task Board'}
-              {activeTab === 'gantt' && 'Project Gantt visualizer'}
+              {activeTab === 'gantt' && 'Project Gantt Visualizer'}
               {activeTab === 'courses' && 'Active Enrolled Courses'}
               {activeTab === 'notes' && 'Notebook and Whiteboard'}
+              {activeTab === 'habits' && 'Daily Habits & Routines Tracker'}
+              {activeTab === 'wellness' && 'Journal & Wellbeing Hub'}
+              {activeTab === 'visionboard' && 'My Vision Board'}
               {activeTab === 'blueprint' && 'Engineering Blueprint Specs'}
             </h1>
             <p className="text-[10px] text-slate-500 font-semibold tracking-wide uppercase">
@@ -831,7 +857,7 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-4">
-            
+
             {/* Visual avatar bubbles */}
             <div className="hidden sm:flex -space-x-1.5 items-center">
               <div className="w-5.5 h-5.5 rounded-full bg-emerald-500 border border-white" title="Software Developer active" />
@@ -841,7 +867,7 @@ export default function App() {
 
             {/* Notification drop-toggle button */}
             <div className="relative">
-              <button 
+              <button
                 onClick={() => setShowNotifications(!showNotifications)}
                 className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-500 hover:text-indigo-650 transition relative"
                 title="Workspace Alerts"
@@ -862,8 +888,8 @@ export default function App() {
 
                   <div className="space-y-2 max-h-[220px] overflow-y-auto">
                     {notifications.map(notif => (
-                      <div 
-                        key={notif.id} 
+                      <div
+                        key={notif.id}
                         className="p-2 border border-slate-100 rounded-lg bg-slate-50/50 flex gap-2.5 items-start justify-between"
                       >
                         <div className="flex gap-2">
@@ -880,7 +906,7 @@ export default function App() {
                           </div>
                         </div>
 
-                        <button 
+                        <button
                           onClick={() => handleClearNotif(notif.id)}
                           className="text-slate-400 hover:text-slate-650 text-[10.5px] select-none"
                         >
@@ -896,9 +922,9 @@ export default function App() {
                 </div>
               )}
             </div>
-            
+
             {/* Direct creation trigger */}
-            <button 
+            <button
               onClick={() => setActiveTab('tasks')}
               className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] rounded-lg font-bold shadow-sm transition active:scale-95"
             >
@@ -911,7 +937,7 @@ export default function App() {
         <div className="flex-grow p-4 overflow-hidden h-full">
           {activeTab === 'dashboard' && (
             <div className="h-full overflow-y-auto">
-              <DashboardModule 
+              <DashboardModule
                 tasks={tasks}
                 courses={courses}
                 events={events}
@@ -923,12 +949,15 @@ export default function App() {
                 habitLogs={habitLogs}
                 onUpdateHabitCategories={setHabitCategories}
                 onUpdateHabitLogs={setHabitLogs}
+                visionItems={visionItems}
+                dashboardPins={dashboardPins}
+                onNavigateVision={() => setActiveTab('visionboard')}
               />
             </div>
           )}
 
           {activeTab === 'calendar' && (
-            <CalendarModule 
+            <CalendarModule
               events={events}
               courses={courses}
               onAddEvent={handleAddEvent}
@@ -952,7 +981,7 @@ export default function App() {
           )}
 
           {activeTab === 'tasks' && (
-            <TaskModule 
+            <TaskModule
               tasks={tasks}
               courses={courses}
               onAddTask={handleAddTask}
@@ -975,7 +1004,7 @@ export default function App() {
           )}
 
           {activeTab === 'gantt' && (
-            <GanttModule 
+            <GanttModule
               tasks={tasks}
               courses={courses}
               onUpdateTask={handleUpdateTask}
@@ -983,7 +1012,7 @@ export default function App() {
           )}
 
           {activeTab === 'courses' && (
-            <CourseModule 
+            <CourseModule
               courses={courses}
               tasks={tasks}
               events={events}
@@ -993,7 +1022,7 @@ export default function App() {
           )}
 
           {activeTab === 'notes' && (
-            <NoteModule 
+            <NoteModule
               folders={folders}
               notes={notes}
               courses={courses}
@@ -1012,7 +1041,7 @@ export default function App() {
 
           {activeTab === 'habits' && (
             <div className="h-full overflow-y-auto pr-1">
-              <HabitTracker 
+              <HabitTracker
                 categories={habitCategories}
                 logs={habitLogs}
                 onUpdateCategories={setHabitCategories}
@@ -1022,10 +1051,24 @@ export default function App() {
           )}
 
           {activeTab === 'wellness' && (
-            <div className="h-full overflow-y-auto pr-1">
-              <WellnessJournalModule 
+            <div className="h-full overflow-hidden">
+              <WellnessJournalModule
                 entries={journalEntries}
                 onUpdateEntries={setJournalEntries}
+              />
+            </div>
+          )}
+
+          {activeTab === 'visionboard' && (
+            <div className="h-full overflow-hidden">
+              <VisionBoardModule
+                visionItems={visionItems}
+                dashboardPins={dashboardPins}
+                tasks={tasks}
+                journalEntries={journalEntries}
+                onUpdateVisions={setVisionItems}
+                onUpdatePins={setDashboardPins}
+                onNavigate={setActiveTab}
               />
             </div>
           )}
@@ -1043,9 +1086,8 @@ export default function App() {
           top: `${fabPos.y}px`,
           touchAction: 'none'
         }}
-        className={`fixed w-[130px] h-9 bg-indigo-900 border border-indigo-800 text-white rounded-full flex items-center justify-between px-3 shadow-[0_4px_20px_rgba(99,102,241,0.5)] hover:shadow-[0_4px_25px_rgba(99,102,241,0.65)] cursor-pointer select-none transition-all duration-200 z-40 hover:scale-105 active:scale-95 ${
-          isDragging ? 'cursor-grabbing' : 'cursor-grab'
-        }`}
+        className={`fixed w-[130px] h-9 bg-indigo-900 border border-indigo-800 text-white rounded-full flex items-center justify-between px-3 shadow-[0_4px_20px_rgba(99,102,241,0.5)] hover:shadow-[0_4px_25px_rgba(99,102,241,0.65)] cursor-pointer select-none transition-all duration-200 z-40 hover:scale-105 active:scale-95 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'
+          }`}
         title="Reposition anywhere! Click to consult Gemmi AI"
       >
         <div className="flex items-center gap-2 select-none pointer-events-none">
@@ -1059,21 +1101,20 @@ export default function App() {
       </div>
 
       {/* Floating Aura AI Assistant Pop-up Chat Card */}
-      <div 
+      <div
         style={{
           left: `${Math.max(20, Math.min(window.innerWidth - 380, fabPos.x - 120))}px`,
           top: `${Math.max(20, Math.min(window.innerHeight - 480, fabPos.y - 480))}px`,
           width: '360px',
           height: '460px'
         }}
-        className={`fixed z-50 rounded-2xl overflow-hidden bg-slate-900 shadow-2xl border border-indigo-900/60 flex flex-col transition-all duration-300 origin-bottom ${
-          showAIWidget 
-            ? 'scale-100 opacity-100 pointer-events-auto' 
+        className={`fixed z-50 rounded-2xl overflow-hidden bg-slate-900 shadow-2xl border border-indigo-900/60 flex flex-col transition-all duration-300 origin-bottom ${showAIWidget
+            ? 'scale-100 opacity-100 pointer-events-auto'
             : 'scale-90 opacity-0 pointer-events-none'
-        }`}
+          }`}
       >
         <div className="h-full w-full">
-          <AssistantChat 
+          <AssistantChat
             courses={courses}
             events={events}
             tasks={tasks}

@@ -4,9 +4,9 @@
  */
 
 import React from 'react';
-import { Task, CalendarEvent, Course, Note, AppNotification, HabitCategory, HabitLog } from '../types';
-import { 
-  CheckSquare, Calendar as CalIcon, Clock, Award, FolderMinus, Sparkles, AlertCircle, ArrowRight, BookOpen, Compass
+import { Task, CalendarEvent, Course, Note, AppNotification, HabitCategory, HabitLog, VisionItem, DashboardVisionPin } from '../types';
+import {
+  CheckSquare, Calendar as CalIcon, Clock, Award, FolderMinus, Sparkles, AlertCircle, ArrowRight, BookOpen, Compass, Image as ImageIcon, Pin, Target, TrendingUp
 } from 'lucide-react';
 import HabitTracker from './HabitTracker';
 
@@ -15,13 +15,16 @@ interface DashboardModuleProps {
   events: CalendarEvent[];
   courses: Course[];
   notes: Note[];
-  onNavigate: (tab: 'dashboard' | 'calendar' | 'tasks' | 'gantt' | 'courses' | 'notes' | 'blueprint') => void;
+  onNavigate: (tab: 'dashboard' | 'calendar' | 'tasks' | 'gantt' | 'courses' | 'notes' | 'blueprint' | 'habits' | 'wellness' | 'visionboard') => void;
   onUpdateTask: (id: string, updates: Partial<Task>) => void;
   onClearNotification: (id: string) => void;
   habitCategories: HabitCategory[];
   habitLogs: HabitLog[];
   onUpdateHabitCategories: (newCategories: HabitCategory[]) => void;
   onUpdateHabitLogs: (newLogs: HabitLog[]) => void;
+  visionItems: VisionItem[];
+  dashboardPins: DashboardVisionPin[];
+  onNavigateVision: () => void;
 }
 
 export default function DashboardModule({
@@ -34,7 +37,10 @@ export default function DashboardModule({
   habitCategories,
   habitLogs,
   onUpdateHabitCategories,
-  onUpdateHabitLogs
+  onUpdateHabitLogs,
+  visionItems,
+  dashboardPins,
+  onNavigateVision
 }: DashboardModuleProps) {
   // Filter for today's classes map from current date 2026-05-30
   const todayString = '2026-05-30';
@@ -289,13 +295,139 @@ export default function DashboardModule({
 
       {/* 3. Habit Tracker Ledger Section */}
       <div className="mt-6 border-t border-slate-200/50 pt-6">
-        <HabitTracker 
+        <HabitTracker
           categories={habitCategories}
           logs={habitLogs}
           onUpdateCategories={onUpdateHabitCategories}
           onUpdateLogs={onUpdateHabitLogs}
         />
       </div>
+
+      {/* 4. Vision Board Preview Section */}
+      {(() => {
+        // Compute up to 4 dashboard visions: pinned first, then by updatedAt desc
+        const pinnedIds = [...dashboardPins]
+          .sort((a, b) => a.displayOrder - b.displayOrder)
+          .map(p => p.visionId);
+        const pinned = pinnedIds
+          .map(id => visionItems.find(v => v.id === id && !v.isArchived))
+          .filter(Boolean) as VisionItem[];
+        const unpinned = visionItems
+          .filter(v => !v.isArchived && !v.isPinned)
+          .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+        const pinnedFallback = visionItems
+          .filter(v => !v.isArchived && v.isPinned && !pinnedIds.includes(v.id))
+          .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+        const displayVisions = [...pinned, ...pinnedFallback, ...unpinned].slice(0, 4);
+
+        const categoryColors: Record<string, string> = {
+          academic: 'bg-indigo-500', career: 'bg-violet-500',
+          personal_growth: 'bg-rose-500', health_wellness: 'bg-emerald-500',
+          financial: 'bg-amber-500', travel: 'bg-sky-500',
+          creativity: 'bg-fuchsia-500', relationships: 'bg-pink-500', custom: 'bg-slate-500'
+        };
+
+        return (
+          <div className="mt-6 border-t border-slate-200/50 pt-6">
+            {/* Section header */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 bg-violet-100 rounded-lg flex items-center justify-center">
+                  <Target className="w-4 h-4 text-violet-600" />
+                </div>
+                <div>
+                  <h3 className="text-xs font-bold text-slate-800">Vision Board</h3>
+                  <p className="text-[9px] text-slate-400 font-medium">
+                    {visionItems.filter(v => !v.isArchived).length} active
+                    {visionItems.filter(v => v.isArchived).length > 0 && ` · ${visionItems.filter(v => v.isArchived).length} achieved`}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={onNavigateVision}
+                className="text-[11px] text-violet-600 font-bold hover:underline flex items-center gap-0.5 cursor-pointer"
+              >
+                View All <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {displayVisions.length === 0 ? (
+              /* Empty state */
+              <div className="border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center py-10 gap-3 text-center bg-slate-50/50 cursor-pointer hover:border-violet-300 hover:bg-violet-50/30 transition-all" onClick={onNavigateVision}>
+                <div className="w-12 h-12 bg-violet-100 rounded-full flex items-center justify-center">
+                  <ImageIcon className="w-5 h-5 text-violet-400" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-slate-600">No visions yet</p>
+                  <p className="text-[10px] text-slate-400 max-w-xs mt-0.5">Build your vision board to keep your goals front and center.</p>
+                </div>
+                <button className="px-4 py-1.5 bg-violet-600 hover:bg-violet-700 text-white text-[10.5px] font-bold rounded-lg transition active:scale-95 cursor-pointer">
+                  + Create First Vision
+                </button>
+              </div>
+            ) : (
+              /* Vision cards grid */
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {displayVisions.map(vision => (
+                  <div
+                    key={vision.id}
+                    onClick={onNavigateVision}
+                    className="relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer group shadow-sm hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                  >
+                    {/* Background image */}
+                    {vision.imageDataUrl ? (
+                      <img
+                        src={vision.imageDataUrl}
+                        alt={vision.title}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-violet-400 to-indigo-600" />
+                    )}
+
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+                    {/* Category badge - top left */}
+                    <div className="absolute top-2.5 left-2.5">
+                      <span className={`text-[8px] font-bold text-white px-1.5 py-0.5 rounded-full ${categoryColors[vision.category] || 'bg-slate-500'}`}>
+                        {vision.category.replace('_', ' ')}
+                      </span>
+                    </div>
+
+                    {/* Pin badge - top right */}
+                    {vision.isPinned && (
+                      <div className="absolute top-2.5 right-2.5">
+                        <Pin className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                      </div>
+                    )}
+
+                    {/* Bottom content */}
+                    <div className="absolute bottom-0 left-0 right-0 p-3">
+                      <h4 className="text-white font-bold text-[11px] line-clamp-2 leading-snug">{vision.title}</h4>
+                      {vision.targetDate && (
+                        <p className="text-white/60 text-[9px] mt-0.5 font-mono">
+                          {new Date(vision.targetDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                        </p>
+                      )}
+                      {vision.progress !== undefined && (
+                        <div className="mt-1.5">
+                          <div className="w-full h-1 bg-white/20 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-violet-400 rounded-full"
+                              style={{ width: `${vision.progress}%`, boxShadow: '0 0 6px rgba(167,139,250,0.8)' }}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })()}
     </div>
   );
 }
