@@ -9,7 +9,6 @@ import {
   VisionItem, DashboardVisionPin
 } from './types';
 import AssistantChat from './components/AssistantChat';
-import BlueprintDocs from './components/BlueprintDocs';
 import CalendarModule from './components/CalendarModule';
 import TaskModule from './components/TaskModule';
 import GanttModule from './components/GanttModule';
@@ -26,7 +25,7 @@ import {
 } from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'calendar' | 'tasks' | 'gantt' | 'courses' | 'notes' | 'blueprint' | 'habits' | 'wellness' | 'visionboard'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'calendar' | 'tasks' | 'gantt' | 'courses' | 'notes' | 'habits' | 'wellness' | 'visionboard'>('dashboard');
   const [showNotifications, setShowNotifications] = useState(false);
 
   // --- Habits State Initialization & Persistence ---
@@ -554,6 +553,14 @@ export default function App() {
     triggerToast('Course Enrolled', `You have registered inside ${course.code} successfully!`);
   };
 
+  const handleDeleteCourse = (id: string) => {
+    setCourses(prev => prev.filter(c => c.id !== id));
+    setTasks(prev => prev.map(t => t.courseId === id ? { ...t, courseId: undefined } : t));
+    setEvents(prev => prev.map(e => e.courseId === id ? { ...e, courseId: undefined } : e));
+    setNotes(prev => prev.map(n => n.courseId === id ? { ...n, courseId: undefined } : n));
+    triggerToast('Course Dropped', 'Course dropped and references cleared.');
+  };
+
   const handleAddEvent = (event: CalendarEvent) => {
     setEvents(prev => [...prev, event]);
     triggerToast('Event Scheduled', `Successfully booked ${event.title} on your calendar calendar.`);
@@ -808,7 +815,7 @@ export default function App() {
               }`}
               title="Daily Habits & Routines"
             >
-              <Flame className="w-5.5 h-5.5 text-amber-500 animate-pulse" />
+              <Flame className="w-5.5 h-5.5" />
             </button>
 
             {/* Wellness & Journal Reflections */}
@@ -821,7 +828,7 @@ export default function App() {
               }`}
               title="Journal &amp; Wellbeing reflections"
             >
-              <Heart className="w-5.5 h-5.5 text-rose-450 animate-pulse" />
+              <Heart className="w-5.5 h-5.5" />
             </button>
 
             {/* Vision Board */}
@@ -835,19 +842,6 @@ export default function App() {
               title="Vision Board"
             >
               <ImageIcon className="w-5 h-5" />
-            </button>
-
-            {/* Technical Specs Engineering Blueprint */}
-            <button
-              onClick={() => setActiveTab('blueprint')}
-              className={`w-12 h-12 flex items-center justify-center border-2 border-black cursor-pointer transition-all duration-150 active:translate-x-[1px] active:translate-y-[1px] ${
-                activeTab === 'blueprint'
-                  ? 'bg-[#E85002] text-black shadow-[2px_2px_0px_rgba(255,255,255,0.4)]'
-                  : 'bg-[#333333] text-[#A7A7A7] hover:bg-[#F9F9F9] hover:text-black hover:shadow-[2px_2px_0px_#E85002]'
-              }`}
-              title="Engineering Blueprint Docs"
-            >
-              <Cpu className="w-5.5 h-5.5" />
             </button>
           </div>
         </div>
@@ -1050,6 +1044,7 @@ export default function App() {
               events={events}
               notes={notes}
               onAddCourse={handleAddCourse}
+              onDeleteCourse={handleDeleteCourse}
             />
           )}
 
@@ -1065,10 +1060,6 @@ export default function App() {
               onUpdateNote={handleUpdateNote}
               onDeleteNote={handleDeleteNote}
             />
-          )}
-
-          {activeTab === 'blueprint' && (
-            <BlueprintDocs />
           )}
 
           {activeTab === 'habits' && (

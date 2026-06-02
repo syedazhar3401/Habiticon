@@ -25,7 +25,14 @@ export default function CalendarModule({
   onQuickAdd
 }: CalendarModuleProps) {
   const [view, setView] = useState<'month' | 'week' | 'day' | 'agenda'>('month');
-  const [currentDate, setCurrentDate] = useState<Date>(new Date('2026-05-30')); // Static start as requested in metadata
+  const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  const todayDateString = (() => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  })();
   const [filterCourse, setFilterCourse] = useState<string>('all');
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [showAddModal, setShowAddModal] = useState(false);
@@ -140,12 +147,28 @@ export default function CalendarModule({
 
       // Bento styling: Alternate backgrounds or render active highlighted days!
       const isWeekend = (day + startOffset - 1) % 7 === 0 || (day + startOffset - 1) % 7 === 6;
-      const dayBg = dayEvents.length > 0 ? 'bg-white' : isWeekend ? 'bg-[#A7A7A7]/10' : 'bg-[#F9F9F9]';
+      const isToday = dateString === todayDateString;
+      const dayBg = isToday 
+        ? 'bg-[#E85002]/20' 
+        : dayEvents.length > 0 
+        ? 'bg-white' 
+        : isWeekend 
+        ? 'bg-[#A7A7A7]/10' 
+        : 'bg-[#F9F9F9]';
 
       days.push(
-        <div key={`day-${day}`} className={`h-20 border-2 border-black p-1 flex flex-col justify-between overflow-hidden relative group hover:bg-[#E85002]/10 transition-colors ${dayBg}`}>
-          <span className="text-[10px] font-black text-black absolute top-1 left-1.5 font-mono">{day}</span>
-          <div className="flex-1 mt-4 overflow-y-auto space-y-1 scrollbar-thin">
+        <div key={`day-${day}`} className={`h-20 p-1 flex flex-col justify-between overflow-hidden relative group hover:bg-[#E85002]/10 transition-colors ${
+          isToday ? 'border-4 border-[#E85002]' : 'border-2 border-black'
+        } ${dayBg}`}>
+          <div className="flex justify-between items-start w-full select-none">
+            <span className="text-[10px] font-black text-black font-mono">{day}</span>
+            {isToday && (
+              <span className="text-[7.5px] font-black bg-black text-[#E85002] px-1 border border-black uppercase font-mono leading-none">
+                Today
+              </span>
+            )}
+          </div>
+          <div className="flex-1 mt-1 overflow-y-auto space-y-1 scrollbar-thin">
             {dayEvents.map(evt => {
               const crs = getCourseForEvent(evt.courseId);
               
@@ -273,12 +296,17 @@ export default function CalendarModule({
     <div className="bg-[#F9F9F9] border-2 border-black rounded-none p-4 shadow-[4px_4px_0px_#000000] flex flex-col h-full font-sans text-black">
       {/* Header bar */}
       <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
-        <div>
-          <h2 className="text-sm font-black text-black flex items-center gap-1.5 uppercase tracking-wider">
-            <CalIcon className="w-4 h-4 text-[#E85002]" />
-            Academic Calendar Planner
-          </h2>
-          <p className="text-[10px] text-[#333] font-mono font-bold">Manage events, exams, reviews, and custom alerts.</p>
+        <div className="flex items-center gap-4 flex-wrap">
+          <div>
+            <h2 className="text-sm font-black text-black flex items-center gap-1.5 uppercase tracking-wider">
+              <CalIcon className="w-4 h-4 text-[#E85002]" />
+              Academic Calendar Planner
+            </h2>
+            <p className="text-[10px] text-[#333] font-mono font-bold">Manage events, exams, reviews, and custom alerts.</p>
+          </div>
+          <div className="bg-[#E85002] text-black border-2 border-black px-2.5 py-1 text-[10px] font-black uppercase font-mono shadow-[2px_2px_0px_#000000]">
+            📅 Today: {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+          </div>
         </div>
 
         {/* Filters */}

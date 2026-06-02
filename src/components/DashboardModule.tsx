@@ -41,7 +41,7 @@ interface DashboardModuleProps {
   events: CalendarEvent[];
   courses: Course[];
   notes: Note[];
-  onNavigate: (tab: 'dashboard' | 'calendar' | 'tasks' | 'gantt' | 'courses' | 'notes' | 'blueprint' | 'habits' | 'wellness' | 'visionboard') => void;
+  onNavigate: (tab: 'dashboard' | 'calendar' | 'tasks' | 'gantt' | 'courses' | 'notes' | 'habits' | 'wellness' | 'visionboard') => void;
   onUpdateTask: (id: string, updates: Partial<Task>) => void;
   onClearNotification: (id: string) => void;
   habitCategories: HabitCategory[];
@@ -815,45 +815,6 @@ export default function DashboardModule({
               className="w-full text-center py-2 bg-[#E85002] text-black hover:bg-black hover:text-white border-2 border-black text-[10px] font-black uppercase tracking-wide transition-all mt-4 cursor-pointer"
             >
               Open Vision Board →
-            </button>
-          </div>
-
-          {/* Technical Specifications (Blueprint Preview) */}
-          <div className="bg-black text-[#F9F9F9] border-2 border-[#333333] p-4 shadow-[4px_4px_0px_#E85002]">
-            <div className="flex justify-between items-center mb-3 border-b border-white/10 pb-2">
-              <h3 className="text-xs font-black text-white flex items-center gap-1.5 uppercase tracking-wider">
-                <Cpu className="w-4 h-4 text-[#E85002]" />
-                System Blueprints
-              </h3>
-              <span className="text-[8px] font-black bg-emerald-500 text-black px-1.5 py-0.5 border border-black uppercase tracking-wider animate-pulse font-mono">
-                ONLINE
-              </span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2 text-[9px] font-mono">
-              <div className="border border-white/10 p-1 bg-[#333333]/20">
-                <span className="text-[#A7A7A7] block text-[7px] uppercase font-bold">CORE ENGINE</span>
-                <span className="font-bold text-[#F9F9F9]">React 18.3</span>
-              </div>
-              <div className="border border-white/10 p-1 bg-[#333333]/20">
-                <span className="text-[#A7A7A7] block text-[7px] uppercase font-bold">STYLESHEET</span>
-                <span className="font-bold text-[#F9F9F9]">Tailwind v4</span>
-              </div>
-              <div className="border border-white/10 p-1 bg-[#333333]/20">
-                <span className="text-[#A7A7A7] block text-[7px] uppercase font-bold">PERSISTENCE</span>
-                <span className="font-bold text-[#F9F9F9]">LocalStorage</span>
-              </div>
-              <div className="border border-white/10 p-1 bg-[#333333]/20">
-                <span className="text-[#A7A7A7] block text-[7px] uppercase font-bold">AI CO-PILOT</span>
-                <span className="font-bold text-[#F9F9F9]">Gemmi Assistant</span>
-              </div>
-            </div>
-
-            <button 
-              onClick={() => onNavigate('blueprint')}
-              className="w-full text-center py-2 bg-[#E85002] hover:bg-[#F9F9F9] text-black border-2 border-black text-[10px] font-black uppercase tracking-wide transition-all mt-4 cursor-pointer"
-            >
-              Inspect Schema Blueprint →
             </button>
           </div>
 

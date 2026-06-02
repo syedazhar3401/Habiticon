@@ -15,6 +15,7 @@ interface CourseModuleProps {
   events: CalendarEvent[];
   notes: Note[];
   onAddCourse: (course: Course) => void;
+  onDeleteCourse: (id: string) => void;
 }
 
 export default function CourseModule({
@@ -22,7 +23,8 @@ export default function CourseModule({
   tasks,
   events,
   notes,
-  onAddCourse
+  onAddCourse,
+  onDeleteCourse
 }: CourseModuleProps) {
   const [selectedCourseId, setSelectedCourseId] = useState<string>(courses[0]?.id || '');
   const [showAddCourse, setShowAddCourse] = useState(false);
@@ -159,6 +161,19 @@ export default function CourseModule({
               </div>
               <span className="text-[9px] text-[#646464] mt-1.5 block font-mono font-bold">Based on completed homework/assignments.</span>
             </div>
+
+            <button
+              onClick={() => {
+                if (confirm(`Are you sure you want to drop course ${activeCourse.code}?`)) {
+                  onDeleteCourse(activeCourse.id);
+                  const remaining = courses.filter(c => c.id !== activeCourse.id);
+                  setSelectedCourseId(remaining[0]?.id || '');
+                }
+              }}
+              className="w-full text-center py-2 bg-black text-[#F9F9F9] hover:bg-[#E85002] hover:text-black border-2 border-black text-[10px] font-black uppercase tracking-wide transition mt-4 cursor-pointer shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+            >
+              Drop Course Module
+            </button>
           </div>
 
           {/* Col 2: Contextual assignments checks - Style D */}
