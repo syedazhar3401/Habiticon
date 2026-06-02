@@ -231,10 +231,10 @@ export default function GanttModule({
       </div>
 
       {/* Unified Spreadsheet and Timeline Container */}
-      <div className="flex-grow flex flex-col min-h-0 border-2 border-black rounded-none overflow-hidden bg-white shadow-[3px_3px_0px_#000000]">
+      <div className="flex-grow flex flex-col min-h-0 border-2 border-black rounded-none overflow-x-auto bg-white shadow-[3px_3px_0px_#000000] scrollbar-thin">
         
         {/* Unified Table Header Grid */}
-        <div className="flex bg-black text-[#F9F9F9] border-b-2 border-black select-none shrink-0 z-20">
+        <div className="flex bg-black text-[#F9F9F9] border-b-2 border-black select-none shrink-0 z-20 min-w-[1000px]">
           
           {/* Left Table Header columns */}
           <div className="w-[500px] flex shrink-0 border-r-2 border-black text-left text-[9.5px] font-black uppercase tracking-wider items-center h-10 pl-3 pr-3 font-mono">
@@ -281,7 +281,7 @@ export default function GanttModule({
         </div>
 
         {/* Unified Table rows viewport */}
-        <div className="flex-grow overflow-y-auto max-h-[350px] divide-y-2 divide-black relative">
+        <div className="flex-grow overflow-y-auto min-h-0 divide-y-2 divide-black relative min-w-[1000px]">
           
           {Object.keys(groupedTasks).map(groupName => {
             const groupTaskList = groupedTasks[groupName];

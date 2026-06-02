@@ -439,7 +439,7 @@ export default function NoteModule({
   // --- AI Summarizer ---
   const handleTriggerAI = async (customPrompt?: string) => {
     if (!activeNote || !activeNote.content.trim()) {
-      alert('Write some content inside your study note first before consulting Aura!');
+      alert('Write some content inside your study note first before consulting Gemmi!');
       return;
     }
 
@@ -461,7 +461,7 @@ export default function NoteModule({
       });
 
       if (!response.ok) {
-        throw new Error('Aura analyzer server error');
+        throw new Error('Gemmi analyzer server error');
       }
 
       const resData = await response.json();
@@ -753,11 +753,11 @@ export default function NoteModule({
                 <button 
                   onClick={() => handleTriggerAI()}
                   disabled={aiLoading}
-                  className="px-2.5 py-1 bg-[#E85002] hover:bg-[#E85002]/90 border border-black text-black text-[9.5px] font-black rounded-none flex items-center gap-1 transition uppercase font-mono shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer"
-                  title="Aura AI note summaries"
+                  className="px-2.5 py-1 bg-[#facc15] hover:bg-[#eab308] border border-black text-black text-[9.5px] font-black rounded-none flex items-center gap-1 transition uppercase font-mono shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer"
+                  title="Gemmi AI note summaries"
                 >
                   {aiLoading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-black" />}
-                  {aiLoading ? 'Grounding Summary...' : 'Aura Summary'}
+                  {aiLoading ? 'Grounding Summary...' : 'Gemmi Summary'}
                 </button>
 
                 {/* Draw on Document toggle for Rich Document editor */}
@@ -999,10 +999,10 @@ export default function NoteModule({
 
                   {/* Right Column: Aura AI summaries side block */}
                   {aiAnalysis && (
-                    <div className="w-full md:w-60 bg-black text-white border-2 border-[#333333] p-3 shadow-[4px_4px_0px_#E85002] flex flex-col gap-3 shrink-0 animate-in fade-in slide-in-from-right-3 duration-150 overflow-y-auto scrollbar-thin rounded-none">
+                    <div className="w-full md:w-60 bg-black text-white border-2 border-[#333333] p-3 shadow-[4px_4px_0px_#facc15] flex flex-col gap-3 shrink-0 animate-in fade-in slide-in-from-right-3 duration-150 overflow-y-auto scrollbar-thin rounded-none">
                       <div className="flex justify-between items-start border-b border-[#333333] pb-1.5">
-                        <span className="text-[9px] font-black uppercase tracking-widest text-[#E85002] font-mono">Aura Study Guide</span>
-                        <button onClick={() => setAiAnalysis(null)} className="text-white hover:text-[#E85002] font-bold">×</button>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-[#facc15] font-mono">Gemmi Study Guide</span>
+                        <button onClick={() => setAiAnalysis(null)} className="text-white hover:text-[#facc15] font-bold">×</button>
                       </div>
 
                       <div>

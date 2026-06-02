@@ -758,7 +758,7 @@ export default function WellnessJournalModule({
             <Heart className="w-4.5 h-4.5 text-rose-500 animate-pulse" />
             Journal &amp; Wellbeing reflections Hub
           </h2>
-          <p className="text-[10px] text-[#333333] font-bold uppercase tracking-wider mt-0.5 font-mono">Explore emotional trends • Write daily gratitude logs • Consult Aura AI</p>
+          <p className="text-[10px] text-[#333333] font-bold uppercase tracking-wider mt-0.5 font-mono">Explore emotional trends • Write daily gratitude logs • Consult Gemmi AI</p>
         </div>
 
         <div className="flex items-center gap-2">
@@ -972,7 +972,7 @@ export default function WellnessJournalModule({
                 <div>
                   <h3 className="font-black text-sm text-black tracking-widest uppercase font-mono">Select or Create a Wellbeing Reflection</h3>
                   <p className="text-[10.5px] text-[#333333] max-w-xs mx-auto leading-relaxed mt-1.5 uppercase font-mono font-bold">
-                    Keep a dedicated personal journal, complete wellness indicators, record items of gratitude, and let Aura AI highlight emotional stress trajectories.
+                    Keep a dedicated personal journal, complete wellness indicators, record items of gratitude, and let Gemmi AI highlight emotional stress trajectories.
                   </p>
                 </div>
                 
@@ -1028,11 +1028,11 @@ export default function WellnessJournalModule({
                   <button 
                     onClick={() => handleTriggerAI()}
                     disabled={aiLoading}
-                    className="px-3 py-1 bg-black hover:bg-[#333333] border-2 border-black text-[#E85002] text-[10.5px] font-black rounded-none flex items-center gap-1 transition-all disabled:opacity-50 cursor-pointer shadow-[2px_2px_0px_#E85002] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
-                    title="Aura AI reflections summary"
+                    className="px-3 py-1 bg-black hover:bg-[#333333] border-2 border-black text-[#facc15] text-[10.5px] font-black rounded-none flex items-center gap-1 transition-all disabled:opacity-50 cursor-pointer shadow-[2px_2px_0px_#facc15] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
+                    title="Gemmi AI reflections summary"
                   >
-                    {aiLoading ? <RefreshCw className="w-3.5 h-3.5 animate-spin animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-[#E85002]" />}
-                    {aiLoading ? 'Grounding...' : 'Ask Aura reflections'}
+                    {aiLoading ? <RefreshCw className="w-3.5 h-3.5 animate-spin animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-[#facc15]" />}
+                    {aiLoading ? 'Grounding...' : 'Ask Gemmi reflections'}
                   </button>
 
                   <button 
@@ -1462,23 +1462,23 @@ export default function WellnessJournalModule({
                 </div>
               </div>
 
-              {/* Aura AI reflections panel */}
-              <div className="bg-black border-2 border-[#333333] text-white rounded-none p-4 space-y-3.5 shadow-[4px_4px_0px_#E85002] font-mono">
+              {/* Gemmi AI reflections panel */}
+              <div className="bg-black border-2 border-[#333333] text-white rounded-none p-4 space-y-3.5 shadow-[4px_4px_0px_#facc15] font-mono">
                 <h4 className="text-xs font-black text-white uppercase tracking-wider flex items-center gap-1.5">
-                  <Sparkles className="w-4.5 h-4.5 text-[#E85002] animate-bounce" />
-                  Aura AI reflections Assistant
+                  <Sparkles className="w-4.5 h-4.5 text-[#facc15] animate-bounce" />
+                  Gemmi AI Reflection Assistant
                 </h4>
 
                 {aiAnalysis ? (
                   <div className="space-y-3 text-[10.5px]/relaxed text-[#F9F9F9]">
                     <div>
-                      <span className="font-black text-[9px] uppercase tracking-widest text-[#E85002] block">AI Summary</span>
+                      <span className="font-black text-[9px] uppercase tracking-widest text-[#facc15] block">Gemmi AI Reflection</span>
                       <p className="mt-0.5 font-bold leading-relaxed">{aiAnalysis.summary}</p>
                     </div>
 
                     {aiAnalysis.recurringThemes.length > 0 && (
                       <div>
-                        <span className="font-black text-[9px] uppercase tracking-widest text-[#E85002] block">Identified Themes</span>
+                        <span className="font-black text-[9px] uppercase tracking-widest text-[#facc15] block">Identified Themes</span>
                         <ul className="list-disc pl-3.5 space-y-0.5 mt-0.5 font-bold">
                           {aiAnalysis.recurringThemes.map((t, idx) => <li key={idx}>{t}</li>)}
                         </ul>
@@ -1487,7 +1487,7 @@ export default function WellnessJournalModule({
 
                     {aiAnalysis.positiveHighlights.length > 0 && (
                       <div>
-                        <span className="font-black text-[9px] uppercase tracking-widest text-[#E85002] block">Accomplishments to Celebrate</span>
+                        <span className="font-black text-[9px] uppercase tracking-widest text-[#facc15] block">Accomplishments to Celebrate</span>
                         <ul className="list-disc pl-3.5 space-y-0.5 mt-0.5 font-bold">
                           {aiAnalysis.positiveHighlights.map((h, idx) => <li key={idx}>{h}</li>)}
                         </ul>
@@ -1499,7 +1499,7 @@ export default function WellnessJournalModule({
                       <button 
                         type="button" 
                         onClick={() => setAiAnalysis(null)}
-                        className="text-[#E85002] hover:text-white"
+                        className="text-[#facc15] hover:text-white"
                       >
                         Clear Insights
                       </button>
@@ -1507,14 +1507,14 @@ export default function WellnessJournalModule({
                   </div>
                 ) : (
                   <div className="text-center py-6 text-[10.5px] text-[#A7A7A7] space-y-3 font-semibold">
-                    <p>Trigger Aura AI reflections to extract supportive summaries, sentiment trackers, and recurring stress topics securely.</p>
+                    <p>Trigger Gemmi AI reflections to extract supportive summaries, sentiment trackers, and recurring stress topics securely.</p>
                     <button
                       type="button"
                       onClick={handleTriggerAI}
                       disabled={aiLoading}
-                      className="w-full py-2 bg-[#E85002] hover:bg-[#E85002]/90 rounded-none text-black font-black text-xs border border-black shadow-[2px_2px_0px_#000000] transition cursor-pointer uppercase active:translate-x-[1px] active:translate-y-[1px]"
+                      className="w-full py-2 bg-[#facc15] hover:bg-[#eab308] rounded-none text-black font-black text-xs border border-black shadow-[2px_2px_0px_#000000] transition cursor-pointer uppercase active:translate-x-[1px] active:translate-y-[1px]"
                     >
-                      {aiLoading ? 'Grounding Reflections...' : 'Generate AI Reflections'}
+                      {aiLoading ? 'Grounding Reflections...' : 'Generate Gemmi reflections'}
                     </button>
                   </div>
                 )}

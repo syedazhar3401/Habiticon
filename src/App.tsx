@@ -10,6 +10,18 @@ import {
 } from './types';
 import AssistantChat from './components/AssistantChat';
 import CalendarModule from './components/CalendarModule';
+import {
+  INITIAL_HABIT_CATEGORIES,
+  INITIAL_HABIT_LOGS,
+  INITIAL_JOURNAL_ENTRIES,
+  INITIAL_VISION_ITEMS,
+  INITIAL_DASHBOARD_PINS,
+  INITIAL_COURSES,
+  INITIAL_EVENTS,
+  INITIAL_TASKS,
+  INITIAL_FOLDERS,
+  INITIAL_NOTES
+} from './seedData';
 import TaskModule from './components/TaskModule';
 import GanttModule from './components/GanttModule';
 import NoteModule from './components/NoteModule';
@@ -25,73 +37,32 @@ import {
 } from 'lucide-react';
 
 export default function App() {
+  // Synchronous simulation data initialization for product demo
+  useState(() => {
+    const demoKey = 'demo_version_5';
+    if (!localStorage.getItem(demoKey)) {
+      localStorage.clear();
+      localStorage.setItem('habit_categories', JSON.stringify(INITIAL_HABIT_CATEGORIES));
+      localStorage.setItem('habit_logs', JSON.stringify(INITIAL_HABIT_LOGS));
+      localStorage.setItem('journal_entries', JSON.stringify(INITIAL_JOURNAL_ENTRIES));
+      localStorage.setItem('vision_items', JSON.stringify(INITIAL_VISION_ITEMS));
+      localStorage.setItem('vision_dashboard_pins', JSON.stringify(INITIAL_DASHBOARD_PINS));
+      localStorage.setItem(demoKey, 'true');
+    }
+  });
+
   const [activeTab, setActiveTab] = useState<'dashboard' | 'calendar' | 'tasks' | 'gantt' | 'courses' | 'notes' | 'habits' | 'wellness' | 'visionboard'>('dashboard');
   const [showNotifications, setShowNotifications] = useState(false);
 
   // --- Habits State Initialization & Persistence ---
   const [habitCategories, setHabitCategories] = useState<HabitCategory[]>(() => {
     const saved = localStorage.getItem('habit_categories');
-    if (saved) return JSON.parse(saved);
-    return [
-      {
-        id: 'cat-morning',
-        name: 'Morning Routine',
-        habits: [
-          { id: 'h-meditate', name: 'Meditate' },
-          { id: 'h-stretch', name: 'Morning Stretch' },
-          { id: 'h-journal', name: 'Journaling' }
-        ]
-      },
-      {
-        id: 'cat-midday',
-        name: 'Mid-Day Sync',
-        habits: [
-          { id: 'h-code', name: 'Code Projects' },
-          { id: 'h-water', name: 'Hydrate (2L)' }
-        ]
-      },
-      {
-        id: 'cat-evening',
-        name: 'Evening Calm',
-        habits: [
-          { id: 'h-read', name: 'Read 10 pages' },
-          { id: 'h-plan', name: 'Plan tomorrow' }
-        ]
-      }
-    ];
+    return saved ? JSON.parse(saved) : INITIAL_HABIT_CATEGORIES;
   });
 
   const [habitLogs, setHabitLogs] = useState<HabitLog[]>(() => {
     const saved = localStorage.getItem('habit_logs');
-    if (saved) return JSON.parse(saved);
-    return [
-      {
-        id: 'log-1',
-        date: '2026-05-30',
-        completedHabits: {
-          'h-meditate': true,
-          'h-stretch': false,
-          'h-journal': true,
-          'h-code': true,
-          'h-water': false,
-          'h-read': false,
-          'h-plan': true
-        }
-      },
-      {
-        id: 'log-2',
-        date: '2026-05-29',
-        completedHabits: {
-          'h-meditate': true,
-          'h-stretch': true,
-          'h-journal': true,
-          'h-code': false,
-          'h-water': true,
-          'h-read': true,
-          'h-plan': false
-        }
-      }
-    ];
+    return saved ? JSON.parse(saved) : INITIAL_HABIT_LOGS;
   });
 
   useEffect(() => {
@@ -105,77 +76,7 @@ export default function App() {
   // --- Journal Entries State Initialization & Persistence ---
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>(() => {
     const saved = localStorage.getItem('journal_entries');
-    if (saved) return JSON.parse(saved);
-    return [
-      {
-        id: 'entry-1',
-        userId: 'student-1',
-        dateCreated: '2026-05-30',
-        timeCreated: '21:30',
-        lastModified: new Date('2026-05-30T21:30:00Z').toISOString(),
-        type: 'daily',
-        title: 'Overcoming Operating Systems Lab Fatigue',
-        content: 'Today was an intensely productive but physically exhausting day. I spent over 4 hours debugging the multithreading process scheduling logic in C for the OS Lab assignment. Finally got the mutex locks and semaphores working without causing deadlocks! I felt stressed in the afternoon, but coding projects always bring a sense of resolution.',
-        mood: {
-          score: 8,
-          type: 'happy',
-          energyLevel: 6,
-          stressLevel: 5,
-          motivationLevel: 9,
-          sleepQuality: 7
-        },
-        wellness: {
-          anxietyLevel: 3,
-          focusLevel: 9,
-          exerciseCompleted: false,
-          workloadPressure: 7,
-          assignmentConfidence: 9,
-          productivityRating: 9
-        },
-        gratitudeItems: [
-          'The clean, error-free compile of the scheduler simulation code.',
-          'Hot peppermint tea during the long evening coding session.',
-          'Friendly peer advice on threads from my classmate Alice.'
-        ],
-        tags: ['Success', 'Goals', 'Stress'],
-        images: [],
-        isLocked: false
-      },
-      {
-        id: 'entry-2',
-        userId: 'student-1',
-        dateCreated: '2026-05-29',
-        timeCreated: '22:15',
-        lastModified: new Date('2026-05-29T22:15:00Z').toISOString(),
-        type: 'gratitude',
-        title: 'End of Week Reflections & Gratitude Log',
-        content: 'Enrolled in a new class and started mapping the semester revision phase. The workload is picking up, but I am keeping up with my habit check-ins. Daily stretches and hydration are helping me stay grounded.',
-        mood: {
-          score: 9,
-          type: 'very_happy',
-          energyLevel: 8,
-          stressLevel: 2,
-          motivationLevel: 9,
-          sleepQuality: 8
-        },
-        wellness: {
-          anxietyLevel: 2,
-          focusLevel: 8,
-          exerciseCompleted: true,
-          workloadPressure: 4,
-          assignmentConfidence: 8,
-          productivityRating: 8
-        },
-        gratitudeItems: [
-          'Getting a full 8 hours of high-quality sleep.',
-          'Finding a quiet study desk in the main library auditorium.',
-          'A simple, clear plan for tomorrow\'s homework sheets.'
-        ],
-        tags: ['Health', 'Goals'],
-        images: [],
-        isLocked: false
-      }
-    ];
+    return saved ? JSON.parse(saved) : INITIAL_JOURNAL_ENTRIES;
   });
 
   useEffect(() => {
@@ -185,11 +86,11 @@ export default function App() {
   // --- Vision Board State Initialization & Persistence ---
   const [visionItems, setVisionItems] = useState<VisionItem[]>(() => {
     const saved = localStorage.getItem('vision_items');
-    return saved ? JSON.parse(saved) : [];
+    return saved ? JSON.parse(saved) : INITIAL_VISION_ITEMS;
   });
   const [dashboardPins, setDashboardPins] = useState<DashboardVisionPin[]>(() => {
     const saved = localStorage.getItem('vision_dashboard_pins');
-    return saved ? JSON.parse(saved) : [];
+    return saved ? JSON.parse(saved) : INITIAL_DASHBOARD_PINS;
   });
 
   useEffect(() => {
@@ -292,184 +193,12 @@ export default function App() {
   };
 
   // --- Seed Data ---
-  const [courses, setCourses] = useState<Course[]>([
-    {
-      id: 'course-1',
-      code: 'WIX1003',
-      name: 'Software Developer Frameworks',
-      lecturer: 'Dr. Alan Turing',
-      semester: 'Semester 1',
-      credits: 4,
-      location: 'DK-B Auditorium',
-      color: 'emerald'
-    },
-    {
-      id: 'course-2',
-      code: 'CS2001',
-      name: 'Advanced Data Structures',
-      lecturer: 'Dr. Donald Knuth',
-      semester: 'Semester 1',
-      credits: 3,
-      location: 'Block C Lab 5',
-      color: 'indigo'
-    },
-    {
-      id: 'course-3',
-      code: 'MTH3002',
-      name: 'Discrete Mathematical Structures',
-      lecturer: 'Dr. Ada Lovelace',
-      semester: 'Semester 1',
-      credits: 3,
-      location: 'Main Seminar Hall',
-      color: 'rose'
-    },
-    {
-      id: 'course-4',
-      code: 'ITS4001',
-      name: 'Mobile Systems Engineering',
-      lecturer: 'Dr. Grace Hopper',
-      semester: 'Semester 1',
-      credits: 4,
-      location: 'Annex Room 12',
-      color: 'indigo'
-    }
-  ]);
-
-  const [events, setEvents] = useState<CalendarEvent[]>([
-    {
-      id: 'event-1',
-      title: 'WIX1003 Regular Lecture',
-      courseId: 'course-1',
-      date: '2026-05-30',
-      startTime: '09:00',
-      endTime: '11:00',
-      location: 'DK-B Auditorium',
-      description: 'Introduction to standard system architecture frameworks and class specs.',
-      recurring: 'weekly',
-      category: 'class',
-      reminderMinutes: 15
-    },
-    {
-      id: 'event-2',
-      title: 'CS2001 Heap & Red-Black Lab',
-      courseId: 'course-2',
-      date: '2026-06-02',
-      startTime: '14:00',
-      endTime: '16:00',
-      location: 'Block C Lab 5',
-      description: 'Algorithm optimization review of binary and complex heap structures.',
-      recurring: 'none',
-      category: 'class',
-      reminderMinutes: 30
-    },
-    {
-      id: 'event-3',
-      title: 'MTH3002 Graph Theory Seminar',
-      courseId: 'course-3',
-      date: '2026-06-03',
-      startTime: '10:00',
-      endTime: '12:00',
-      location: 'Main Seminar Hall',
-      description: 'Discussion of Euler paths, Hamilton circuits, and planar representations.',
-      recurring: 'weekly',
-      category: 'study_session',
-      reminderMinutes: 60
-    },
-    {
-      id: 'event-4',
-      title: 'Group Study circle review',
-      courseId: 'course-1',
-      date: '2026-05-30',
-      startTime: '16:00',
-      endTime: '18:00',
-      location: 'Main Library Annex',
-      description: 'Drafting project timelines and setting up milestone maps.',
-      recurring: 'none',
-      category: 'meeting',
-      reminderMinutes: 15
-    }
-  ]);
-
-  const [tasks, setTasks] = useState<Task[]>([
-    {
-      id: 'task-1',
-      title: 'Design Database ER Diagrams',
-      courseId: 'course-1',
-      priority: 'high',
-      deadline: '2026-06-03',
-      estimatedHours: 6,
-      progress: 50,
-      status: 'in_progress',
-      description: 'Create normalized relational schema matching DBMS constraints.',
-      projectName: 'DBMS Project'
-    },
-    {
-      id: 'task-2',
-      title: 'Complexity proofs Homework',
-      courseId: 'course-2',
-      priority: 'medium',
-      deadline: '2026-06-05',
-      estimatedHours: 4,
-      progress: 0,
-      status: 'not_started',
-      description: 'Verify mathematical bound algorithms for search tree depth metrics.',
-      projectName: 'Labs Core'
-    },
-    {
-      id: 'task-3',
-      title: 'Discrete Sets Problem Sheet',
-      courseId: 'course-3',
-      priority: 'low',
-      deadline: '2026-05-28',
-      estimatedHours: 2,
-      progress: 100,
-      status: 'completed',
-      description: 'Submission verified on online portal system.',
-      projectName: 'Assignments'
-    },
-    {
-      id: 'task-4',
-      title: 'Review Lecture 8 Recording',
-      courseId: 'course-4',
-      priority: 'high',
-      deadline: '2026-05-29',
-      estimatedHours: 3,
-      progress: 0,
-      status: 'not_started',
-      description: 'Analyze Android layout hierarchies and stylus pad hooks (Overdue study!).',
-      projectName: 'Exams Review'
-    }
-  ]);
-
-  const [folders, setFolders] = useState<Folder[]>([
-    { id: 'folder-1', name: 'Frameworks Lectures', courseId: 'course-1' },
-    { id: 'folder-2', name: 'Lab Outlines', courseId: 'course-2' }
-  ]);
-
-  const [notes, setNotes] = useState<Note[]>([
-    {
-      id: 'note-1',
-      title: 'Software Developer DBMS Checklist',
-      content: `# Software Developer DBMS Checklist\n\n1. Target third normal form (3NF) boundary rules.\n2. Add indexes on heavy foreign key structures.\n3. Implement optimistic concurrency checks.`,
-      courseId: 'course-1',
-      folderId: 'folder-1',
-      tags: ['dbms', 'index'],
-      isFavorite: true,
-      updatedAt: new Date('2026-05-28').toISOString()
-    },
-    {
-      id: 'note-2',
-      title: 'Heap structures & Complex space notes',
-      content: `# Heap structures notes\n\n- Binary Heap heights always evaluate to log(n).\n- Insertion triggers bubble-up swaps at average log(n) complexity.`,
-      courseId: 'course-2',
-      folderId: 'folder-2',
-      tags: ['algorithms'],
-      isFavorite: false,
-      updatedAt: new Date('2026-05-29').toISOString()
-    }
-  ]);
-
-  const [selectedNoteId, setSelectedNoteId] = useState<string | null>('note-1');
+  const [courses, setCourses] = useState<Course[]>(INITIAL_COURSES);
+  const [events, setEvents] = useState<CalendarEvent[]>(INITIAL_EVENTS);
+  const [tasks, setTasks] = useState<Task[]>(INITIAL_TASKS);
+  const [folders, setFolders] = useState<Folder[]>(INITIAL_FOLDERS);
+  const [notes, setNotes] = useState<Note[]>(INITIAL_NOTES);
+  const [selectedNoteId, setSelectedNoteId] = useState<string | null>(INITIAL_NOTES[0]?.id || null);
 
   const [notifications, setNotifications] = useState<AppNotification[]>([
     {
@@ -563,11 +292,16 @@ export default function App() {
 
   const handleAddEvent = (event: CalendarEvent) => {
     setEvents(prev => [...prev, event]);
-    triggerToast('Event Scheduled', `Successfully booked ${event.title} on your calendar calendar.`);
+    triggerToast('Event Scheduled', `Successfully booked ${event.title} on your calendar.`);
   };
 
   const handleDeleteEvent = (id: string) => {
     setEvents(prev => prev.filter(e => e.id !== id));
+  };
+
+  const handleUpdateEvent = (updatedEvent: CalendarEvent) => {
+    setEvents(prev => prev.map(e => e.id === updatedEvent.id ? updatedEvent : e));
+    triggerToast('Event Updated', `Successfully updated "${updatedEvent.title}" on your calendar.`);
   };
 
   const handleAddTask = (task: Task) => {
@@ -988,6 +722,7 @@ export default function App() {
               courses={courses}
               onAddEvent={handleAddEvent}
               onDeleteEvent={handleDeleteEvent}
+              onUpdateEvent={handleUpdateEvent}
               onQuickAdd={(title, cat, date) => {
                 const quickEv: CalendarEvent = {
                   id: `event-${Date.now()}`,

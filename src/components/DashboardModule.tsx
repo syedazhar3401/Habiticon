@@ -73,8 +73,16 @@ export default function DashboardModule({
   onUpdateJournalEntries,
   onSelectNote
 }: DashboardModuleProps) {
-  // Mock Date YYYY-MM-DD
-  const todayString = '2026-05-30';
+  // Dynamic Malaysia timezone-based date YYYY-MM-DD
+  const todayString = (() => {
+    const now = new Date();
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const msiaTime = new Date(utc + (3600000 * 8));
+    const yyyy = msiaTime.getFullYear();
+    const mm = String(msiaTime.getMonth() + 1).padStart(2, '0');
+    const dd = String(msiaTime.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  })();
 
   // --- 1. Quick Stats calculations ---
   const totalTasks = tasks.length;
@@ -769,14 +777,14 @@ export default function DashboardModule({
               </button>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 min-h-[140px] items-stretch">
+            <div className="grid grid-cols-2 gap-3 items-stretch">
               {displayVisions.map(vision => (
                 <div 
                   key={vision.id}
                   onClick={onNavigateVision}
-                  className="bg-[#F9F9F9] border border-black p-2 flex flex-col justify-between cursor-pointer hover:border-[#E85002] transition-all"
+                  className="bg-white border-2 border-black p-2 flex flex-col justify-between cursor-pointer hover:border-[#E85002] hover:shadow-[3px_3px_0px_#000000] hover:scale-[1.02] transition-all aspect-[3/4]"
                 >
-                  <div className="h-16 w-full bg-[#333333] border border-black overflow-hidden relative">
+                  <div className="h-[68%] w-full bg-[#333333] border-2 border-black overflow-hidden relative">
                     {vision.imageDataUrl ? (
                       <img 
                         src={vision.imageDataUrl} 
@@ -788,23 +796,35 @@ export default function DashboardModule({
                         No Image
                       </div>
                     )}
-                    <span className="absolute top-1 left-1 text-[7px] font-black uppercase px-1 bg-black text-white border border-[#333333]">
+                    <span className="absolute top-1.5 left-1.5 text-[8px] font-black uppercase px-1.5 py-0.5 bg-black text-white border border-[#333333]">
                       {vision.category.replace('_', ' ')}
                     </span>
                   </div>
-                  <h4 className="text-[9.5px] font-black text-black uppercase tracking-tight mt-1.5 line-clamp-1">
-                    {vision.title}
-                  </h4>
-                  {vision.progress !== undefined && (
-                    <div className="w-full bg-[#A7A7A7] h-1 border border-black mt-1 overflow-hidden">
-                      <div className="bg-[#E85002] h-full" style={{ width: `${vision.progress}%` }} />
+                  <div className="h-[28%] flex flex-col justify-between pt-1">
+                    <h4 className="text-[10px] font-black text-black uppercase tracking-tight line-clamp-1 leading-snug">
+                      {vision.title}
+                    </h4>
+                    <div className="flex items-center justify-between text-[8px] font-mono mt-0.5">
+                      {vision.targetDate && (
+                        <span className="text-[#333333] font-bold">
+                          {new Date(vision.targetDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                        </span>
+                      )}
+                      {vision.progress !== undefined && (
+                        <span className="font-black text-black">{vision.progress}%</span>
+                      )}
                     </div>
-                  )}
+                    {vision.progress !== undefined && (
+                      <div className="w-full bg-[#A7A7A7] h-1 border border-black overflow-hidden mt-0.5">
+                        <div className="bg-black h-full" style={{ width: `${vision.progress}%` }} />
+                      </div>
+                    )}
+                  </div>
                 </div>
               ))}
 
               {displayVisions.length === 0 && (
-                <div className="col-span-2 text-center py-6 text-[#A7A7A7] text-[10.5px] font-mono uppercase bg-[#F9F9F9] border border-dashed border-black flex flex-col items-center justify-center">
+                <div className="col-span-2 text-center py-6 text-[#A7A7A7] text-[10.5px] font-mono uppercase bg-[#F9F9F9] border border-dashed border-black flex flex-col items-center justify-center min-h-[140px]">
                   <span>No active visions</span>
                 </div>
               )}

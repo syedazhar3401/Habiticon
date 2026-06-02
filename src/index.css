@@ -58,3 +58,7 @@
   box-shadow: 4px 4px 0px #E85002;
   color: #F9F9F9;
 }
+
+@utility grid-cols-21 {
+  grid-template-columns: repeat(21, minmax(0, 1fr));
+}

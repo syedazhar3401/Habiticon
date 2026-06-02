@@ -151,7 +151,7 @@ export default function TaskModule({
                     </button>
                   </div>
 
-                  <h5 className="text-[11.5px] font-black mt-2 leading-snug uppercase tracking-tight truncate">
+                  <h5 className="text-xs font-bold mt-2 leading-snug tracking-normal truncate">
                     {task.title}
                   </h5>
 
