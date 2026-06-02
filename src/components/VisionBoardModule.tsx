@@ -19,22 +19,22 @@ import {
 // ─── Category Helpers ──────────────────────────────────────────
 
 const CATEGORY_META: Record<VisionCategory, { label: string; color: string; bg: string; dot: string }> = {
-  academic:       { label: 'Academic',         color: 'text-indigo-700',  bg: 'bg-indigo-100',   dot: 'bg-indigo-500' },
-  career:         { label: 'Career',           color: 'text-violet-700',  bg: 'bg-violet-100',   dot: 'bg-violet-500' },
-  personal_growth:{ label: 'Personal Growth',  color: 'text-rose-700',    bg: 'bg-rose-100',     dot: 'bg-rose-500' },
-  health_wellness:{ label: 'Health',           color: 'text-emerald-700', bg: 'bg-emerald-100',  dot: 'bg-emerald-500' },
-  financial:      { label: 'Financial',        color: 'text-amber-700',   bg: 'bg-amber-100',    dot: 'bg-amber-500' },
-  travel:         { label: 'Travel',           color: 'text-sky-700',     bg: 'bg-sky-100',      dot: 'bg-sky-500' },
-  creativity:     { label: 'Creativity',       color: 'text-fuchsia-700', bg: 'bg-fuchsia-100',  dot: 'bg-fuchsia-500' },
-  relationships:  { label: 'Relationships',    color: 'text-pink-700',    bg: 'bg-pink-100',     dot: 'bg-pink-500' },
-  custom:         { label: 'Custom',           color: 'text-slate-700',   bg: 'bg-slate-100',    dot: 'bg-slate-500' },
+  academic:       { label: 'Academic',         color: 'text-black',       bg: 'bg-[#F9F9F9] border-2 border-black',   dot: 'bg-black' },
+  career:         { label: 'Career',           color: 'text-black',       bg: 'bg-[#E85002] border-2 border-black',   dot: 'bg-[#E85002]' },
+  personal_growth:{ label: 'Personal Growth',  color: 'text-[#F9F9F9]',   bg: 'bg-[#333333] border-2 border-black',   dot: 'bg-[#333333]' },
+  health_wellness:{ label: 'Health',           color: 'text-black',       bg: 'bg-[#A7A7A7] border-2 border-black',   dot: 'bg-[#A7A7A7]' },
+  financial:      { label: 'Financial',        color: 'text-[#E85002]',   bg: 'bg-black border-2 border-black',        dot: 'bg-black' },
+  travel:         { label: 'Travel',           color: 'text-black',       bg: 'bg-[#E85002] border-2 border-black',   dot: 'bg-[#E85002]' },
+  creativity:     { label: 'Creativity',       color: 'text-[#F9F9F9]',   bg: 'bg-[#000000] border-2 border-black',   dot: 'bg-[#000000]' },
+  relationships:  { label: 'Relationships',    color: 'text-[#F9F9F9]',   bg: 'bg-[#333333] border-2 border-black',   dot: 'bg-[#333333]' },
+  custom:         { label: 'Custom',           color: 'text-[#F9F9F9]',   bg: 'bg-[#646464] border-2 border-black',   dot: 'bg-[#646464]' },
 };
 
 const STATUS_META: Record<VisionStatus, { label: string; color: string; bg: string }> = {
-  dreaming:    { label: 'Dreaming',     color: 'text-sky-700',    bg: 'bg-sky-100' },
-  planning:    { label: 'Planning',     color: 'text-amber-700',  bg: 'bg-amber-100' },
-  in_progress: { label: 'In Progress',  color: 'text-violet-700', bg: 'bg-violet-100' },
-  achieved:    { label: 'Achieved',     color: 'text-emerald-700',bg: 'bg-emerald-100' },
+  dreaming:    { label: 'Dreaming',     color: 'text-black',     bg: 'bg-[#F9F9F9] border-2 border-black' },
+  planning:    { label: 'Planning',     color: 'text-black',     bg: 'bg-[#E85002] border-2 border-black' },
+  in_progress: { label: 'In Progress',  color: 'text-[#F9F9F9]', bg: 'bg-[#333333] border-2 border-black' },
+  achieved:    { label: 'Achieved',     color: 'text-black',     bg: 'bg-[#A7A7A7] border-2 border-black' },
 };
 
 const CARD_BG_COLORS = [
@@ -485,11 +485,11 @@ export default function VisionBoardModule({
 
   const detailVision = visionItems.find(v => v.id === detailVisionId) ?? null;
 
-  const KANBAN_COLS: { status: VisionStatus; label: string; color: string; headerBg: string }[] = [
-    { status: 'dreaming',    label: 'Dreaming',     color: 'border-sky-200',     headerBg: 'bg-sky-50' },
-    { status: 'planning',    label: 'Planning',     color: 'border-amber-200',   headerBg: 'bg-amber-50' },
-    { status: 'in_progress', label: 'In Progress',  color: 'border-violet-200',  headerBg: 'bg-violet-50' },
-    { status: 'achieved',    label: 'Achieved',     color: 'border-emerald-200', headerBg: 'bg-emerald-50' },
+  const KANBAN_COLS: { status: VisionStatus; label: string; color: string; headerBg: string; labelColor: string }[] = [
+    { status: 'dreaming',    label: 'Dreaming',     color: 'border-black', headerBg: 'bg-[#F9F9F9]', labelColor: 'text-black' },
+    { status: 'planning',    label: 'Planning',     color: 'border-black', headerBg: 'bg-[#E85002]', labelColor: 'text-black' },
+    { status: 'in_progress', label: 'In Progress',  color: 'border-black', headerBg: 'bg-[#333333]', labelColor: 'text-[#F9F9F9]' },
+    { status: 'achieved',    label: 'Achieved',     color: 'border-black', headerBg: 'bg-[#000000]', labelColor: 'text-[#E85002]' },
   ];
 
   const upcomingMilestones = visionItems
@@ -501,36 +501,36 @@ export default function VisionBoardModule({
   // ─── JSX ─────────────────────────────────────────────────────
 
   return (
-    <div className="h-full flex flex-col font-sans text-slate-800 bg-slate-50">
+    <div className="h-full flex flex-col font-sans text-black bg-[#F9F9F9]">
 
       {/* ── Header ── */}
-      <div className="bg-white border-b border-slate-200 px-5 py-3.5 shrink-0">
+      <div className="bg-[#F9F9F9] border-b-2 border-black px-5 py-3.5 shrink-0">
 
         {/* Top row */}
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
-            <h2 className="text-base font-black text-slate-900 tracking-tight flex items-center gap-2">
-              <span className="w-7 h-7 bg-violet-600 rounded-lg flex items-center justify-center shadow-sm">
-                <Target className="w-4 h-4 text-white" />
+            <h2 className="text-base font-black text-black tracking-tight flex items-center gap-2">
+              <span className="w-7 h-7 bg-[#E85002] border-2 border-black flex items-center justify-center shadow-[2px_2px_0px_#000000]">
+                <Target className="w-4 h-4 text-black" />
               </span>
               My Vision Board
             </h2>
-            <div className="flex items-center gap-3 mt-0.5 text-[10px] text-slate-500 font-semibold">
+            <div className="flex items-center gap-3 mt-0.5 text-[10px] text-[#333333] font-semibold">
               <span>{activeVisions.length} Active</span>
-              {achievedVisions.length > 0 && <><span className="text-slate-300">·</span><span className="text-emerald-600">{achievedVisions.length} Achieved</span></>}
-              {avgProgress !== null && <><span className="text-slate-300">·</span><span className="text-violet-600">{avgProgress}% avg progress</span></>}
+              {achievedVisions.length > 0 && <><span className="text-[#A7A7A7]">·</span><span className="text-black font-black">{achievedVisions.length} Achieved</span></>}
+              {avgProgress !== null && <><span className="text-[#A7A7A7]">·</span><span className="text-[#E85002] font-black">{avgProgress}% avg progress</span></>}
             </div>
           </div>
 
           {/* Actions */}
           <div className="flex items-center gap-2 flex-wrap">
             {/* View switcher */}
-            <div className="flex bg-slate-100 rounded-lg p-0.5 gap-0.5">
+            <div className="flex bg-[#333333] border-2 border-black p-0.5 gap-0.5">
               {([['grid', LayoutGrid], ['kanban', Columns], ['gallery', GalleryHorizontal], ['timeline', Clock]] as const).map(([v, Icon]) => (
                 <button
                   key={v}
                   onClick={() => setActiveView(v)}
-                  className={`w-7 h-7 rounded-md flex items-center justify-center cursor-pointer transition-all ${activeView === v ? 'bg-white shadow text-violet-600' : 'text-slate-400 hover:text-slate-600'}`}
+                  className={`w-7 h-7 flex items-center justify-center cursor-pointer transition-all ${activeView === v ? 'bg-[#E85002] text-black shadow-[1px_1px_0px_rgba(255,255,255,0.3)]' : 'text-[#A7A7A7] hover:text-white'}`}
                   title={v.charAt(0).toUpperCase() + v.slice(1)}
                 >
                   <Icon className="w-3.5 h-3.5" />
@@ -542,7 +542,7 @@ export default function VisionBoardModule({
             <select
               value={sortBy}
               onChange={e => setSortBy(e.target.value as any)}
-              className="text-[10.5px] font-semibold bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-600 cursor-pointer focus:outline-none focus:ring-1 focus:ring-violet-400"
+              className="text-[10.5px] font-semibold bg-[#F9F9F9] border-2 border-black px-2.5 py-1.5 text-black cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#E85002]"
             >
               <option value="pinned">Pinned First</option>
               <option value="newest">Most Recent</option>
@@ -554,7 +554,7 @@ export default function VisionBoardModule({
             <select
               value={filterStatus}
               onChange={e => setFilterStatus(e.target.value)}
-              className="text-[10.5px] font-semibold bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-600 cursor-pointer focus:outline-none focus:ring-1 focus:ring-violet-400"
+              className="text-[10.5px] font-semibold bg-[#F9F9F9] border-2 border-black px-2.5 py-1.5 text-black cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#E85002]"
             >
               <option value="all">All Visions</option>
               <option value="active">Active Only</option>
@@ -564,7 +564,7 @@ export default function VisionBoardModule({
             {/* Add button */}
             <button
               onClick={openAdd}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-violet-600 hover:bg-violet-700 text-white text-[11px] font-bold rounded-lg shadow-sm transition-all active:scale-95 cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#E85002] hover:bg-black hover:text-[#E85002] text-black border-2 border-black text-[11px] font-bold shadow-[2px_2px_0px_#000000] transition-all active:translate-x-[1px] active:translate-y-[1px] cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               Add Vision
@@ -576,7 +576,7 @@ export default function VisionBoardModule({
         <div className="flex gap-1.5 mt-3 overflow-x-auto pb-0.5 scrollbar-none">
           <button
             onClick={() => setFilterCategory('all')}
-            className={`shrink-0 px-2.5 py-1 rounded-full text-[10px] font-bold transition-all cursor-pointer ${filterCategory === 'all' ? 'bg-violet-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+            className={`shrink-0 px-2.5 py-1 text-[10px] font-bold border-2 border-black transition-all cursor-pointer ${filterCategory === 'all' ? 'bg-[#E85002] text-black' : 'bg-[#333333] text-[#A7A7A7] hover:bg-[#F9F9F9] hover:text-black'}`}
           >
             All
           </button>
@@ -586,9 +586,9 @@ export default function VisionBoardModule({
               <button
                 key={cat}
                 onClick={() => setFilterCategory(filterCategory === cat ? 'all' : cat)}
-                className={`shrink-0 px-2.5 py-1 rounded-full text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 ${filterCategory === cat ? `${m.bg} ${m.color}` : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                className={`shrink-0 px-2.5 py-1 text-[10px] font-bold border-2 border-black transition-all cursor-pointer flex items-center gap-1 ${filterCategory === cat ? `${m.bg} ${m.color}` : 'bg-[#333333] text-[#A7A7A7] hover:bg-[#F9F9F9] hover:text-black'}`}
               >
-                <span className={`w-1.5 h-1.5 rounded-full ${m.dot}`} />
+                <span className={`w-1.5 h-1.5 ${m.dot}`} />
                 {m.label}
               </button>
             );
@@ -605,14 +605,14 @@ export default function VisionBoardModule({
           {/* Empty state */}
           {filteredVisions.length === 0 && (
             <div className="flex flex-col items-center justify-center h-full min-h-64 gap-4 text-center">
-              <div className="w-16 h-16 bg-violet-100 rounded-2xl flex items-center justify-center">
-                <Target className="w-8 h-8 text-violet-400" />
+              <div className="w-16 h-16 bg-[#F9F9F9] border-2 border-black flex items-center justify-center shadow-[4px_4px_0px_#000000]">
+                <Target className="w-8 h-8 text-[#E85002]" />
               </div>
               <div>
-                <p className="text-sm font-bold text-slate-600">
+                <p className="text-sm font-bold text-black">
                   {filterCategory === 'all' && filterStatus === 'all' ? 'Your vision board is empty' : 'No visions match this filter'}
                 </p>
-                <p className="text-[11px] text-slate-400 mt-1 max-w-xs">
+                <p className="text-[11px] text-[#333333] mt-1 max-w-xs">
                   {filterCategory === 'all' && filterStatus === 'all'
                     ? 'Start adding your dreams, goals, and aspirations. Visualize your future.'
                     : 'Try a different category or status filter.'}
@@ -621,7 +621,7 @@ export default function VisionBoardModule({
               {filterCategory === 'all' && filterStatus === 'all' && (
                 <button
                   onClick={openAdd}
-                  className="px-5 py-2 bg-violet-600 hover:bg-violet-700 text-white text-[11px] font-bold rounded-xl shadow transition active:scale-95 cursor-pointer"
+                  className="px-5 py-2 bg-[#E85002] hover:bg-black hover:text-[#E85002] text-black border-2 border-black text-[11px] font-bold shadow-[2px_2px_0px_#000000] transition active:translate-x-[1px] active:translate-y-[1px] cursor-pointer"
                 >
                   + Add Your First Vision
                 </button>
@@ -656,17 +656,17 @@ export default function VisionBoardModule({
                 return (
                   <div
                     key={col.status}
-                    className={`flex flex-col border-2 ${col.color} rounded-2xl overflow-hidden`}
+                    className={`flex flex-col border-2 ${col.color} overflow-hidden`}
                     onDragOver={e => e.preventDefault()}
                     onDrop={e => handleKanbanDrop(col.status, e)}
                   >
                     {/* Column header */}
-                    <div className={`${col.headerBg} px-3 py-2.5 flex items-center justify-between border-b ${col.color}`}>
-                      <span className="text-[11px] font-black text-slate-700 uppercase tracking-wider">{col.label}</span>
-                      <span className="text-[10px] font-bold text-slate-400 bg-white/60 rounded-full px-1.5">{colVisions.length}</span>
+                    <div className={`${col.headerBg} px-3 py-2.5 flex items-center justify-between border-b-2 ${col.color}`}>
+                      <span className={`text-[11px] font-black uppercase tracking-wider ${col.labelColor}`}>{col.label}</span>
+                      <span className={`text-[10px] font-bold bg-black/10 px-1.5 ${col.labelColor}`}>{colVisions.length}</span>
                     </div>
                     {/* Cards */}
-                    <div className="flex-1 p-2.5 space-y-2.5 overflow-y-auto">
+                    <div className="flex-1 p-2.5 space-y-2.5 overflow-y-auto bg-[#F9F9F9]">
                       {colVisions.map((vision, idx) => (
                         <div
                           key={vision.id}
@@ -688,7 +688,7 @@ export default function VisionBoardModule({
                         </div>
                       ))}
                       {colVisions.length === 0 && (
-                        <div className="flex flex-col items-center justify-center h-20 border-2 border-dashed border-slate-200 rounded-xl text-[10px] text-slate-400 font-medium">
+                        <div className="flex flex-col items-center justify-center h-20 border-2 border-dashed border-[#A7A7A7] text-[10px] text-[#A7A7A7] font-medium">
                           Drop here
                         </div>
                       )}
@@ -735,9 +735,9 @@ export default function VisionBoardModule({
                 {Object.entries(grouped).map(([quarter, visions]) => (
                   <div key={quarter}>
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="w-2.5 h-2.5 rounded-full bg-violet-500" />
-                      <h3 className="text-xs font-black text-slate-700 uppercase tracking-widest">{quarter}</h3>
-                      <div className="flex-1 h-px bg-slate-200" />
+                      <div className="w-2.5 h-2.5 bg-[#E85002] border border-black" />
+                      <h3 className="text-xs font-black text-black uppercase tracking-widest">{quarter}</h3>
+                      <div className="flex-1 h-px bg-black" />
                     </div>
                     <div className="pl-5 space-y-3">
                       {visions.map(vision => {
@@ -746,29 +746,29 @@ export default function VisionBoardModule({
                           <div
                             key={vision.id}
                             onClick={() => setDetailVisionId(prev => prev === vision.id ? null : vision.id)}
-                            className={`flex items-center gap-4 p-3.5 bg-white border rounded-xl cursor-pointer hover:border-violet-300 hover:shadow-md transition-all ${detailVisionId === vision.id ? 'border-violet-300 shadow-md ring-1 ring-violet-200' : 'border-slate-200'}`}
+                            className={`flex items-center gap-4 p-3.5 bg-[#F9F9F9] border-2 cursor-pointer transition-all ${detailVisionId === vision.id ? 'border-[#E85002] shadow-[4px_4px_0px_#E85002]' : 'border-black hover:shadow-[4px_4px_0px_#E85002]'}`}
                           >
                             {vision.imageDataUrl
-                              ? <img src={vision.imageDataUrl} alt={vision.title} className="w-14 h-14 rounded-lg object-cover shrink-0" />
-                              : <div className={`w-14 h-14 rounded-lg bg-gradient-to-br ${CARD_BG_COLORS[visionItems.indexOf(vision) % CARD_BG_COLORS.length]} shrink-0`} />
+                              ? <img src={vision.imageDataUrl} alt={vision.title} className="w-14 h-14 object-cover shrink-0 border-2 border-black" />
+                              : <div className={`w-14 h-14 bg-[#333333] border-2 border-black shrink-0`} />
                             }
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 mb-0.5">
-                                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${catMeta.bg} ${catMeta.color}`}>{catMeta.label}</span>
-                                {vision.isPinned && <Pin className="w-3 h-3 text-amber-400 fill-amber-400" />}
+                                <span className={`text-[9px] font-bold px-1.5 py-0.5 ${catMeta.bg} ${catMeta.color}`}>{catMeta.label}</span>
+                                {vision.isPinned && <Pin className="w-3 h-3 text-[#E85002] fill-[#E85002]" />}
                               </div>
-                              <p className="text-xs font-bold text-slate-800 truncate">{vision.title}</p>
-                              <p className="text-[10px] text-slate-500 truncate mt-0.5">{vision.description}</p>
+                              <p className="text-xs font-bold text-black truncate">{vision.title}</p>
+                              <p className="text-[10px] text-[#333333] truncate mt-0.5">{vision.description}</p>
                             </div>
                             {vision.progress !== undefined && (
                               <div className="text-right shrink-0">
-                                <p className="text-xs font-black text-violet-600">{vision.progress}%</p>
-                                <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden mt-1">
-                                  <div className="h-full bg-violet-500 rounded-full" style={{ width: `${vision.progress}%` }} />
+                                <p className="text-xs font-black text-[#E85002]">{vision.progress}%</p>
+                                <div className="w-16 h-1.5 bg-[#A7A7A7] border border-black overflow-hidden mt-1">
+                                  <div className="h-full bg-[#E85002]" style={{ width: `${vision.progress}%` }} />
                                 </div>
                               </div>
                             )}
-                            <span className="text-[9px] text-slate-400 font-mono shrink-0">
+                            <span className="text-[9px] text-[#333333] font-mono shrink-0">
                               {new Date(vision.targetDate! + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                             </span>
                           </div>
@@ -780,9 +780,9 @@ export default function VisionBoardModule({
                 {noDate.length > 0 && (
                   <div>
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="w-2.5 h-2.5 rounded-full bg-slate-300" />
-                      <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest">No Target Date</h3>
-                      <div className="flex-1 h-px bg-slate-200" />
+                      <div className="w-2.5 h-2.5 bg-[#A7A7A7] border border-black" />
+                      <h3 className="text-xs font-black text-[#333333] uppercase tracking-widest">No Target Date</h3>
+                      <div className="flex-1 h-px bg-[#A7A7A7]" />
                     </div>
                     <div className="pl-5 space-y-3">
                       {noDate.map(vision => {
@@ -791,15 +791,15 @@ export default function VisionBoardModule({
                           <div
                             key={vision.id}
                             onClick={() => setDetailVisionId(prev => prev === vision.id ? null : vision.id)}
-                            className="flex items-center gap-4 p-3.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-violet-300 hover:shadow-md transition-all"
+                            className="flex items-center gap-4 p-3.5 bg-[#F9F9F9] border-2 border-black cursor-pointer hover:shadow-[4px_4px_0px_#A7A7A7] transition-all"
                           >
                             {vision.imageDataUrl
-                              ? <img src={vision.imageDataUrl} alt={vision.title} className="w-14 h-14 rounded-lg object-cover shrink-0" />
-                              : <div className={`w-14 h-14 rounded-lg bg-gradient-to-br ${CARD_BG_COLORS[visionItems.indexOf(vision) % CARD_BG_COLORS.length]} shrink-0`} />
+                              ? <img src={vision.imageDataUrl} alt={vision.title} className="w-14 h-14 object-cover shrink-0 border-2 border-black" />
+                              : <div className={`w-14 h-14 bg-[#333333] border-2 border-black shrink-0`} />
                             }
                             <div className="flex-1 min-w-0">
-                              <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${catMeta.bg} ${catMeta.color}`}>{catMeta.label}</span>
-                              <p className="text-xs font-bold text-slate-800 mt-0.5 truncate">{vision.title}</p>
+                              <span className={`text-[9px] font-bold px-1.5 py-0.5 ${catMeta.bg} ${catMeta.color}`}>{catMeta.label}</span>
+                              <p className="text-xs font-bold text-black mt-0.5 truncate">{vision.title}</p>
                             </div>
                           </div>
                         );
@@ -814,7 +814,7 @@ export default function VisionBoardModule({
 
         {/* ── Detail Drawer ── */}
         {detailVision && (
-          <div className="w-[400px] shrink-0 border-l border-slate-200 bg-white overflow-y-auto flex flex-col">
+          <div className="w-[400px] shrink-0 border-l-2 border-black bg-[#F9F9F9] overflow-y-auto flex flex-col">
             {/* Drawer header */}
             <div className="relative">
               {detailVision.imageDataUrl
@@ -840,7 +840,7 @@ export default function VisionBoardModule({
                   </div>
                   <h3 className="text-white font-black text-sm leading-snug drop-shadow">{detailVision.title}</h3>
                 </div>
-                <button onClick={() => openEdit(detailVision)} className="shrink-0 w-7 h-7 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg flex items-center justify-center text-white transition cursor-pointer">
+                <button onClick={() => openEdit(detailVision)} className="shrink-0 w-7 h-7 bg-white/20 hover:bg-[#E85002] border-2 border-white flex items-center justify-center text-white transition cursor-pointer">
                   <Edit2 className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -848,29 +848,29 @@ export default function VisionBoardModule({
 
             <div className="p-4 space-y-5 flex-1">
               {/* Description */}
-              <p className="text-xs text-slate-600 leading-relaxed">{detailVision.description}</p>
+              <p className="text-xs text-[#333333] leading-relaxed">{detailVision.description}</p>
               {detailVision.motivationStatement && (
-                <div className="bg-violet-50 border border-violet-100 rounded-xl p-3">
-                  <p className="text-[10px] font-bold text-violet-700 uppercase tracking-wider mb-1">Why This Matters</p>
-                  <p className="text-xs text-violet-800 italic leading-relaxed">"{detailVision.motivationStatement}"</p>
+                <div className="bg-[#000000] border-2 border-black p-3 shadow-[2px_2px_0px_#E85002]">
+                  <p className="text-[10px] font-bold text-[#E85002] uppercase tracking-wider mb-1">Why This Matters</p>
+                  <p className="text-xs text-[#F9F9F9] italic leading-relaxed">"{detailVision.motivationStatement}"</p>
                 </div>
               )}
 
               {/* Progress + Date */}
               <div className="grid grid-cols-2 gap-3">
                 {detailVision.progress !== undefined && (
-                  <div className="bg-slate-50 border border-slate-100 rounded-xl p-3">
-                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Progress</p>
-                    <p className="text-xl font-black text-violet-600 mt-0.5">{detailVision.progress}%</p>
-                    <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden mt-1.5">
-                      <div className="h-full bg-violet-500 rounded-full" style={{ width: `${detailVision.progress}%`, boxShadow: '0 0 6px rgba(124,58,237,0.5)' }} />
+                  <div className="bg-white border-2 border-black p-3 shadow-[2px_2px_0px_#000000]">
+                    <p className="text-[9px] font-bold text-[#A7A7A7] uppercase tracking-wider">Progress</p>
+                    <p className="text-xl font-black text-[#E85002] mt-0.5">{detailVision.progress}%</p>
+                    <div className="w-full h-1.5 bg-[#A7A7A7] border border-black overflow-hidden mt-1.5">
+                      <div className="h-full bg-[#E85002]" style={{ width: `${detailVision.progress}%` }} />
                     </div>
                   </div>
                 )}
                 {detailVision.targetDate && (
-                  <div className="bg-slate-50 border border-slate-100 rounded-xl p-3">
-                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Target Date</p>
-                    <p className="text-sm font-black text-slate-800 mt-0.5">
+                  <div className="bg-white border-2 border-black p-3 shadow-[2px_2px_0px_#000000]">
+                    <p className="text-[9px] font-bold text-[#A7A7A7] uppercase tracking-wider">Target Date</p>
+                    <p className="text-sm font-black text-black mt-0.5">
                       {new Date(detailVision.targetDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                     </p>
                   </div>
@@ -881,7 +881,7 @@ export default function VisionBoardModule({
               {detailVision.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
                   {detailVision.tags.map(tag => (
-                    <span key={tag} className="text-[9px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">{tag}</span>
+                    <span key={tag} className="text-[9px] font-bold bg-[#333333] text-[#F9F9F9] border border-black px-2 py-0.5">{tag}</span>
                   ))}
                 </div>
               )}
@@ -889,30 +889,30 @@ export default function VisionBoardModule({
               {/* Milestones */}
               {detailVision.milestones.length > 0 && (
                 <div>
-                  <p className="text-[10px] font-black text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                    <CheckSquare className="w-3.5 h-3.5 text-violet-500" /> Milestones
-                    <span className="text-slate-400 font-semibold normal-case ml-1">
+                  <p className="text-[10px] font-black text-black uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                    <CheckSquare className="w-3.5 h-3.5 text-[#E85002]" /> Milestones
+                    <span className="text-[#A7A7A7] font-semibold normal-case ml-1">
                       {detailVision.milestones.filter(m => m.isCompleted).length}/{detailVision.milestones.length}
                     </span>
                   </p>
                   <div className="space-y-2">
                     {detailVision.milestones.map(ms => (
-                      <div key={ms.id} className="flex items-start gap-2.5 p-2 rounded-lg hover:bg-slate-50 transition">
+                      <div key={ms.id} className="flex items-start gap-2.5 p-2 hover:bg-white border border-transparent hover:border-black transition">
                         <button
                           onClick={() => handleToggleMilestone(detailVision.id, ms.id)}
                           className="mt-0.5 shrink-0 cursor-pointer"
                         >
                           {ms.isCompleted
-                            ? <CheckCircle2 className="w-4 h-4 text-emerald-500 fill-emerald-100" />
-                            : <Circle className="w-4 h-4 text-slate-300" />
+                            ? <CheckCircle2 className="w-4 h-4 text-[#E85002] fill-[#E85002]/20" />
+                            : <Circle className="w-4 h-4 text-[#A7A7A7]" />
                           }
                         </button>
                         <div className="flex-1 min-w-0">
-                          <p className={`text-xs font-semibold leading-snug ${ms.isCompleted ? 'line-through text-slate-400' : 'text-slate-700'}`}>
+                          <p className={`text-xs font-semibold leading-snug ${ms.isCompleted ? 'line-through text-[#A7A7A7]' : 'text-black'}`}>
                             {ms.title || 'Untitled milestone'}
                           </p>
                           {ms.dueDate && (
-                            <p className="text-[9px] text-slate-400 font-mono mt-0.5">
+                            <p className="text-[9px] text-[#333333] font-mono mt-0.5">
                               {new Date(ms.dueDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                             </p>
                           )}
@@ -929,15 +929,15 @@ export default function VisionBoardModule({
                 if (linked.length === 0) return null;
                 return (
                   <div>
-                    <p className="text-[10px] font-black text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                      <CheckSquare className="w-3.5 h-3.5 text-indigo-500" /> Linked Tasks
+                    <p className="text-[10px] font-black text-black uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                      <CheckSquare className="w-3.5 h-3.5 text-[#E85002]" /> Linked Tasks
                     </p>
                     <div className="space-y-1.5">
                       {linked.map(t => (
-                        <div key={t.id} className="flex items-center gap-2 text-xs p-2 bg-indigo-50 border border-indigo-100 rounded-lg">
-                          <div className={`w-2 h-2 rounded-full ${t.status === 'completed' ? 'bg-emerald-500' : t.status === 'in_progress' ? 'bg-amber-500' : 'bg-slate-300'}`} />
-                          <span className="font-semibold text-slate-700 truncate flex-1">{t.title}</span>
-                          <span className="text-[9px] text-slate-400 font-mono shrink-0">Due {t.deadline.slice(5)}</span>
+                        <div key={t.id} className="flex items-center gap-2 text-xs p-2 bg-[#F9F9F9] border-2 border-black">
+                          <div className={`w-2 h-2 border border-black ${t.status === 'completed' ? 'bg-[#E85002]' : t.status === 'in_progress' ? 'bg-[#A7A7A7]' : 'bg-[#333333]'}`} />
+                          <span className="font-semibold text-black truncate flex-1">{t.title}</span>
+                          <span className="text-[9px] text-[#333333] font-mono shrink-0">Due {t.deadline.slice(5)}</span>
                         </div>
                       ))}
                     </div>
@@ -951,15 +951,15 @@ export default function VisionBoardModule({
                 if (linked.length === 0) return null;
                 return (
                   <div>
-                    <p className="text-[10px] font-black text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                      <BookOpen className="w-3.5 h-3.5 text-rose-500" /> Journal Reflections
+                    <p className="text-[10px] font-black text-black uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                      <BookOpen className="w-3.5 h-3.5 text-[#E85002]" /> Journal Reflections
                     </p>
                     <div className="space-y-1.5">
                       {linked.map(e => (
-                        <div key={e.id} className="flex items-center gap-2 text-xs p-2 bg-rose-50 border border-rose-100 rounded-lg cursor-pointer hover:border-rose-300 transition" onClick={() => onNavigate('wellness')}>
-                          <BookOpen className="w-3 h-3 text-rose-400 shrink-0" />
-                          <span className="font-semibold text-slate-700 truncate flex-1">{e.title}</span>
-                          <span className="text-[9px] text-slate-400 shrink-0">{e.dateCreated}</span>
+                        <div key={e.id} className="flex items-center gap-2 text-xs p-2 bg-[#F9F9F9] border-2 border-black cursor-pointer hover:shadow-[2px_2px_0px_#E85002] transition" onClick={() => onNavigate('wellness')}>
+                          <BookOpen className="w-3 h-3 text-[#E85002] shrink-0" />
+                          <span className="font-semibold text-black truncate flex-1">{e.title}</span>
+                          <span className="text-[9px] text-[#333333] shrink-0">{e.dateCreated}</span>
                         </div>
                       ))}
                     </div>
@@ -968,19 +968,19 @@ export default function VisionBoardModule({
               })()}
 
               {/* Quick actions */}
-              <div className="border-t border-slate-100 pt-4 flex flex-wrap gap-2">
-                <button onClick={() => handleTogglePin(detailVision)} className={`flex items-center gap-1.5 px-3 py-1.5 text-[10.5px] font-bold rounded-lg border transition cursor-pointer ${detailVision.isPinned ? 'bg-amber-50 border-amber-200 text-amber-700' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}>
+              <div className="border-t-2 border-black pt-4 flex flex-wrap gap-2">
+                <button onClick={() => handleTogglePin(detailVision)} className={`flex items-center gap-1.5 px-3 py-1.5 text-[10.5px] font-bold border-2 border-black transition cursor-pointer ${detailVision.isPinned ? 'bg-[#E85002] text-black' : 'bg-[#F9F9F9] text-black hover:bg-[#333333] hover:text-white'}`}>
                   {detailVision.isPinned ? <PinOff className="w-3 h-3" /> : <Pin className="w-3 h-3" />}
                   {detailVision.isPinned ? 'Unpin' : 'Pin'}
                 </button>
-                <button onClick={() => handleArchive(detailVision)} className={`flex items-center gap-1.5 px-3 py-1.5 text-[10.5px] font-bold rounded-lg border transition cursor-pointer ${detailVision.isArchived ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}>
+                <button onClick={() => handleArchive(detailVision)} className={`flex items-center gap-1.5 px-3 py-1.5 text-[10.5px] font-bold border-2 border-black transition cursor-pointer ${detailVision.isArchived ? 'bg-[#A7A7A7] text-black' : 'bg-[#F9F9F9] text-black hover:bg-[#333333] hover:text-white'}`}>
                   <Archive className="w-3 h-3" />
                   {detailVision.isArchived ? 'Restore' : 'Archive'}
                 </button>
-                <button onClick={() => { handleDuplicate(detailVision); setDetailVisionId(null); }} className="flex items-center gap-1.5 px-3 py-1.5 text-[10.5px] font-bold rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer">
+                <button onClick={() => { handleDuplicate(detailVision); setDetailVisionId(null); }} className="flex items-center gap-1.5 px-3 py-1.5 text-[10.5px] font-bold border-2 border-black bg-[#F9F9F9] text-black hover:bg-[#333333] hover:text-white transition cursor-pointer">
                   <Copy className="w-3 h-3" /> Duplicate
                 </button>
-                <button onClick={() => { handleDelete(detailVision.id); }} className="flex items-center gap-1.5 px-3 py-1.5 text-[10.5px] font-bold rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 transition cursor-pointer">
+                <button onClick={() => { handleDelete(detailVision.id); }} className="flex items-center gap-1.5 px-3 py-1.5 text-[10.5px] font-bold border-2 border-black bg-black text-[#E85002] hover:bg-[#E85002] hover:text-black transition cursor-pointer">
                   <Trash2 className="w-3 h-3" /> Delete
                 </button>
               </div>
@@ -992,13 +992,13 @@ export default function VisionBoardModule({
       {/* ── Add/Edit Modal ── */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
+          <div className="bg-[#F9F9F9] border-2 border-black shadow-[8px_8px_0px_#000000] w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
 
             {/* Modal header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 shrink-0">
-              <h3 className="text-sm font-black text-slate-900">{editingVision ? 'Edit Vision' : 'Create New Vision'}</h3>
-              <button onClick={() => setShowModal(false)} className="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition cursor-pointer">
-                <X className="w-3.5 h-3.5 text-slate-600" />
+            <div className="flex items-center justify-between px-6 py-4 border-b-2 border-black shrink-0 bg-[#E85002]">
+              <h3 className="text-sm font-black text-black">{editingVision ? 'Edit Vision' : 'Create New Vision'}</h3>
+              <button onClick={() => setShowModal(false)} className="w-7 h-7 bg-black border-2 border-black hover:bg-[#333333] flex items-center justify-center transition cursor-pointer">
+                <X className="w-3.5 h-3.5 text-white" />
               </button>
             </div>
 
@@ -1006,15 +1006,15 @@ export default function VisionBoardModule({
             <div className="flex flex-1 overflow-hidden">
 
               {/* Left: Image zone */}
-              <div className="w-64 shrink-0 border-r border-slate-100 p-4 flex flex-col gap-3">
-                <p className="text-[10px] font-black text-slate-600 uppercase tracking-wider">Cover Image *</p>
+              <div className="w-64 shrink-0 border-r-2 border-black p-4 flex flex-col gap-3 bg-[#F9F9F9]">
+                <p className="text-[10px] font-black text-black uppercase tracking-wider">Cover Image *</p>
 
                 {formImageDataUrl ? (
-                  <div className="relative flex-1 min-h-48 rounded-xl overflow-hidden">
+                  <div className="relative flex-1 min-h-48 overflow-hidden border-2 border-black">
                     <img src={formImageDataUrl} alt="Preview" className="w-full h-full object-cover" />
                     <button
                       onClick={() => setFormImageDataUrl('')}
-                      className="absolute top-2 right-2 w-6 h-6 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center text-white transition cursor-pointer"
+                      className="absolute top-2 right-2 w-6 h-6 bg-black/70 hover:bg-[#E85002] border border-white flex items-center justify-center text-white transition cursor-pointer"
                     >
                       <X className="w-3 h-3" />
                     </button>
@@ -1029,18 +1029,18 @@ export default function VisionBoardModule({
                       const file = e.dataTransfer.files[0];
                       if (file && file.type.startsWith('image/')) await handleFileChange(file);
                     }}
-                    className={`flex-1 min-h-48 border-2 border-dashed rounded-xl flex flex-col items-center justify-center gap-2.5 text-center p-4 transition-colors ${dragOver ? 'border-violet-400 bg-violet-50' : 'border-slate-200 hover:border-violet-300 hover:bg-slate-50'}`}
+                    className={`flex-1 min-h-48 border-2 border-dashed flex flex-col items-center justify-center gap-2.5 text-center p-4 transition-colors ${dragOver ? 'border-[#E85002] bg-[#E85002]/10' : 'border-black hover:border-[#E85002] hover:bg-white'}`}
                   >
                     {formImageLoading ? (
-                      <div className="animate-pulse text-xs text-slate-400 font-semibold">Processing...</div>
+                      <div className="animate-pulse text-xs text-[#333333] font-semibold">Processing...</div>
                     ) : (
                       <>
-                        <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
-                          <ImageIcon className="w-5 h-5 text-slate-400" />
+                        <div className="w-10 h-10 bg-[#333333] border-2 border-black flex items-center justify-center">
+                          <ImageIcon className="w-5 h-5 text-[#E85002]" />
                         </div>
                         <div>
-                          <p className="text-[10.5px] font-bold text-slate-600">Paste, Drop or Upload</p>
-                          <p className="text-[9.5px] text-slate-400 mt-0.5">Ctrl+V anywhere in this dialog</p>
+                          <p className="text-[10.5px] font-bold text-black">Paste, Drop or Upload</p>
+                          <p className="text-[9.5px] text-[#333333] mt-0.5">Ctrl+V anywhere in this dialog</p>
                         </div>
                       </>
                     )}
@@ -1049,7 +1049,7 @@ export default function VisionBoardModule({
 
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="flex items-center justify-center gap-1.5 px-3 py-2 border border-slate-200 rounded-xl text-[10.5px] font-bold text-slate-600 hover:bg-slate-50 hover:border-violet-300 transition cursor-pointer"
+                  className="flex items-center justify-center gap-1.5 px-3 py-2 border-2 border-black text-[10.5px] font-bold text-black hover:bg-[#E85002] transition cursor-pointer"
                 >
                   <Upload className="w-3.5 h-3.5" /> Upload Image
                 </button>
@@ -1064,7 +1064,7 @@ export default function VisionBoardModule({
                     e.target.value = '';
                   }}
                 />
-                <p className="text-[9px] text-slate-400 text-center">JPG · PNG · WEBP supported. Auto-compressed.</p>
+                <p className="text-[9px] text-[#333333] text-center">JPG · PNG · WEBP supported. Auto-compressed.</p>
               </div>
 
               {/* Right: Form fields */}
@@ -1072,51 +1072,51 @@ export default function VisionBoardModule({
 
                 {/* Title */}
                 <div>
-                  <label className="text-[10px] font-black text-slate-600 uppercase tracking-wider block mb-1">Vision Title *</label>
+                  <label className="text-[10px] font-black text-black uppercase tracking-wider block mb-1">Vision Title *</label>
                   <input
                     type="text"
                     maxLength={80}
                     placeholder="e.g. Graduate with First Class Honours"
                     value={formTitle}
                     onChange={e => setFormTitle(e.target.value)}
-                    className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800 placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent"
+                    className="w-full border-2 border-black px-3 py-2 text-sm font-semibold text-black placeholder-[#A7A7A7] focus:outline-none focus:ring-2 focus:ring-[#E85002] bg-white"
                   />
                 </div>
 
                 {/* Description */}
                 <div>
-                  <label className="text-[10px] font-black text-slate-600 uppercase tracking-wider block mb-1">Description</label>
+                  <label className="text-[10px] font-black text-black uppercase tracking-wider block mb-1">Description</label>
                   <textarea
                     maxLength={280}
                     rows={2}
                     placeholder="Describe your vision and what achieving it means to you..."
                     value={formDesc}
                     onChange={e => setFormDesc(e.target.value)}
-                    className="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 placeholder-slate-300 resize-none focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent"
+                    className="w-full border-2 border-black px-3 py-2 text-xs font-medium text-black placeholder-[#A7A7A7] resize-none focus:outline-none focus:ring-2 focus:ring-[#E85002] bg-white"
                   />
                 </div>
 
                 {/* Motivation */}
                 <div>
-                  <label className="text-[10px] font-black text-slate-600 uppercase tracking-wider block mb-1">Motivation Statement <span className="text-slate-400 normal-case font-semibold">(optional)</span></label>
+                  <label className="text-[10px] font-black text-black uppercase tracking-wider block mb-1">Motivation Statement <span className="text-[#A7A7A7] normal-case font-semibold">(optional)</span></label>
                   <input
                     type="text"
                     maxLength={160}
                     placeholder="Your personal 'why' affirmation..."
                     value={formMotivation}
                     onChange={e => setFormMotivation(e.target.value)}
-                    className="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent"
+                    className="w-full border-2 border-black px-3 py-2 text-xs font-medium text-black placeholder-[#A7A7A7] focus:outline-none focus:ring-2 focus:ring-[#E85002] bg-white"
                   />
                 </div>
 
                 {/* Category + Status row */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[10px] font-black text-slate-600 uppercase tracking-wider block mb-1">Category</label>
+                    <label className="text-[10px] font-black text-black uppercase tracking-wider block mb-1">Category</label>
                     <select
                       value={formCategory}
                       onChange={e => setFormCategory(e.target.value as VisionCategory)}
-                      className="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-400"
+                      className="w-full border-2 border-black px-3 py-2 text-xs font-semibold text-black cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#E85002] bg-white"
                     >
                       {(Object.keys(CATEGORY_META) as VisionCategory[]).map(cat => (
                         <option key={cat} value={cat}>{CATEGORY_META[cat].label}</option>
@@ -1124,11 +1124,11 @@ export default function VisionBoardModule({
                     </select>
                   </div>
                   <div>
-                    <label className="text-[10px] font-black text-slate-600 uppercase tracking-wider block mb-1">Status</label>
+                    <label className="text-[10px] font-black text-black uppercase tracking-wider block mb-1">Status</label>
                     <select
                       value={formStatus}
                       onChange={e => setFormStatus(e.target.value as VisionStatus)}
-                      className="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-400"
+                      className="w-full border-2 border-black px-3 py-2 text-xs font-semibold text-black cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#E85002] bg-white"
                     >
                       {(Object.keys(STATUS_META) as VisionStatus[]).map(s => (
                         <option key={s} value={s}>{STATUS_META[s].label}</option>
@@ -1155,11 +1155,11 @@ export default function VisionBoardModule({
                 {/* Priority + Target date */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[10px] font-black text-slate-600 uppercase tracking-wider block mb-1">Priority</label>
+                    <label className="text-[10px] font-black text-black uppercase tracking-wider block mb-1">Priority</label>
                     <select
                       value={formPriority}
                       onChange={e => setFormPriority(e.target.value as any)}
-                      className="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-400"
+                      className="w-full border-2 border-black px-3 py-2 text-xs font-semibold text-black cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#E85002] bg-white"
                     >
                       <option value="low">Low</option>
                       <option value="medium">Medium</option>
@@ -1167,12 +1167,12 @@ export default function VisionBoardModule({
                     </select>
                   </div>
                   <div>
-                    <label className="text-[10px] font-black text-slate-600 uppercase tracking-wider block mb-1">Target Date <span className="text-slate-400 normal-case font-semibold">(optional)</span></label>
+                    <label className="text-[10px] font-black text-black uppercase tracking-wider block mb-1">Target Date <span className="text-[#A7A7A7] normal-case font-semibold">(optional)</span></label>
                     <input
                       type="date"
                       value={formTargetDate}
                       onChange={e => setFormTargetDate(e.target.value)}
-                      className="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-400"
+                      className="w-full border-2 border-black px-3 py-2 text-xs font-semibold text-black cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#E85002] bg-white"
                     />
                   </div>
                 </div>
@@ -1184,24 +1184,24 @@ export default function VisionBoardModule({
                       type="checkbox"
                       checked={formEnableProgress}
                       onChange={e => setFormEnableProgress(e.target.checked)}
-                      className="rounded text-violet-600"
+                      className="accent-[#E85002]"
                     />
-                    <span className="text-[10px] font-black text-slate-600 uppercase tracking-wider">Track Progress</span>
+                    <span className="text-[10px] font-black text-black uppercase tracking-wider">Track Progress</span>
                   </label>
                   {formEnableProgress && (
                     <div className="mt-2 space-y-1">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] text-slate-500 font-semibold">0%</span>
-                        <span className="text-xs font-black text-violet-600">{formProgress}%</span>
-                        <span className="text-[10px] text-slate-500 font-semibold">100%</span>
+                        <span className="text-[10px] text-[#333333] font-semibold">0%</span>
+                        <span className="text-xs font-black text-[#E85002]">{formProgress}%</span>
+                        <span className="text-[10px] text-[#333333] font-semibold">100%</span>
                       </div>
                       <input
                         type="range" min={0} max={100} value={formProgress}
                         onChange={e => setFormProgress(Number(e.target.value))}
-                        className="w-full accent-violet-600 cursor-pointer"
+                        className="w-full accent-[#E85002] cursor-pointer"
                       />
-                      <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-violet-500 rounded-full transition-all" style={{ width: `${formProgress}%`, boxShadow: '0 0 6px rgba(124,58,237,0.4)' }} />
+                      <div className="w-full h-2 bg-[#A7A7A7] border border-black overflow-hidden">
+                        <div className="h-full bg-[#E85002] transition-all" style={{ width: `${formProgress}%` }} />
                       </div>
                     </div>
                   )}
@@ -1209,12 +1209,12 @@ export default function VisionBoardModule({
 
                 {/* Tags */}
                 <div>
-                  <label className="text-[10px] font-black text-slate-600 uppercase tracking-wider block mb-1">Tags <span className="text-slate-400 normal-case font-semibold">(press Enter to add)</span></label>
+                  <label className="text-[10px] font-black text-black uppercase tracking-wider block mb-1">Tags <span className="text-[#A7A7A7] normal-case font-semibold">(press Enter to add)</span></label>
                   <div className="flex flex-wrap gap-1.5 mb-1.5">
                     {formTags.map(tag => (
-                      <span key={tag} className="text-[9px] font-bold bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <span key={tag} className="text-[9px] font-bold bg-[#333333] text-[#F9F9F9] border border-black px-2 py-0.5 flex items-center gap-1">
                         {tag}
-                        <button onClick={() => setFormTags(f => f.filter(t => t !== tag))} className="hover:text-rose-500 transition cursor-pointer"><X className="w-2.5 h-2.5" /></button>
+                        <button onClick={() => setFormTags(f => f.filter(t => t !== tag))} className="hover:text-[#E85002] transition cursor-pointer"><X className="w-2.5 h-2.5" /></button>
                       </span>
                     ))}
                   </div>
@@ -1224,33 +1224,33 @@ export default function VisionBoardModule({
                     value={formTagInput}
                     onChange={e => setFormTagInput(e.target.value)}
                     onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addTag(); } }}
-                    className="w-full border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-medium text-slate-700 placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-violet-400"
+                    className="w-full border-2 border-black px-3 py-1.5 text-xs font-medium text-black placeholder-[#A7A7A7] focus:outline-none focus:ring-2 focus:ring-[#E85002] bg-white"
                   />
                 </div>
 
                 {/* Pin + Options */}
                 <div className="flex items-center gap-4">
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" checked={formIsPinned} onChange={e => setFormIsPinned(e.target.checked)} className="rounded text-violet-600" />
-                    <span className="text-[10.5px] font-bold text-slate-600">Pin to Dashboard</span>
+                    <input type="checkbox" checked={formIsPinned} onChange={e => setFormIsPinned(e.target.checked)} className="accent-[#E85002]" />
+                    <span className="text-[10.5px] font-bold text-black">Pin to Dashboard</span>
                   </label>
                 </div>
 
                 {/* Milestones accordion */}
-                <div className="border border-slate-200 rounded-xl overflow-hidden">
+                <div className="border-2 border-black overflow-hidden">
                   <button
                     onClick={() => setShowMilestones(!showMilestones)}
-                    className="w-full flex items-center justify-between px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100 transition cursor-pointer"
+                    className="w-full flex items-center justify-between px-3.5 py-2.5 bg-[#333333] hover:bg-[#000000] transition cursor-pointer"
                   >
-                    <span className="text-[10.5px] font-black text-slate-700 flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-violet-500" />
+                    <span className="text-[10.5px] font-black text-[#F9F9F9] flex items-center gap-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#E85002]" />
                       Milestones ({formMilestones.length})
                     </span>
-                    {showMilestones ? <ChevronUp className="w-3.5 h-3.5 text-slate-400" /> : <ChevronDown className="w-3.5 h-3.5 text-slate-400" />}
+                    {showMilestones ? <ChevronUp className="w-3.5 h-3.5 text-[#A7A7A7]" /> : <ChevronDown className="w-3.5 h-3.5 text-[#A7A7A7]" />}
                   </button>
 
                   {showMilestones && (
-                    <div className="p-3 space-y-2.5 border-t border-slate-100">
+                    <div className="p-3 space-y-2.5 border-t-2 border-black bg-[#F9F9F9]">
                       {formMilestones.map((ms, i) => (
                         <div key={ms.id} className="flex items-center gap-2">
                           <input
@@ -1258,21 +1258,21 @@ export default function VisionBoardModule({
                             placeholder={`Milestone ${i + 1}`}
                             value={ms.title}
                             onChange={e => setFormMilestones(prev => prev.map((m, idx) => idx === i ? { ...m, title: e.target.value } : m))}
-                            className="flex-1 border border-slate-200 rounded-lg px-2.5 py-1.5 text-[10.5px] font-medium text-slate-700 placeholder-slate-300 focus:outline-none focus:ring-1 focus:ring-violet-400"
+                            className="flex-1 border-2 border-black px-2.5 py-1.5 text-[10.5px] font-medium text-black placeholder-[#A7A7A7] focus:outline-none focus:ring-1 focus:ring-[#E85002] bg-white"
                           />
                           <input
                             type="date"
                             value={ms.dueDate ?? ''}
                             onChange={e => setFormMilestones(prev => prev.map((m, idx) => idx === i ? { ...m, dueDate: e.target.value } : m))}
-                            className="border border-slate-200 rounded-lg px-2 py-1.5 text-[10px] text-slate-600 focus:outline-none focus:ring-1 focus:ring-violet-400 cursor-pointer"
+                            className="border-2 border-black px-2 py-1.5 text-[10px] text-black focus:outline-none focus:ring-1 focus:ring-[#E85002] cursor-pointer bg-white"
                           />
-                          <button onClick={() => setFormMilestones(prev => prev.filter((_, idx) => idx !== i))} className="text-slate-300 hover:text-rose-400 transition cursor-pointer">
+                          <button onClick={() => setFormMilestones(prev => prev.filter((_, idx) => idx !== i))} className="text-[#A7A7A7] hover:text-[#E85002] transition cursor-pointer">
                             <X className="w-3.5 h-3.5" />
                           </button>
                         </div>
                       ))}
                       {formMilestones.length < 10 && (
-                        <button onClick={addMilestone} className="flex items-center gap-1 text-[10.5px] font-bold text-violet-600 hover:text-violet-700 transition cursor-pointer">
+                        <button onClick={addMilestone} className="flex items-center gap-1 text-[10.5px] font-bold text-[#E85002] hover:text-black transition cursor-pointer">
                           <Plus className="w-3.5 h-3.5" /> Add Milestone
                         </button>
                       )}
@@ -1283,21 +1283,21 @@ export default function VisionBoardModule({
             </div>
 
             {/* Modal footer */}
-            <div className="flex items-center justify-between px-6 py-4 border-t border-slate-100 bg-slate-50 shrink-0">
-              <p className="text-[10px] text-slate-400 font-medium">
+            <div className="flex items-center justify-between px-6 py-4 border-t-2 border-black bg-[#333333] shrink-0">
+              <p className="text-[10px] text-[#A7A7A7] font-medium">
                 {!formImageDataUrl ? '⚠ Upload a cover image to continue' : !formTitle.trim() ? '⚠ Add a title to continue' : '✓ Ready to save'}
               </p>
               <div className="flex gap-2.5">
                 <button
                   onClick={() => setShowModal(false)}
-                  className="px-4 py-1.5 border border-slate-200 text-slate-600 text-[11px] font-bold rounded-lg hover:bg-slate-100 transition cursor-pointer"
+                  className="px-4 py-1.5 border-2 border-[#A7A7A7] text-[#A7A7A7] text-[11px] font-bold hover:bg-[#A7A7A7] hover:text-black transition cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSave}
                   disabled={!formTitle.trim() || !formImageDataUrl}
-                  className="px-5 py-1.5 bg-violet-600 hover:bg-violet-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-[11px] font-bold rounded-lg shadow-sm transition active:scale-95 cursor-pointer"
+                  className="px-5 py-1.5 bg-[#E85002] hover:bg-black hover:text-[#E85002] disabled:opacity-40 disabled:cursor-not-allowed text-black border-2 border-[#E85002] text-[11px] font-bold shadow-[2px_2px_0px_rgba(255,255,255,0.2)] transition active:translate-x-[1px] active:translate-y-[1px] cursor-pointer"
                 >
                   {editingVision ? 'Update Vision' : 'Save Vision →'}
                 </button>
