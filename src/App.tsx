@@ -981,6 +981,9 @@ export default function App() {
                 visionItems={visionItems}
                 dashboardPins={dashboardPins}
                 onNavigateVision={() => setActiveTab('visionboard')}
+                journalEntries={journalEntries}
+                onUpdateJournalEntries={setJournalEntries}
+                onSelectNote={(id) => { setSelectedNoteId(id); setActiveTab('notes'); }}
               />
             </div>
           )}

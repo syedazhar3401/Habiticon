@@ -3,12 +3,38 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
-import { Task, CalendarEvent, Course, Note, AppNotification, HabitCategory, HabitLog, VisionItem, DashboardVisionPin } from '../types';
+import React, { useState } from 'react';
+import { 
+  Task, 
+  CalendarEvent, 
+  Course, 
+  Note, 
+  HabitCategory, 
+  HabitLog, 
+  VisionItem, 
+  DashboardVisionPin,
+  JournalEntry,
+  MoodType
+} from '../types';
 import {
-  CheckSquare, Calendar as CalIcon, Clock, Award, FolderMinus, Sparkles, AlertCircle, ArrowRight, BookOpen, Compass, Image as ImageIcon, Pin, Target, TrendingUp
+  CheckSquare, 
+  Calendar as CalIcon, 
+  Clock, 
+  Award, 
+  Sparkles, 
+  ArrowRight, 
+  BookOpen, 
+  Compass, 
+  Image as ImageIcon, 
+  Pin, 
+  Target, 
+  Flame, 
+  Heart, 
+  FileText, 
+  Cpu, 
+  Activity, 
+  Terminal
 } from 'lucide-react';
-import HabitTracker from './HabitTracker';
 
 interface DashboardModuleProps {
   tasks: Task[];
@@ -25,6 +51,9 @@ interface DashboardModuleProps {
   visionItems: VisionItem[];
   dashboardPins: DashboardVisionPin[];
   onNavigateVision: () => void;
+  journalEntries: JournalEntry[];
+  onUpdateJournalEntries: React.Dispatch<React.SetStateAction<JournalEntry[]>>;
+  onSelectNote: (id: string) => void;
 }
 
 export default function DashboardModule({
@@ -36,27 +65,18 @@ export default function DashboardModule({
   onUpdateTask,
   habitCategories,
   habitLogs,
-  onUpdateHabitCategories,
   onUpdateHabitLogs,
   visionItems,
   dashboardPins,
-  onNavigateVision
+  onNavigateVision,
+  journalEntries,
+  onUpdateJournalEntries,
+  onSelectNote
 }: DashboardModuleProps) {
-  // Filter for today's classes map from current date 2026-05-30
+  // Mock Date YYYY-MM-DD
   const todayString = '2026-05-30';
-  const todayEvents = events.filter(e => e.date === todayString);
 
-  // Filter high priority tasks
-  const urgentTasks = tasks
-    .filter(t => t.status !== 'completed')
-    .sort((a,b) => {
-      if (a.priority === 'high' && b.priority !== 'high') return -1;
-      if (a.priority !== 'high' && b.priority === 'high') return 1;
-      return a.deadline.localeCompare(b.deadline);
-    })
-    .slice(0, 4);
-
-  // Progress metrics computed
+  // --- 1. Quick Stats calculations ---
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter(t => t.status === 'completed').length;
   const taskCompletionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
@@ -66,6 +86,173 @@ export default function DashboardModule({
     .filter(t => t.status !== 'completed')
     .reduce((acc, t) => acc + t.estimatedHours, 0);
 
+  // --- 2. Calendar filter for today's classes ---
+  const todayEvents = events.filter(e => e.date === todayString);
+
+  // --- 3. Filter high-priority urgent tasks ---
+  const urgentTasks = tasks
+    .filter(t => t.status !== 'completed')
+    .sort((a, b) => {
+      if (a.priority === 'high' && b.priority !== 'high') return -1;
+      if (a.priority !== 'high' && b.priority === 'high') return 1;
+      return a.deadline.localeCompare(b.deadline);
+    })
+    .slice(0, 3);
+
+  // --- 4. Habit calculations for today ---
+  const latestHabitLog = habitLogs.find(l => l.date === todayString) || {
+    id: `log-temp-${Date.now()}`,
+    date: todayString,
+    completedHabits: {}
+  };
+
+  const calculateOverallHabitProgress = (log: HabitLog) => {
+    const totalHabits = habitCategories.reduce((acc, cat) => acc + (cat.habits?.length || 0), 0);
+    if (totalHabits === 0) return 0;
+    
+    let completedCount = 0;
+    habitCategories.forEach(cat => {
+      cat.habits?.forEach(h => {
+        if (log.completedHabits[h.id]) {
+          completedCount++;
+        }
+      });
+    });
+    return Math.round((completedCount / totalHabits) * 100);
+  };
+
+  const calculateHabitStreaks = () => {
+    if (!habitLogs || habitLogs.length === 0) return 0;
+    const sorted = [...habitLogs]
+      .filter(l => Object.values(l.completedHabits).some(Boolean))
+      .map(l => l.date)
+      .sort();
+      
+    if (sorted.length === 0) return 0;
+    
+    let currentStreak = 0;
+    let lastDate: Date | null = null;
+    
+    for (let i = sorted.length - 1; i >= 0; i--) {
+      const d = new Date(sorted[i]);
+      if (lastDate === null) {
+        currentStreak = 1;
+      } else {
+        const diff = Math.abs(lastDate.getTime() - d.getTime());
+        const diffDays = Math.ceil(diff / (1000 * 60 * 60 * 24));
+        if (diffDays === 1) {
+          currentStreak++;
+        } else if (diffDays > 1) {
+          break;
+        }
+      }
+      lastDate = d;
+    }
+    return currentStreak;
+  };
+
+  const todayHabitProgress = calculateOverallHabitProgress(latestHabitLog);
+  const currentHabitStreak = calculateHabitStreaks();
+
+  const handleToggleHabit = (habitId: string) => {
+    const logExists = habitLogs.some(l => l.date === todayString);
+    let updatedLogs: HabitLog[];
+    
+    if (logExists) {
+      updatedLogs = habitLogs.map(l => {
+        if (l.date === todayString) {
+          return {
+            ...l,
+            completedHabits: {
+              ...l.completedHabits,
+              [habitId]: !l.completedHabits[habitId]
+            }
+          };
+        }
+        return l;
+      });
+    } else {
+      const newLog: HabitLog = {
+        id: `log-${Date.now()}`,
+        date: todayString,
+        completedHabits: {
+          [habitId]: true
+        }
+      };
+      updatedLogs = [newLog, ...habitLogs].sort((a, b) => b.date.localeCompare(a.date));
+    }
+    onUpdateHabitLogs(updatedLogs);
+  };
+
+  // --- 5. Wellness logger & calculations ---
+  const [selectedMood, setSelectedMood] = useState<MoodType>('happy');
+  const [gratitudeInput, setGratitudeInput] = useState('');
+  const [showLogSuccess, setShowLogSuccess] = useState(false);
+
+  const latestJournal = journalEntries[0];
+  const totalJournals = journalEntries.length;
+  const avgMoodScore = totalJournals > 0
+    ? (journalEntries.reduce((sum, entry) => sum + entry.mood.score, 0) / totalJournals).toFixed(1)
+    : 'N/A';
+
+  const handleQuickWellnessLog = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!gratitudeInput.trim()) return;
+
+    const newEntry: JournalEntry = {
+      id: `entry-quick-${Date.now()}`,
+      userId: 'student-1',
+      dateCreated: todayString,
+      timeCreated: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' }),
+      lastModified: new Date().toISOString(),
+      type: 'gratitude',
+      title: 'Quick Dashboard Check-In',
+      content: `<p>Logged via Quick Check-in. Gratitude: ${gratitudeInput.trim()}</p>`,
+      mood: {
+        score: selectedMood === 'very_happy' ? 10 : selectedMood === 'happy' ? 8 : selectedMood === 'neutral' ? 5 : selectedMood === 'stressed' ? 3 : 2,
+        type: selectedMood,
+        energyLevel: 6,
+        stressLevel: selectedMood === 'stressed' ? 8 : 3,
+        motivationLevel: 7,
+        sleepQuality: 7
+      },
+      wellness: {
+        anxietyLevel: selectedMood === 'stressed' ? 7 : 2,
+        focusLevel: 7,
+        exerciseCompleted: false,
+        workloadPressure: 5,
+        assignmentConfidence: 7,
+        productivityRating: 7
+      },
+      gratitudeItems: [gratitudeInput.trim()],
+      tags: ['QuickLog', 'Gratitude'],
+      images: [],
+      isLocked: false
+    };
+
+    onUpdateJournalEntries(prev => [newEntry, ...prev]);
+    setGratitudeInput('');
+    setShowLogSuccess(true);
+    setTimeout(() => setShowLogSuccess(false), 3500);
+  };
+
+  // --- 6. Recent Notes calculations ---
+  const recentNotes = [...notes]
+    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+    .slice(0, 3);
+
+  // --- 7. Vision Board calculations ---
+  const pinnedIds = [...dashboardPins]
+    .sort((a, b) => a.displayOrder - b.displayOrder)
+    .map(p => p.visionId);
+  const pinnedVisions = pinnedIds
+    .map(id => visionItems.find(v => v.id === id && !v.isArchived))
+    .filter(Boolean) as VisionItem[];
+  const unpinnedVisions = visionItems
+    .filter(v => !v.isArchived && !v.isPinned)
+    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  const displayVisions = [...pinnedVisions, ...unpinnedVisions].slice(0, 2);
+
   const getCourseForEvent = (courseId?: string) => {
     return courses.find(c => c.id === courseId);
   };
@@ -74,105 +261,122 @@ export default function DashboardModule({
     onUpdateTask(id, { status: 'completed', progress: 100 });
   };
 
+  const moodIcons: { type: MoodType; icon: string; label: string; activeColor: string }[] = [
+    { type: 'very_happy', icon: '😄', label: 'Very Happy', activeColor: 'bg-[#E85002] text-black border-2 border-black' },
+    { type: 'happy', icon: '🙂', label: 'Happy', activeColor: 'bg-[#E85002] text-black border-2 border-black' },
+    { type: 'neutral', icon: '😐', label: 'Neutral', activeColor: 'bg-[#A7A7A7] text-black border-2 border-black' },
+    { type: 'stressed', icon: '😫', label: 'Stressed', activeColor: 'bg-black text-[#E85002] border-2 border-black' },
+    { type: 'sad', icon: '😢', label: 'Sad', activeColor: 'bg-[#333333] text-white border-2 border-black' }
+  ];
+
   return (
-    <div className="space-y-6 font-sans text-black">
+    <div className="space-y-6 font-sans text-black select-none">
       
-      {/* 1. Quick Stats row */}
+      {/* 1. Quick Stats Row (Uniform Neo-Brutalist Layout) */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {/* Metric 1 - Style A: High-Contrast Industrial */}
-        <div className="neo-card-a p-4 transition-all duration-200 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none cursor-pointer">
-          <span className="text-[10px] font-black text-black uppercase tracking-wider block">Task Completion Rate</span>
-          <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-2xl font-black text-black">{taskCompletionRate}%</span>
-            <span className="text-[10px] text-[#333333] font-bold font-mono">({completedTasks}/{totalTasks} solved)</span>
+        {/* Stat 1 - Task Completion */}
+        <div 
+          onClick={() => onNavigate('tasks')}
+          className="bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#000000] hover:shadow-[4px_4px_0px_#E85002] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all duration-150 cursor-pointer"
+        >
+          <span className="text-[10px] font-black text-[#646464] uppercase tracking-wider block">Task Solve Index</span>
+          <div className="flex items-baseline gap-1.5 mt-1">
+            <span className="text-xl font-black text-black">{taskCompletionRate}%</span>
+            <span className="text-[9px] text-[#333333] font-bold font-mono">({completedTasks}/{totalTasks} completed)</span>
           </div>
-          <div className="w-full bg-[#A7A7A7] h-2 border border-black rounded-none mt-3 overflow-hidden">
+          <div className="w-full bg-[#A7A7A7] h-2 border-2 border-black mt-3 overflow-hidden">
             <div className="bg-[#E85002] h-full transition-all" style={{ width: `${taskCompletionRate}%` }} />
           </div>
         </div>
 
-        {/* Metric 2 - Style B: Kinetic Inversion */}
-        <div className="neo-card-b p-4 transition-all duration-200 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none cursor-pointer">
-          <span className="text-[10px] font-black text-black uppercase tracking-wider block">Workload Remaining</span>
-          <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-2xl font-black text-black">{remainingHours} hrs</span>
-            <span className="text-[10px] text-black font-bold font-mono">from {totalHours}h estimated</span>
+        {/* Stat 2 - Workload Remaining */}
+        <div 
+          onClick={() => onNavigate('tasks')}
+          className="bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#000000] hover:shadow-[4px_4px_0px_#E85002] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all duration-150 cursor-pointer"
+        >
+          <span className="text-[10px] font-black text-[#646464] uppercase tracking-wider block">Remaining Hours</span>
+          <div className="flex items-baseline gap-1.5 mt-1">
+            <span className="text-xl font-black text-black">{remainingHours} hrs</span>
+            <span className="text-[9px] text-[#333333] font-bold font-mono">from {totalHours}h estimated</span>
           </div>
-          <div className="w-full bg-black/20 h-2 border border-black rounded-none mt-3 overflow-hidden">
+          <div className="w-full bg-[#A7A7A7] h-2 border-2 border-black mt-3 overflow-hidden">
             <div className="bg-black h-full transition-all" style={{ width: `${totalHours > 0 ? (remainingHours / totalHours) * 100 : 0}%` }} />
           </div>
         </div>
 
-        {/* Metric 3 - Style C: Deep Mode Noir */}
-        <div className="neo-card-c p-4 transition-all duration-200 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none cursor-pointer">
-          <span className="text-[10px] font-black text-[#A7A7A7] uppercase tracking-wider block">Active Enrolled Courses</span>
-          <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-2xl font-black text-[#F9F9F9]">{courses.length} Classes</span>
-            <span className="text-[10px] text-[#A7A7A7] font-semibold">Semester 1 active</span>
+        {/* Stat 3 - Enrolled Courses */}
+        <div 
+          onClick={() => onNavigate('courses')}
+          className="bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#000000] hover:shadow-[4px_4px_0px_#E85002] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all duration-150 cursor-pointer"
+        >
+          <span className="text-[10px] font-black text-[#646464] uppercase tracking-wider block">Academic Courses</span>
+          <div className="flex items-baseline gap-1.5 mt-1">
+            <span className="text-xl font-black text-black">{courses.length} Active</span>
+            <span className="text-[9px] text-[#646464] font-semibold uppercase">Semester 1</span>
           </div>
-          <div className="text-[9px] font-black text-[#E85002] mt-2.5 uppercase tracking-widest">
-            Syllabus indexed fully
+          <div className="text-[9px] font-black text-[#E85002] mt-2.5 uppercase tracking-widest font-mono">
+            Syllabus fully synced
           </div>
         </div>
 
-        {/* Metric 4 - Style D: Soft Claymorphic */}
-        <div className="clay-card p-4 transition-all duration-200 hover:scale-[1.01] cursor-pointer border border-[#e2e8f0]/60">
-          <span className="text-[10px] font-bold text-[#646464] uppercase tracking-wider block">Drafted Lecture Notes</span>
-          <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-2xl font-black text-[#333333]">{notes.length} Topics</span>
-            <span className="text-[10px] text-[#A7A7A7] font-semibold font-mono">Notion Directory backed</span>
+        {/* Stat 4 - Drafted Notes */}
+        <div 
+          onClick={() => onNavigate('notes')}
+          className="bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#000000] hover:shadow-[4px_4px_0px_#E85002] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all duration-150 cursor-pointer"
+        >
+          <span className="text-[10px] font-black text-[#646464] uppercase tracking-wider block">Notebook Directory</span>
+          <div className="flex items-baseline gap-1.5 mt-1">
+            <span className="text-xl font-black text-black">{notes.length} Topics</span>
+            <span className="text-[9px] text-[#333333] font-bold font-mono">Checked favorites</span>
           </div>
-          <div className="text-[9px] font-bold text-[#E85002] mt-2.5 uppercase tracking-widest">
-            Ready for midterm study
+          <div className="text-[9px] font-black text-black mt-2.5 uppercase tracking-widest font-mono">
+            Synchronized with LocalStorage
           </div>
         </div>
       </div>
 
-      {/* 2. Interactive Bento Grid Columns */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+      {/* 2. Bento Grid Columns (Organized left-to-right by priority) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* Class Agenda schedule (Col-8) */}
-        <div className="lg:col-span-8 space-y-4">
+        {/* ==================== LEFT COLUMN (PRIORITY 1: IMMEDIATE / OPERATIONAL) ==================== */}
+        <div className="space-y-6">
           
-          {/* Today's schedule card - Style A */}
-          <div className="neo-card-a p-4">
+          {/* Today's Class Schedule (Calendar Preview) */}
+          <div className="bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#000000]">
             <div className="flex justify-between items-center mb-3 border-b-2 border-black pb-2">
-              <h3 className="text-sm font-black text-black flex items-center gap-1.5 uppercase tracking-wider">
-                <CalIcon className="w-4 h-4 text-[#E85002] animate-pulse" />
-                University Class Planner (Today's Lecture Calendar)
+              <h3 className="text-xs font-black text-black flex items-center gap-1.5 uppercase tracking-wider">
+                <CalIcon className="w-4 h-4 text-[#E85002]" />
+                Today's Class Agenda
               </h3>
-              <button 
-                onClick={() => onNavigate('calendar')} 
-                className="text-[11px] bg-black text-white hover:bg-[#E85002] hover:text-black font-black px-2.5 py-0.5 border border-black transition cursor-pointer"
-              >
-                Expand Planner →
-              </button>
+              <span className="text-[9px] font-mono font-bold text-black uppercase tracking-wider">
+                {todayString}
+              </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-3 min-h-[170px] flex flex-col justify-center">
               {todayEvents.map(evt => {
                 const crs = getCourseForEvent(evt.courseId);
                 return (
                   <div 
                     key={evt.id} 
-                    className="p-3 bg-white border-2 border-black shadow-[2px_2px_0px_#000000] flex flex-col justify-between"
+                    className="p-3 bg-[#F9F9F9] border-2 border-black shadow-[2px_2px_0px_#000000] flex flex-col justify-between"
                   >
                     <div>
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-[9px] font-black uppercase bg-[#E85002] text-black px-2 py-0.5 border border-black">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-[8px] font-black uppercase bg-[#E85002] text-black px-1.5 py-0.5 border border-black">
                           {evt.category.replace('_', ' ')}
                         </span>
-                        {crs && <span className="text-[10px] font-black text-black font-mono">{crs.code}</span>}
+                        {crs && <span className="text-[9px] font-black text-black font-mono">{crs.code}</span>}
                       </div>
 
                       <h4 className="text-xs font-black text-black leading-snug line-clamp-1 uppercase tracking-tight">{evt.title}</h4>
-                      <div className="flex items-center gap-1.5 text-[10px] text-[#333333] font-bold mt-1">
-                        <Clock className="w-3.5 h-3.5 text-black" />
+                      <div className="flex items-center gap-1.5 text-[9px] text-[#333333] font-bold mt-1 font-mono">
+                        <Clock className="w-3 h-3 text-black" />
                         <span>{evt.startTime} - {evt.endTime}</span>
                       </div>
                     </div>
 
-                    <div className="text-[10px] text-black font-black mt-3 pt-1.5 border-t border-black/25 truncate">
+                    <div className="text-[9px] text-black font-black mt-2 pt-1 border-t border-black/10 truncate font-mono">
                       📍 {evt.location || 'Classroom Main'}
                     </div>
                   </div>
@@ -180,90 +384,56 @@ export default function DashboardModule({
               })}
 
               {todayEvents.length === 0 && (
-                <div className="col-span-2 text-center py-8 text-xs text-[#333333] bg-[#F9F9F9] border-2 border-dashed border-black rounded-none flex flex-col justify-center items-center gap-2">
-                  <Compass className="w-8 h-8 text-[#A7A7A7] animate-spin" />
-                  <span className="font-bold uppercase tracking-wider">No lectures slated for May 30, 2026.</span>
-                  <p className="text-[10px] text-[#646464] font-mono">You can trigger Aura AI to "block study sessions" or add new schedule items.</p>
+                <div className="text-center py-6 text-xs text-[#333333] bg-[#F9F9F9] border-2 border-dashed border-black flex flex-col justify-center items-center gap-2 h-full min-h-[150px]">
+                  <Compass className="w-6 h-6 text-[#A7A7A7]" />
+                  <span className="font-bold uppercase tracking-wider text-[10.5px]">No Slate for Today</span>
+                  <p className="text-[9px] text-[#646464] font-mono max-w-[200px]">Use the Sidebar AI assistant to quickly insert study blocks.</p>
                 </div>
               )}
             </div>
-          </div>
-
-          {/* Interactive Gantt bar overview mockup - Style C */}
-          <div className="bg-black border-2 border-black text-white p-4 shadow-[4px_4px_0px_#E85002] flex flex-col justify-between h-[180px] relative overflow-hidden">
-            {/* Brushed steel accent in the top corner */}
-            <div className="absolute top-0 right-0 w-16 h-16 brushed-steel border-l-2 border-b-2 border-black" />
-
-            <div className="relative z-10">
-              <h3 className="text-xs font-black text-white flex items-center gap-1.5 uppercase tracking-wider">
-                <Sparkles className="w-4 h-4 text-[#E85002] animate-pulse" />
-                Active Project Milestones Timeline
-              </h3>
-              <p className="text-[10px] text-[#A7A7A7] mt-1 font-mono">Visual visualization of overlapping deadlines and bottleneck forecasts.</p>
-            </div>
-
-            {/* Gantt rows indicators */}
-            <div className="space-y-2.5 mt-4 flex-grow overflow-hidden relative z-10">
-              <div className="flex items-center text-[10.5px]">
-                <div className="w-32 truncate font-black text-[#F9F9F9] tracking-tight">DBMS Schema review</div>
-                <div className="flex-grow bg-[#333333] h-3 border border-white/20 relative overflow-hidden">
-                  <div className="bg-[#E85002] h-full w-[82%]" />
-                </div>
-                <span className="w-10 text-right text-[#E85002] text-[10px] font-mono ml-2 font-black">82%</span>
-              </div>
-
-              <div className="flex items-center text-[10.5px]">
-                <div className="w-32 truncate font-black text-[#F9F9F9] tracking-tight">Operating Systems Lab</div>
-                <div className="flex-grow bg-[#333333] h-3 border border-white/20 relative overflow-hidden">
-                  <div className="bg-[#A7A7A7] h-full w-[45%]" />
-                </div>
-                <span className="w-10 text-right text-[#A7A7A7] text-[10px] font-mono ml-2 font-black">45%</span>
-              </div>
-            </div>
 
             <button 
-              onClick={() => onNavigate('gantt')}
-              className="w-full text-center py-2 bg-[#E85002] text-black hover:bg-[#F9F9F9] border-2 border-black text-[11px] font-black transition-all mt-3 relative z-10 cursor-pointer"
+              onClick={() => onNavigate('calendar')} 
+              className="w-full text-center py-2 bg-black text-white hover:bg-[#E85002] hover:text-black border-2 border-black text-[10px] font-black uppercase tracking-wide transition-all mt-4 cursor-pointer"
             >
-              Analyze Gantt Project Dependencies →
+              Expand Planner Schedule →
             </button>
           </div>
-        </div>
 
-        {/* Task lists checklist panel (Col-4) */}
-        <div className="lg:col-span-4 space-y-4">
-          
-          {/* Urgent Checklist Cards - Style D */}
-          <div className="clay-card p-4 flex flex-col h-[340px] border border-[#e2e8f0]/60">
-            <div className="flex justify-between items-center mb-3 shrink-0">
-              <h3 className="text-xs font-black text-[#333333] uppercase tracking-wider">Urgent Assignments</h3>
-              <span className="text-[9px] bg-[#E85002] text-black px-2 py-0.5 border border-black font-black">
+          {/* Urgent Tasks Checklist (Tasks Preview) */}
+          <div className="bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#000000]">
+            <div className="flex justify-between items-center mb-3 border-b-2 border-black pb-2">
+              <h3 className="text-xs font-black text-black flex items-center gap-1.5 uppercase tracking-wider">
+                <CheckSquare className="w-4 h-4 text-[#E85002]" />
+                Urgent Milestones
+              </h3>
+              <span className="text-[9px] bg-black text-white px-2 py-0.5 border border-black font-black uppercase font-mono">
                 Todo Matrix
               </span>
             </div>
 
-            <div className="flex-grow space-y-2 overflow-y-auto pr-1">
+            <div className="space-y-2 min-h-[170px] flex flex-col justify-start">
               {urgentTasks.map(tk => {
                 const isHigh = tk.priority === 'high';
                 return (
                   <div 
                     key={tk.id} 
-                    className="flex items-start gap-2.5 p-2 bg-[#F9F9F9] hover:bg-[#F0F0F0] border border-black/10 hover:border-black rounded-lg transition-all group shrink-0"
+                    className="flex items-start gap-2.5 p-2 bg-[#F9F9F9] border border-black hover:border-[#E85002] transition-all group shrink-0"
                   >
                     <input 
                       type="checkbox" 
                       onClick={() => handleTaskComplete(tk.id)}
-                      className="mt-1 rounded border-black text-[#E85002] focus:ring-black cursor-pointer"
-                      title="Quick check complete"
+                      className="mt-0.5 rounded-none border-2 border-black text-[#E85002] focus:ring-0 cursor-pointer h-4 w-4 bg-white"
+                      title="Mark task completed"
                     />
 
                     <div className="min-w-0 flex-1">
-                      <p className="text-[11.5px] font-black text-[#333333] truncate leading-tight uppercase tracking-tight">{tk.title}</p>
-                      <div className="flex items-center justify-between text-[9.5px] mt-1 font-mono">
-                        <span className={`font-bold ${isHigh ? 'text-[#E85002]' : 'text-[#646464]'}`}>
-                          {isHigh ? '🔥 High' : 'Medium'} Priority
+                      <p className="text-[11px] font-black text-black truncate leading-tight uppercase tracking-tight">{tk.title}</p>
+                      <div className="flex items-center justify-between text-[9px] mt-1 font-mono">
+                        <span className={`font-black uppercase ${isHigh ? 'text-[#E85002]' : 'text-[#646464]'}`}>
+                          {isHigh ? '🔥 Urgent' : 'Medium'}
                         </span>
-                        <span className="text-[#A7A7A7] font-semibold">Due {tk.deadline.split('-').slice(1).join('/')}</span>
+                        <span className="text-[#333333] font-bold">Due {tk.deadline.split('-').slice(1).join('/')}</span>
                       </div>
                     </div>
                   </div>
@@ -271,186 +441,426 @@ export default function DashboardModule({
               })}
 
               {urgentTasks.length === 0 && (
-                <div className="text-center py-12 text-[#A7A7A7] text-xs font-bold font-mono">No pending assignments configured.</div>
+                <div className="text-center py-6 text-[#A7A7A7] text-[10.5px] font-bold font-mono uppercase bg-[#F9F9F9] border-2 border-dashed border-black flex flex-col items-center justify-center min-h-[150px]">
+                  All Milestones Cleared!
+                </div>
               )}
             </div>
 
             <button 
               onClick={() => onNavigate('tasks')}
-              className="mt-3 w-full text-center py-2 bg-black text-white hover:bg-[#E85002] hover:text-black border-2 border-black text-[10px] font-black transition cursor-pointer"
+              className="w-full text-center py-2 bg-black text-white hover:bg-[#E85002] hover:text-black border-2 border-black text-[10px] font-black uppercase tracking-wide transition-all mt-4 cursor-pointer"
             >
-              Open Kanban Workspace
+              Open Kanban Board →
             </button>
           </div>
 
-          {/* Productivity info message block with diagonal stripes */}
-          <div className="border-2 border-black bg-white rounded-none shadow-[4px_4px_0px_#000000] overflow-hidden">
-            {/* diagonal warning stripes */}
-            <div className="h-4 diagonal-stripes border-b-2 border-black" />
-            <div className="p-4">
-              <h4 className="text-xs font-black text-black flex items-center gap-1.5 uppercase tracking-wider">
-                <Sparkles className="w-4 h-4 text-[#E85002] animate-pulse" />
-                AI Studio Grounding Health
-              </h4>
-              <p className="text-[10px] text-[#333333] leading-relaxed mt-1 font-mono font-bold">
-                Your Campus Task Manager handles mock operations or REST APIs synchronously. Speak with Aura in the sidebar to test intelligent schedule generation! (Requires GEMINI_API_KEY).
-              </p>
-            </div>
-          </div>
         </div>
-      </div>
 
-      {/* 3. Habit Tracker Ledger Section */}
-      <div className="mt-6 border-t-2 border-black pt-6">
-        <HabitTracker
-          categories={habitCategories}
-          logs={habitLogs}
-          onUpdateCategories={onUpdateHabitCategories}
-          onUpdateLogs={onUpdateHabitLogs}
-        />
-      </div>
+        {/* ==================== CENTER COLUMN (PRIORITY 2: ROUTINES, REFLECTION & CAPTURE) ==================== */}
+        <div className="space-y-6">
 
-      {/* 4. Vision Board Preview Section */}
-      {(() => {
-        // Compute up to 4 dashboard visions: pinned first, then by updatedAt desc
-        const pinnedIds = [...dashboardPins]
-          .sort((a, b) => a.displayOrder - b.displayOrder)
-          .map(p => p.visionId);
-        const pinned = pinnedIds
-          .map(id => visionItems.find(v => v.id === id && !v.isArchived))
-          .filter(Boolean) as VisionItem[];
-        const unpinned = visionItems
-          .filter(v => !v.isArchived && !v.isPinned)
-          .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
-        const pinnedFallback = visionItems
-          .filter(v => !v.isArchived && v.isPinned && !pinnedIds.includes(v.id))
-          .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
-        const displayVisions = [...pinned, ...pinnedFallback, ...unpinned].slice(0, 4);
+          {/* Daily Habits Ledger (Habits Preview) */}
+          <div className="bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#000000]">
+            <div className="flex justify-between items-center mb-3 border-b-2 border-black pb-2">
+              <h3 className="text-xs font-black text-black flex items-center gap-1.5 uppercase tracking-wider">
+                <Flame className="w-4 h-4 text-[#E85002] fill-[#E85002]" />
+                Daily Habit Tracker
+              </h3>
+              <span className="text-[9px] bg-black text-white px-2 py-0.5 border border-black font-black uppercase font-mono">
+                🔥 {currentHabitStreak} Day Streak
+              </span>
+            </div>
 
-        const categoryColors: Record<string, string> = {
-          academic: 'bg-black text-white', career: 'bg-[#E85002] text-black',
-          personal_growth: 'bg-[#333333] text-white', health_wellness: 'bg-[#A7A7A7] text-black',
-          financial: 'bg-black text-[#E85002]', travel: 'bg-[#E85002] text-black',
-          creativity: 'bg-black text-white', relationships: 'bg-[#333333] text-white', custom: 'bg-[#646464] text-white'
-        };
+            {/* Streak & Today Progress Row */}
+            <div className="flex items-center justify-between p-2 bg-[#F9F9F9] border border-black mb-3 text-[10.5px] font-mono">
+              <span className="font-bold text-black uppercase">Today's Ledger progress</span>
+              <span className="font-black text-[#E85002]">{todayHabitProgress}%</span>
+            </div>
 
-        return (
-          <div className="mt-6 border-t-2 border-black pt-6">
-            {/* Section header */}
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-black border-2 border-black flex items-center justify-center shadow-[2px_2px_0px_#E85002]">
-                  <Target className="w-4 h-4 text-[#E85002]" />
+            {/* Compact habit checking list */}
+            <div className="space-y-3 max-h-[220px] overflow-y-auto pr-1">
+              {habitCategories.map(cat => (
+                <div key={cat.id} className="border border-black p-2 bg-white">
+                  <span className="text-[8px] font-black text-[#646464] uppercase tracking-wider block mb-1.5 font-mono">
+                    {cat.name}
+                  </span>
+                  <div className="grid grid-cols-1 gap-1.5">
+                    {cat.habits.map(h => {
+                      const isChecked = !!latestHabitLog.completedHabits[h.id];
+                      return (
+                        <div 
+                          key={h.id} 
+                          className="flex items-center justify-between p-1.5 border border-black/10 bg-[#F9F9F9] text-[10.5px] uppercase font-mono"
+                        >
+                          <span className="truncate font-semibold text-[#333333]">{h.name}</span>
+                          <input 
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={() => handleToggleHabit(h.id)}
+                            className="rounded-none border border-black text-[#E85002] focus:ring-0 cursor-pointer h-3.5 w-3.5 bg-white"
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-xs font-black text-black uppercase tracking-wider">Vision Board</h3>
-                  <p className="text-[9px] text-[#646464] font-bold font-mono">
-                    {visionItems.filter(v => !v.isArchived).length} active
-                    {visionItems.filter(v => v.isArchived).length > 0 && ` · ${visionItems.filter(v => v.isArchived).length} achieved`}
-                  </p>
+              ))}
+
+              {habitCategories.length === 0 && (
+                <div className="text-center py-6 text-[#A7A7A7] text-[10.5px] font-mono uppercase bg-[#F9F9F9] border border-black">
+                  No routines defined
+                </div>
+              )}
+            </div>
+
+            <button 
+              onClick={() => onNavigate('habits')}
+              className="w-full text-center py-2 bg-[#E85002] text-black hover:bg-black hover:text-white border-2 border-black text-[10px] font-black uppercase tracking-wide transition-all mt-4 cursor-pointer"
+            >
+              Configure Routines ledger →
+            </button>
+          </div>
+
+          {/* Quick Wellness Journal & Mood Log (Wellness Preview) */}
+          <div className="bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#000000]">
+            <div className="flex justify-between items-center mb-3 border-b-2 border-black pb-2">
+              <h3 className="text-xs font-black text-black flex items-center gap-1.5 uppercase tracking-wider">
+                <Heart className="w-4 h-4 text-[#E85002] fill-[#E85002]" />
+                Wellness & Quick Journal
+              </h3>
+              <span className="text-[9px] bg-black text-[#E85002] px-2 py-0.5 border border-black font-black uppercase font-mono">
+                Index: {avgMoodScore}
+              </span>
+            </div>
+
+            {/* Quick checkin form */}
+            <form onSubmit={handleQuickWellnessLog} className="space-y-3">
+              <div>
+                <label className="text-[9.5px] font-black text-[#333333] uppercase block mb-1 font-mono">
+                  Select Current Mood State
+                </label>
+                <div className="grid grid-cols-5 gap-1.5">
+                  {moodIcons.map(m => (
+                    <button
+                      key={m.type}
+                      type="button"
+                      onClick={() => setSelectedMood(m.type)}
+                      className={`py-1 px-1.5 text-center cursor-pointer transition-all border border-black/25 text-base flex justify-center items-center ${
+                        selectedMood === m.type 
+                          ? m.activeColor + ' shadow-[1px_1px_0px_#000000]' 
+                          : 'bg-white hover:bg-[#F9F9F9]'
+                      }`}
+                      title={m.label}
+                    >
+                      {m.icon}
+                    </button>
+                  ))}
                 </div>
               </div>
-              <button
+
+              <div>
+                <label className="text-[9.5px] font-black text-[#333333] uppercase block mb-1 font-mono">
+                  Daily Gratitude Entry
+                </label>
+                <div className="flex gap-2">
+                  <input 
+                    type="text"
+                    value={gratitudeInput}
+                    onChange={e => setGratitudeInput(e.target.value)}
+                    placeholder="E.g., clean compile, good coffee..."
+                    className="flex-1 text-[10px] border-2 border-black px-2 py-1.5 bg-[#F9F9F9] focus:outline-none focus:bg-white focus:border-[#E85002] font-mono font-bold"
+                    required
+                  />
+                  <button 
+                    type="submit"
+                    className="bg-black text-[#F9F9F9] hover:bg-[#E85002] hover:text-black border-2 border-black text-[9px] font-black uppercase px-3 py-1 cursor-pointer transition shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+                  >
+                    Log
+                  </button>
+                </div>
+              </div>
+
+              {showLogSuccess && (
+                <div className="p-1 text-center bg-black border border-black text-[9px] font-black font-mono text-[#E85002] uppercase tracking-wider animate-bounce">
+                  ⚡ Check-In logged successfully!
+                </div>
+              )}
+            </form>
+
+            {/* Latest Journal Summary */}
+            {latestJournal && (
+              <div className="mt-4 p-2 bg-[#F9F9F9] border border-black text-[9.5px] font-mono">
+                <span className="text-[#646464] block font-bold uppercase">Latest Journal Entry:</span>
+                <span className="text-black font-black uppercase tracking-tight block truncate mt-0.5">
+                  "{latestJournal.title}"
+                </span>
+                <span className="text-[8.5px] text-[#A7A7A7] mt-1 block">
+                  Logged on {latestJournal.dateCreated} @ {latestJournal.timeCreated}
+                </span>
+              </div>
+            )}
+
+            <button 
+              onClick={() => onNavigate('wellness')}
+              className="w-full text-center py-2 bg-black text-white hover:bg-[#E85002] hover:text-black border-2 border-black text-[10px] font-black uppercase tracking-wide transition-all mt-4 cursor-pointer"
+            >
+              Open Wellbeing Hub →
+            </button>
+          </div>
+
+          {/* Recent Notes Directory (Notes Preview) */}
+          <div className="bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#000000]">
+            <div className="flex justify-between items-center mb-3 border-b-2 border-black pb-2">
+              <h3 className="text-xs font-black text-black flex items-center gap-1.5 uppercase tracking-wider">
+                <FileText className="w-4 h-4 text-[#E85002]" />
+                Recent Notes & Ideas
+              </h3>
+              <span className="text-[9px] bg-black text-white px-2 py-0.5 border border-black font-black uppercase font-mono">
+                Notion Sync
+              </span>
+            </div>
+
+            <div className="space-y-2 min-h-[140px] flex flex-col justify-start">
+              {recentNotes.map(nt => (
+                <div 
+                  key={nt.id} 
+                  onClick={() => onSelectNote(nt.id)}
+                  className="p-2 border border-black hover:border-[#E85002] bg-[#F9F9F9] hover:bg-white transition-all cursor-pointer group"
+                >
+                  <h4 className="text-[11px] font-black text-black uppercase leading-tight line-clamp-1 group-hover:text-[#E85002]">
+                    {nt.title}
+                  </h4>
+                  <div className="flex items-center justify-between text-[8px] font-mono text-[#646464] mt-1">
+                    <span>Checked {new Date(nt.updatedAt).toLocaleDateString()}</span>
+                    <div className="flex gap-1">
+                      {nt.tags.slice(0, 2).map(tag => (
+                        <span key={tag} className="border border-black/10 px-1 bg-[#A7A7A7]/10 text-black">
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {recentNotes.length === 0 && (
+                <div className="text-center py-6 text-[#A7A7A7] text-[10.5px] font-mono uppercase bg-[#F9F9F9] border border-dashed border-black">
+                  No notes drafted yet.
+                </div>
+              )}
+            </div>
+
+            <button 
+              onClick={() => onNavigate('notes')}
+              className="w-full text-center py-2 bg-black text-white hover:bg-[#E85002] hover:text-black border-2 border-black text-[10px] font-black uppercase tracking-wide transition-all mt-4 cursor-pointer"
+            >
+              Go to Notebook Directory →
+            </button>
+          </div>
+
+        </div>
+
+        {/* ==================== RIGHT COLUMN (PRIORITY 3: STRUCTURE, TIMELINE & SYSTEM) ==================== */}
+        <div className="space-y-6">
+
+          {/* Active Enrolled Courses (Courses Preview) */}
+          <div className="bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#000000]">
+            <div className="flex justify-between items-center mb-3 border-b-2 border-black pb-2">
+              <h3 className="text-xs font-black text-black flex items-center gap-1.5 uppercase tracking-wider">
+                <BookOpen className="w-4 h-4 text-[#E85002]" />
+                Enrolled Course Catalog
+              </h3>
+              <span className="text-[9px] bg-black text-[#E85002] px-2 py-0.5 border border-black font-black uppercase font-mono">
+                {courses.length} Active
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 gap-2.5 max-h-[220px] overflow-y-auto pr-1">
+              {courses.map(crs => (
+                <div 
+                  key={crs.id} 
+                  onClick={() => onNavigate('courses')}
+                  className="p-2.5 bg-[#F9F9F9] border border-black hover:border-[#E85002] transition-all cursor-pointer flex flex-col justify-between"
+                >
+                  <div className="flex justify-between items-start">
+                    <span className="text-[9.5px] font-black font-mono text-black">{crs.code}</span>
+                    <span className="text-[8px] font-mono text-[#646464] border border-black/10 px-1 bg-white">
+                      {crs.credits} Credits
+                    </span>
+                  </div>
+                  <h4 className="text-[10.5px] font-black text-black uppercase leading-tight mt-1 line-clamp-1">
+                    {crs.name}
+                  </h4>
+                  <div className="flex justify-between text-[8px] font-mono text-[#333333] mt-2 pt-1 border-t border-black/10">
+                    <span>👤 {crs.lecturer}</span>
+                    <span className="font-bold">📍 {crs.location}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <button 
+              onClick={() => onNavigate('courses')}
+              className="w-full text-center py-2 bg-black text-white hover:bg-[#E85002] hover:text-black border-2 border-black text-[10px] font-black uppercase tracking-wide transition-all mt-4 cursor-pointer"
+            >
+              Open Course Dashboards →
+            </button>
+          </div>
+
+          {/* Milestones Gantt Timeline (Gantt Preview) */}
+          <div className="bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#000000]">
+            <div className="flex justify-between items-center mb-3 border-b-2 border-black pb-2">
+              <h3 className="text-xs font-black text-black flex items-center gap-1.5 uppercase tracking-wider">
+                <Activity className="w-4 h-4 text-[#E85002]" />
+                Project Milestones Timeline
+              </h3>
+              <span className="text-[9px] bg-black text-white px-2 py-0.5 border border-black font-black uppercase font-mono">
+                Gantt
+              </span>
+            </div>
+
+            <div className="space-y-3 min-h-[120px] flex flex-col justify-center">
+              <div className="flex items-center text-[10px] font-mono">
+                <div className="w-24 truncate font-black text-black uppercase">DBMS Schema</div>
+                <div className="flex-grow bg-[#A7A7A7]/20 border border-black h-3 overflow-hidden rounded-none relative">
+                  <div className="bg-[#E85002] h-full" style={{ width: '82%' }} />
+                </div>
+                <span className="w-8 text-right text-black text-[9.5px] font-black font-mono ml-1">82%</span>
+              </div>
+
+              <div className="flex items-center text-[10px] font-mono">
+                <div className="w-24 truncate font-black text-black uppercase">OS Scheduler</div>
+                <div className="flex-grow bg-[#A7A7A7]/20 border border-black h-3 overflow-hidden rounded-none relative">
+                  <div className="bg-[#333333] h-full" style={{ width: '45%' }} />
+                </div>
+                <span className="w-8 text-right text-black text-[9.5px] font-black font-mono ml-1">45%</span>
+              </div>
+
+              <div className="flex items-center text-[10px] font-mono">
+                <div className="w-24 truncate font-black text-black uppercase">Mobile Engine</div>
+                <div className="flex-grow bg-[#A7A7A7]/20 border border-black h-3 overflow-hidden rounded-none relative">
+                  <div className="bg-black h-full" style={{ width: '15%' }} />
+                </div>
+                <span className="w-8 text-right text-black text-[9.5px] font-black font-mono ml-1">15%</span>
+              </div>
+            </div>
+
+            <button 
+              onClick={() => onNavigate('gantt')}
+              className="w-full text-center py-2 bg-black text-white hover:bg-[#E85002] hover:text-black border-2 border-black text-[10px] font-black uppercase tracking-wide transition-all mt-4 cursor-pointer"
+            >
+              Analyze Gantt Gantt Map →
+            </button>
+          </div>
+
+          {/* Goal Pinned Visions (Vision Board Preview) */}
+          <div className="bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#000000]">
+            <div className="flex justify-between items-center mb-3 border-b-2 border-black pb-2">
+              <h3 className="text-xs font-black text-black flex items-center gap-1.5 uppercase tracking-wider">
+                <Target className="w-4 h-4 text-[#E85002]" />
+                Goal Pinned Visions
+              </h3>
+              <button 
                 onClick={onNavigateVision}
-                className="text-[11px] bg-black text-white hover:bg-[#E85002] hover:text-black border-2 border-black font-black px-3 py-1 cursor-pointer flex items-center gap-1 transition"
+                className="text-[9px] hover:underline uppercase text-[#E85002] font-black font-mono"
               >
-                View All <ArrowRight className="w-3.5 h-3.5" />
+                Expand board
               </button>
             </div>
 
-            {displayVisions.length === 0 ? (
-              /* Empty state */
-              <div className="border-2 border-dashed border-black rounded-none flex flex-col items-center justify-center py-10 gap-3 text-center bg-[#F9F9F9] cursor-pointer hover:bg-white hover:border-[#E85002] transition-all" onClick={onNavigateVision}>
-                <div className="w-12 h-12 bg-black border-2 border-black rounded-none flex items-center justify-center shadow-[4px_4px_0px_#E85002]">
-                  <ImageIcon className="w-5 h-5 text-[#E85002]" />
-                </div>
-                <div>
-                  <p className="text-xs font-black text-black uppercase">No visions yet</p>
-                  <p className="text-[10px] text-[#646464] max-w-xs mt-1 font-mono">Build your vision board to keep your goals front and center.</p>
-                </div>
-                <button className="px-4 py-2 bg-[#E85002] hover:bg-black hover:text-white text-black text-[10.5px] font-black border-2 border-black rounded-none shadow-[3px_3px_0px_#000000] transition active:scale-95 cursor-pointer">
-                  + Create First Vision
-                </button>
-              </div>
-            ) : (
-              /* Vision cards grid */
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {displayVisions.map((vision, idx) => {
-                  // Alternate styles or give a physical polaroid frame!
-                  const cardStyles = [
-                    'border-2 border-black shadow-[4px_4px_0px_#000000] rounded-none bg-white p-2',
-                    'border-2 border-black shadow-[4px_4px_0px_#E85002] rounded-none bg-white p-2',
-                    'clay-card border border-[#e2e8f0]/60 bg-white p-2.5',
-                    'border-2 border-black shadow-[4px_4px_0px_#333333] rounded-none bg-white p-2'
-                  ];
-                  const currentStyle = cardStyles[idx % cardStyles.length];
-                  const isClay = currentStyle.includes('clay-card');
-                  
-                  return (
-                    <div
-                      key={vision.id}
-                      onClick={onNavigateVision}
-                      className={`relative aspect-[3/4] cursor-pointer group transition-all duration-300 hover:scale-[1.03] ${currentStyle}`}
-                    >
-                      {/* Photo Container */}
-                      <div className={`w-full ${isClay ? 'h-[70%] rounded-lg' : 'h-[72%] border-2 border-black'} overflow-hidden relative bg-[#333]`}>
-                        {vision.imageDataUrl ? (
-                          <img
-                            src={vision.imageDataUrl}
-                            alt={vision.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-[radial-gradient(circle_at_center,_#E85002_0%,_#000000_100%)] flex items-center justify-center">
-                            <ImageIcon className="w-8 h-8 text-[#A7A7A7]" />
-                          </div>
-                        )}
-                        
-                        {/* Category badge */}
-                        <div className="absolute top-2 left-2">
-                          <span className={`text-[8.5px] font-black uppercase px-2 py-0.5 border border-black ${categoryColors[vision.category] || 'bg-black text-white'}`}>
-                            {vision.category.replace('_', ' ')}
-                          </span>
-                        </div>
-
-                        {/* Pin badge */}
-                        {vision.isPinned && (
-                          <div className="absolute top-2 right-2 w-6 h-6 bg-white border border-black rounded-none flex items-center justify-center shadow">
-                            <Pin className="w-3 h-3 text-[#E85002] fill-[#E85002]" />
-                          </div>
-                        )}
+            <div className="grid grid-cols-2 gap-3 min-h-[140px] items-stretch">
+              {displayVisions.map(vision => (
+                <div 
+                  key={vision.id}
+                  onClick={onNavigateVision}
+                  className="bg-[#F9F9F9] border border-black p-2 flex flex-col justify-between cursor-pointer hover:border-[#E85002] transition-all"
+                >
+                  <div className="h-16 w-full bg-[#333333] border border-black overflow-hidden relative">
+                    {vision.imageDataUrl ? (
+                      <img 
+                        src={vision.imageDataUrl} 
+                        alt={vision.title} 
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-[9px] uppercase font-mono text-[#A7A7A7]">
+                        No Image
                       </div>
-
-                      {/* Info Container */}
-                      <div className={`p-2 flex flex-col justify-between ${isClay ? 'h-[30%]' : 'h-[28%] pt-3 bg-white'}`}>
-                        <h4 className="text-black font-black text-[11px] line-clamp-1 leading-snug uppercase tracking-tight">{vision.title}</h4>
-                        <div className="flex items-center justify-between mt-1">
-                          {vision.targetDate && (
-                            <p className="text-[#646464] text-[8.5px] font-bold font-mono">
-                              {new Date(vision.targetDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
-                            </p>
-                          )}
-                          {vision.progress !== undefined && (
-                            <span className="text-[8.5px] font-black text-[#E85002] font-mono">{vision.progress}%</span>
-                          )}
-                        </div>
-                        {vision.progress !== undefined && (
-                          <div className="w-full h-1.5 bg-[#A7A7A7] border border-black mt-1 overflow-hidden">
-                            <div
-                              className="h-full bg-[#E85002]"
-                              style={{ width: `${vision.progress}%` }}
-                            />
-                          </div>
-                        )}
-                      </div>
+                    )}
+                    <span className="absolute top-1 left-1 text-[7px] font-black uppercase px-1 bg-black text-white border border-[#333333]">
+                      {vision.category.replace('_', ' ')}
+                    </span>
+                  </div>
+                  <h4 className="text-[9.5px] font-black text-black uppercase tracking-tight mt-1.5 line-clamp-1">
+                    {vision.title}
+                  </h4>
+                  {vision.progress !== undefined && (
+                    <div className="w-full bg-[#A7A7A7] h-1 border border-black mt-1 overflow-hidden">
+                      <div className="bg-[#E85002] h-full" style={{ width: `${vision.progress}%` }} />
                     </div>
-                  );
-                })}
-              </div>
-            )}
+                  )}
+                </div>
+              ))}
+
+              {displayVisions.length === 0 && (
+                <div className="col-span-2 text-center py-6 text-[#A7A7A7] text-[10.5px] font-mono uppercase bg-[#F9F9F9] border border-dashed border-black flex flex-col items-center justify-center">
+                  <span>No active visions</span>
+                </div>
+              )}
+            </div>
+
+            <button 
+              onClick={onNavigateVision}
+              className="w-full text-center py-2 bg-[#E85002] text-black hover:bg-black hover:text-white border-2 border-black text-[10px] font-black uppercase tracking-wide transition-all mt-4 cursor-pointer"
+            >
+              Open Vision Board →
+            </button>
           </div>
-        );
-      })()}
+
+          {/* Technical Specifications (Blueprint Preview) */}
+          <div className="bg-black text-[#F9F9F9] border-2 border-[#333333] p-4 shadow-[4px_4px_0px_#E85002]">
+            <div className="flex justify-between items-center mb-3 border-b border-white/10 pb-2">
+              <h3 className="text-xs font-black text-white flex items-center gap-1.5 uppercase tracking-wider">
+                <Cpu className="w-4 h-4 text-[#E85002]" />
+                System Blueprints
+              </h3>
+              <span className="text-[8px] font-black bg-emerald-500 text-black px-1.5 py-0.5 border border-black uppercase tracking-wider animate-pulse font-mono">
+                ONLINE
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 text-[9px] font-mono">
+              <div className="border border-white/10 p-1 bg-[#333333]/20">
+                <span className="text-[#A7A7A7] block text-[7px] uppercase font-bold">CORE ENGINE</span>
+                <span className="font-bold text-[#F9F9F9]">React 18.3</span>
+              </div>
+              <div className="border border-white/10 p-1 bg-[#333333]/20">
+                <span className="text-[#A7A7A7] block text-[7px] uppercase font-bold">STYLESHEET</span>
+                <span className="font-bold text-[#F9F9F9]">Tailwind v4</span>
+              </div>
+              <div className="border border-white/10 p-1 bg-[#333333]/20">
+                <span className="text-[#A7A7A7] block text-[7px] uppercase font-bold">PERSISTENCE</span>
+                <span className="font-bold text-[#F9F9F9]">LocalStorage</span>
+              </div>
+              <div className="border border-white/10 p-1 bg-[#333333]/20">
+                <span className="text-[#A7A7A7] block text-[7px] uppercase font-bold">AI CO-PILOT</span>
+                <span className="font-bold text-[#F9F9F9]">Gemmi Assistant</span>
+              </div>
+            </div>
+
+            <button 
+              onClick={() => onNavigate('blueprint')}
+              className="w-full text-center py-2 bg-[#E85002] hover:bg-[#F9F9F9] text-black border-2 border-black text-[10px] font-black uppercase tracking-wide transition-all mt-4 cursor-pointer"
+            >
+              Inspect Schema Blueprint →
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   );
 }
