@@ -84,6 +84,7 @@ export interface AppNotification {
 export interface Habit {
   id: string;
   name: string;
+  reminderTime?: string; // HH:MM
 }
 
 export interface HabitCategory {

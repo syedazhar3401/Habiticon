@@ -37,6 +37,7 @@ export default function HabitTracker({
 
   // Sidebar Inline Routine Editor state
   const [newSideHabitNames, setNewSideHabitNames] = useState<Record<string, string>>({}); // catId -> habitName
+  const [newHabitReminders, setNewHabitReminders] = useState<Record<string, string>>({}); // catId -> reminderTime (HH:MM)
 
   // Row creation inputs state
   const [selectedNewDate, setSelectedNewDate] = useState(() => {
@@ -139,6 +140,30 @@ export default function HabitTracker({
 
   const streaks = calculateStreaks();
 
+  const heatmapData = React.useMemo(() => {
+    const arr = [];
+    const today = new Date();
+    const utc = today.getTime() + (today.getTimezoneOffset() * 60000);
+    const msiaTime = new Date(utc + (3600000 * 8));
+    
+    for (let i = 27; i >= 0; i--) {
+      const d = new Date(msiaTime);
+      d.setDate(msiaTime.getDate() - i);
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      const dateStr = `${yyyy}-${mm}-${dd}`;
+      
+      const log = logs.find(l => l.date === dateStr);
+      let progress = 0;
+      if (log) {
+        progress = calculateOverallProgress(log);
+      }
+      arr.push({ date: dateStr, progress });
+    }
+    return arr;
+  }, [logs, categories]);
+
   // --- Actions: Log Entries ---
   const handleAddRow = (e: React.FormEvent) => {
     e.preventDefault();
@@ -222,9 +247,12 @@ export default function HabitTracker({
     const habitName = newHabitNames[catId];
     if (!habitName || !habitName.trim()) return;
 
+    const reminder = newHabitReminders[catId] || undefined;
+
     const newHabit: Habit = {
       id: `h-${Date.now()}`,
-      name: habitName.trim()
+      name: habitName.trim(),
+      reminderTime: reminder ? reminder.trim() : undefined
     };
 
     onUpdateCategories(categories.map(c => {
@@ -238,6 +266,7 @@ export default function HabitTracker({
     }));
 
     setNewHabitNames(prev => ({ ...prev, [catId]: '' }));
+    setNewHabitReminders(prev => ({ ...prev, [catId]: '' }));
   };
 
   // Sidebar quick habit adding trigger
@@ -350,6 +379,47 @@ export default function HabitTracker({
       {/* 2. Content Sections based on Active Tab */}
       {activeTab === 'ledger' ? (
         <div className="space-y-4">
+          {/* Consistency Heatmap Grid (GitHub style) */}
+          <div className="bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#000000] font-mono">
+            <div className="flex justify-between items-center mb-2.5 border-b border-black/10 pb-1.5">
+              <span className="text-[10px] font-black text-black uppercase tracking-wider">Consistency Heatmap (Last 28 Days)</span>
+              <div className="flex items-center gap-1.5 text-[8.5px] font-bold text-[#646464] uppercase font-mono">
+                <span>Less</span>
+                <div className="w-2.5 h-2.5 bg-[#333333]/5 border border-black" />
+                <div className="w-2.5 h-2.5 bg-[#E85002]/20 border border-black" />
+                <div className="w-2.5 h-2.5 bg-[#E85002]/60 border border-black" />
+                <div className="w-2.5 h-2.5 bg-[#E85002] border border-black" />
+                <span>More</span>
+              </div>
+            </div>
+            <div className="flex gap-1.5 overflow-x-auto pb-1 select-none scrollbar-none">
+              {heatmapData.map((d, index) => {
+                const bgClass = d.progress === 100 
+                  ? 'bg-[#E85002] border-black text-white' 
+                  : d.progress >= 50 
+                  ? 'bg-[#E85002]/60 border-black text-black' 
+                  : d.progress > 0 
+                  ? 'bg-[#E85002]/20 border-black text-black' 
+                  : 'bg-[#333333]/5 border-black/20 text-black/40';
+                
+                const dateObj = new Date(d.date + 'T00:00:00');
+                const dayNum = dateObj.getDate();
+                const monthShort = dateObj.toLocaleDateString('en-US', { month: 'short' });
+                
+                return (
+                  <div 
+                    key={d.date} 
+                    className={`w-9 h-9 shrink-0 border-2 flex flex-col items-center justify-center text-[9px] font-black cursor-pointer transition-all hover:scale-105 hover:border-black ${bgClass}`}
+                    title={`Date: ${d.date} - ${d.progress}% Completed`}
+                  >
+                    <span className="font-mono text-[7px] opacity-75">{monthShort}</span>
+                    <span className="font-mono mt-0.5 leading-none">{dayNum}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Consistency Stats Panel (Streaks History & Celebration Cards) */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Stat 1: Current Streak (Style B - Kinetic Orange Solid Block Inversion) */}
@@ -685,6 +755,13 @@ export default function HabitTracker({
                             <div className="flex items-center gap-1.5">
                               <span className="w-1.5 h-1.5 rounded-none bg-[#E85002] shrink-0"></span>
                               <span className="font-bold">{habit.name}</span>
+                              {habit.reminderTime && (
+                                <span className={`text-[8.5px] font-mono px-1.5 py-0.2 border rounded-none ml-2 uppercase ${
+                                  cycle === 1 ? 'bg-white text-black border-white' : 'bg-black text-[#E85002] border-black'
+                                }`}>
+                                  Time: {habit.reminderTime}
+                                </span>
+                              )}
                               <button
                                 onClick={() => {
                                   setEditingHabitId(habit.id);
@@ -727,6 +804,14 @@ export default function HabitTracker({
                       value={newHabitNames[cat.id] || ''}
                       onChange={(e) => setNewHabitNames(prev => ({ ...prev, [cat.id]: e.target.value }))}
                       className="flex-grow text-[11px] bg-white border-2 border-black rounded-none px-2.5 py-1 text-black focus:outline-none focus:border-[#E85002]"
+                      required
+                    />
+                    <input
+                      type="text"
+                      placeholder="Time (08:30)..."
+                      value={newHabitReminders[cat.id] || ''}
+                      onChange={(e) => setNewHabitReminders(prev => ({ ...prev, [cat.id]: e.target.value }))}
+                      className="w-24 text-[11px] bg-white border-2 border-black rounded-none px-2.5 py-1 text-black focus:outline-none focus:border-[#E85002]"
                     />
                     <button
                       type="submit"
@@ -786,7 +871,7 @@ export default function HabitTracker({
                 {/* Fire Streak Badge */}
                 {streaks.current > 0 && (
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-none bg-[#E85002]/20 text-[#E85002] border border-[#E85002]/50 text-[10px] font-black tracking-wide animate-pulse">
-                    🔥 {streaks.current}-Day Streak!
+                    Streak: {streaks.current} Days
                   </span>
                 )}
               </div>
@@ -858,7 +943,16 @@ export default function HabitTracker({
                                 <Check className="w-3 h-3 stroke-[4]" />
                               </div>
 
-                              <span className="text-[11.5px]">{habit.name}</span>
+                              <div className="flex justify-between items-center w-full min-w-0 pr-2">
+                                <span className="text-[11.5px] truncate">{habit.name}</span>
+                                {habit.reminderTime && (
+                                  <span className={`text-[8.5px] font-mono px-1.5 py-0.2 border shrink-0 ${
+                                    isCompleted ? 'bg-black text-[#E85002] border-black' : 'bg-[#A7A7A7]/25 text-black border-black/25'
+                                  }`}>
+                                    Time: {habit.reminderTime}
+                                  </span>
+                                )}
+                              </div>
                             </div>
 
                             {/* Sidebar Habits Deleting Option */}

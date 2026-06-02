@@ -4,14 +4,15 @@
  */
 
 import React, { useState } from 'react';
-import { CalendarEvent, Course } from '../types';
+import { CalendarEvent, Course, Task } from '../types';
 import { 
-  Plus, Calendar as CalIcon, MapPin, Clock, Trash2, ChevronLeft, ChevronRight, Filter, AlertCircle, Bell
+  Plus, Calendar as CalIcon, MapPin, Clock, Trash2, ChevronLeft, ChevronRight, Filter, AlertCircle, Bell, BookOpen, Repeat
 } from 'lucide-react';
 
 interface CalendarModuleProps {
   events: CalendarEvent[];
   courses: Course[];
+  tasks: Task[];
   onAddEvent: (event: CalendarEvent) => void;
   onDeleteEvent: (id: string) => void;
   onQuickAdd: (title: string, category: string, date: string) => void;
@@ -21,6 +22,7 @@ interface CalendarModuleProps {
 export default function CalendarModule({
   events,
   courses,
+  tasks,
   onAddEvent,
   onDeleteEvent,
   onQuickAdd,
@@ -289,13 +291,14 @@ export default function CalendarModule({
       
       // Use recurrence resolver to display all events falling on this day
       const dayEvents = getEventsForDateString(dateString);
+      const dayTasks = tasks.filter(t => t.deadline === dateString);
 
       // Bento styling: Alternate backgrounds or render active highlighted days!
       const isWeekend = (day + startOffset - 1) % 7 === 0 || (day + startOffset - 1) % 7 === 6;
       const isToday = dateString === todayDateString;
       const dayBg = isToday 
         ? 'bg-[#E85002]/20' 
-        : dayEvents.length > 0 
+        : (dayEvents.length > 0 || dayTasks.length > 0)
         ? 'bg-white' 
         : isWeekend 
         ? 'bg-[#A7A7A7]/10' 
@@ -342,6 +345,17 @@ export default function CalendarModule({
                 </div>
               );
             })}
+            {dayTasks.map(t => (
+              <div 
+                key={t.id} 
+                className={`text-[10px] px-1 py-0.5 rounded-none truncate font-black border border-dashed border-black bg-white text-black font-mono uppercase ${
+                  t.status === 'completed' ? 'line-through opacity-50' : ''
+                }`}
+                title={`[TASK] ${t.title} (Deadline: ${t.deadline})`}
+              >
+                [TASK] {t.title}
+              </div>
+            ))}
           </div>
         </div>
       );
@@ -452,7 +466,7 @@ export default function CalendarModule({
             <p className="text-[10px] text-[#333] font-mono font-bold">Manage events, exams, reviews, and custom alerts.</p>
           </div>
           <div className="bg-[#E85002] text-black border-2 border-black px-2.5 py-1 text-[10px] font-black uppercase font-mono shadow-[2px_2px_0px_#000000]">
-            📅 Today: {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+            Today: {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </div>
         </div>
 
@@ -754,17 +768,23 @@ export default function CalendarModule({
                               {evt.category.replace('_', ' ')}
                             </span>
                             {isRecurring && (
-                              <span className="text-[8px] font-black uppercase bg-black text-white px-1.5 py-0.5 border border-black inline-block mb-1 ml-1.5 font-mono">
-                                🔄 {evt.recurring}
+                              <span className="inline-flex items-center gap-1 text-[8px] font-black uppercase bg-black text-white px-1.5 py-0.5 border border-black inline-block mb-1 ml-1.5 font-mono">
+                                <Repeat className="w-2.5 h-2.5" />
+                                {evt.recurring}
                               </span>
                             )}
                             <h5 className="text-xs font-black text-black uppercase leading-snug truncate" title={evt.title}>{evt.title}</h5>
-                            <p className="text-[9.5px] text-[#333333] font-bold font-mono mt-1">
-                              ⏰ {evt.startTime} - {evt.endTime} | 📍 {evt.location || 'Classroom'}
-                            </p>
+                            <div className="flex flex-wrap items-center gap-1.5 text-[9.5px] text-[#333333] font-bold font-mono mt-1">
+                              <Clock className="w-3 h-3 text-black" />
+                              <span>{evt.startTime} - {evt.endTime}</span>
+                              <span className="text-black/30">|</span>
+                              <MapPin className="w-3 h-3 text-black" />
+                              <span>{evt.location || 'Classroom'}</span>
+                            </div>
                             {crs && (
-                              <p className="text-[9px] text-[#E85002] font-black font-mono mt-0.5">
-                                🎓 {crs.code} - {crs.name}
+                              <p className="text-[9px] text-[#E85002] font-black font-mono mt-1 flex items-center gap-1">
+                                <BookOpen className="w-3 h-3 text-[#E85002]" />
+                                <span>{crs.code} - {crs.name}</span>
                               </p>
                             )}
                             {evt.description && (
@@ -802,6 +822,56 @@ export default function CalendarModule({
                   {getEventsForDateString(selectedDate).length === 0 && (
                     <p className="text-[10px] text-[#646464] font-bold font-mono py-4 text-center border-2 border-dashed border-black bg-white">
                       No events scheduled for this day.
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Day's Tasks List */}
+              <div>
+                <h4 className="text-[10px] font-black text-black uppercase tracking-wider mb-2 pb-1 border-b-2 border-black font-mono">
+                  Tasks due on this day
+                </h4>
+                
+                <div className="space-y-2.5">
+                  {tasks.filter(t => t.deadline === selectedDate).map(t => {
+                    const crs = courses.find(c => c.id === t.courseId);
+                    return (
+                      <div 
+                        key={t.id} 
+                        className="p-3 bg-white border-2 border-dashed border-black rounded-none shadow-[2px_2px_0px_#000000] flex flex-col justify-between"
+                      >
+                        <div className="flex justify-between items-start">
+                          <div className="min-w-0 flex-1">
+                            <span className="text-[8px] font-black uppercase bg-[#E85002] text-black px-1.5 py-0.5 border border-black inline-block mb-1">
+                              Task • {t.priority} priority
+                            </span>
+                            <span className="text-[8px] font-black uppercase bg-black text-white px-1.5 py-0.5 border border-black inline-block mb-1 ml-1.5">
+                              {t.status.replace('_', ' ')}
+                            </span>
+                            <h5 className="text-xs font-black text-black uppercase leading-snug truncate" title={t.title}>
+                              {t.title}
+                            </h5>
+                            {crs && (
+                              <p className="text-[9px] text-[#E85002] font-black font-mono mt-1 flex items-center gap-1">
+                                <BookOpen className="w-3 h-3 text-[#E85002]" />
+                                <span>Course: {crs.code} - {crs.name}</span>
+                              </p>
+                            )}
+                            {t.description && (
+                              <p className="text-[9.5px] text-[#646464] font-semibold font-mono mt-1.5 max-w-sm line-clamp-2">
+                                {t.description}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  {tasks.filter(t => t.deadline === selectedDate).length === 0 && (
+                    <p className="text-[10px] text-[#646464] font-bold font-mono py-4 text-center border-2 border-dashed border-black bg-white">
+                      No tasks due on this day.
                     </p>
                   )}
                 </div>

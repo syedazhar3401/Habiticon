@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import { AchievementList } from './ui/achievement-list';
 import { 
   Task, 
   CalendarEvent, 
@@ -161,6 +162,107 @@ export default function DashboardModule({
 
   const todayHabitProgress = calculateOverallHabitProgress(latestHabitLog);
   const currentHabitStreak = calculateHabitStreaks();
+
+  const userAchievements = React.useMemo(() => {
+    const logCount = habitLogs.length;
+    const noviceUnlocked = logCount >= 1;
+    const apprenticeUnlocked = logCount >= 3;
+    const scholarUnlocked = currentHabitStreak >= 7;
+    const scholarProgress = scholarUnlocked ? 100 : Math.round((currentHabitStreak / 7) * 100);
+    const overlordUnlocked = currentHabitStreak >= 14;
+    const overlordProgress = overlordUnlocked ? 100 : Math.round((currentHabitStreak / 14) * 100);
+    const immortalUnlocked = currentHabitStreak >= 30;
+    const immortalProgress = immortalUnlocked ? 100 : Math.round((currentHabitStreak / 30) * 100);
+    
+    const completedTasksCount = tasks.filter(t => t.status === 'completed').length;
+    const warriorUnlocked = completedTasksCount >= 5;
+    const warriorProgress = warriorUnlocked ? 100 : Math.round((completedTasksCount / 5) * 100);
+    const masterUnlocked = completedTasksCount >= 10;
+    const masterProgress = masterUnlocked ? 100 : Math.round((completedTasksCount / 10) * 100);
+    
+    const enrolledCoursesCount = courses.length;
+    const syllabusUnlocked = enrolledCoursesCount >= 4;
+    const syllabusProgress = syllabusUnlocked ? 100 : Math.round((enrolledCoursesCount / 4) * 100);
+    
+    const notesCount = notes.length;
+    const librarianUnlocked = notesCount >= 5;
+    const librarianProgress = librarianUnlocked ? 100 : Math.round((notesCount / 5) * 100);
+
+    return [
+      {
+        id: "ach-novice",
+        name: "Habit Novice",
+        description: "Logged habits for at least 1 day",
+        trigger: "metric" as const,
+        achievedAt: noviceUnlocked ? "2026-06-02T12:00:00Z" : null,
+        progress: noviceUnlocked ? 100 : 0
+      },
+      {
+        id: "ach-apprentice",
+        name: "Habit Apprentice",
+        description: "Logged habits for at least 3 days",
+        trigger: "metric" as const,
+        achievedAt: apprenticeUnlocked ? "2026-06-02T12:00:00Z" : null,
+        progress: apprenticeUnlocked ? 100 : Math.round((logCount / 3) * 100)
+      },
+      {
+        id: "ach-streak-7",
+        name: "Consistent Scholar",
+        description: "Maintain a 7-day habit streak",
+        trigger: "streak" as const,
+        achievedAt: scholarUnlocked ? "2026-06-02T12:00:00Z" : null,
+        progress: scholarProgress
+      },
+      {
+        id: "ach-streak-14",
+        name: "Habit Overlord",
+        description: "Maintain a 14-day habit streak",
+        trigger: "streak" as const,
+        achievedAt: overlordUnlocked ? "2026-06-02T12:00:00Z" : null,
+        progress: overlordProgress
+      },
+      {
+        id: "ach-streak-30",
+        name: "Routine Immortal",
+        description: "Maintain a 30-day habit streak",
+        trigger: "streak" as const,
+        achievedAt: immortalUnlocked ? "2026-06-02T12:00:00Z" : null,
+        progress: immortalProgress
+      },
+      {
+        id: "ach-tasks-5",
+        name: "Academic Warrior",
+        description: "Complete 5 academic tasks",
+        trigger: "metric" as const,
+        achievedAt: warriorUnlocked ? "2026-06-02T12:00:00Z" : null,
+        progress: warriorProgress
+      },
+      {
+        id: "ach-tasks-10",
+        name: "Task Master",
+        description: "Complete 10 academic tasks",
+        trigger: "metric" as const,
+        achievedAt: masterUnlocked ? "2026-06-02T12:00:00Z" : null,
+        progress: masterProgress
+      },
+      {
+        id: "ach-courses-4",
+        name: "Full Syllabus",
+        description: "Enroll in at least 4 courses",
+        trigger: "metric" as const,
+        achievedAt: syllabusUnlocked ? "2026-06-02T12:00:00Z" : null,
+        progress: syllabusProgress
+      },
+      {
+        id: "ach-notes-5",
+        name: "Librarian",
+        description: "Draft at least 5 study notes",
+        trigger: "metric" as const,
+        achievedAt: librarianUnlocked ? "2026-06-02T12:00:00Z" : null,
+        progress: librarianProgress
+      }
+    ];
+  }, [habitLogs, currentHabitStreak, tasks, courses, notes]);
 
   const handleToggleHabit = (habitId: string) => {
     const logExists = habitLogs.some(l => l.date === todayString);
@@ -379,13 +481,12 @@ export default function DashboardModule({
 
                       <h4 className="text-xs font-black text-black leading-snug line-clamp-1 uppercase tracking-tight">{evt.title}</h4>
                       <div className="flex items-center gap-1.5 text-[9px] text-[#333333] font-bold mt-1 font-mono">
-                        <Clock className="w-3 h-3 text-black" />
                         <span>{evt.startTime} - {evt.endTime}</span>
                       </div>
                     </div>
 
                     <div className="text-[9px] text-black font-black mt-2 pt-1 border-t border-black/10 truncate font-mono">
-                      📍 {evt.location || 'Classroom Main'}
+                      Location: {evt.location || 'Classroom Main'}
                     </div>
                   </div>
                 );
@@ -439,7 +540,7 @@ export default function DashboardModule({
                       <p className="text-[11px] font-black text-black truncate leading-tight uppercase tracking-tight">{tk.title}</p>
                       <div className="flex items-center justify-between text-[9px] mt-1 font-mono">
                         <span className={`font-black uppercase ${isHigh ? 'text-[#E85002]' : 'text-[#646464]'}`}>
-                          {isHigh ? '🔥 Urgent' : 'Medium'}
+                          {isHigh ? 'Urgent' : 'Medium'}
                         </span>
                         <span className="text-[#333333] font-bold">Due {tk.deadline.split('-').slice(1).join('/')}</span>
                       </div>
@@ -476,7 +577,7 @@ export default function DashboardModule({
                 Daily Habit Tracker
               </h3>
               <span className="text-[9px] bg-black text-white px-2 py-0.5 border border-black font-black uppercase font-mono">
-                🔥 {currentHabitStreak} Day Streak
+                Streak: {currentHabitStreak} Days
               </span>
             </div>
 
@@ -591,7 +692,7 @@ export default function DashboardModule({
 
               {showLogSuccess && (
                 <div className="p-1 text-center bg-black border border-black text-[9px] font-black font-mono text-[#E85002] uppercase tracking-wider animate-bounce">
-                  ⚡ Check-In logged successfully!
+                  Check-In logged successfully!
                 </div>
               )}
             </form>
@@ -701,8 +802,8 @@ export default function DashboardModule({
                     {crs.name}
                   </h4>
                   <div className="flex justify-between text-[8px] font-mono text-[#333333] mt-2 pt-1 border-t border-black/10">
-                    <span>👤 {crs.lecturer}</span>
-                    <span className="font-bold">📍 {crs.location}</span>
+                    <span>Lecturer: {crs.lecturer}</span>
+                    <span className="font-bold">Venue: {crs.location}</span>
                   </div>
                 </div>
               ))}
@@ -840,6 +941,26 @@ export default function DashboardModule({
 
         </div>
 
+      </div>
+
+      {/* Achievements Board Section (Full width neobrutalist block) */}
+      <div className="bg-white border-2 border-black p-5 shadow-[4px_4px_0px_#000000] mt-6">
+        <div className="flex justify-between items-center mb-4 border-b-2 border-black pb-2.5">
+          <h3 className="text-xs font-black text-black flex items-center gap-1.5 uppercase tracking-wider">
+            <Award className="w-4 h-4 text-[#E85002]" />
+            Academic and Routine Achievements Board
+          </h3>
+          <span className="text-[9px] bg-black text-[#E85002] px-2.5 py-0.5 border border-black font-black uppercase font-mono tracking-wider">
+            Unlocked: {userAchievements.filter(a => a.achievedAt !== null).length} / {userAchievements.length}
+          </span>
+        </div>
+        
+        <AchievementList 
+          achievements={userAchievements} 
+          columns={3} 
+          gap="default" 
+          badgeSize="default"
+        />
       </div>
 
     </div>

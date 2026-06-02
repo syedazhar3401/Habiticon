@@ -53,6 +53,28 @@ export default function TaskModule({
     return courses.find(c => c.id === courseId);
   };
 
+  const cramTasks = tasks.filter(t => {
+    if (t.status === 'completed') return false;
+    
+    // Parse deadline
+    const deadlineDate = new Date(t.deadline + 'T00:00:00');
+    
+    // Current date (Malaysia Time GMT+8)
+    const now = new Date();
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const msiaTime = new Date(utc + (3600000 * 8));
+    // Clear time for date calculations
+    const today = new Date(msiaTime.getFullYear(), msiaTime.getMonth(), msiaTime.getDate());
+    
+    // Difference in milliseconds
+    const diffTime = deadlineDate.getTime() - today.getTime();
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+    
+    // Overdue is diffDays < 0
+    // Within 48 hours is diffDays <= 2
+    return diffDays <= 2;
+  });
+
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTitle.trim()) return;
@@ -151,7 +173,7 @@ export default function TaskModule({
                     </button>
                   </div>
 
-                  <h5 className="text-xs font-bold mt-2 leading-snug tracking-normal truncate">
+                  <h5 className="text-xs font-black uppercase mt-2 leading-snug tracking-wide font-sans truncate">
                     {task.title}
                   </h5>
 
@@ -362,10 +384,61 @@ export default function TaskModule({
       {/* View Display */}
       <div className="flex-grow overflow-y-auto">
         {view === 'kanban' ? (
-          <div className="flex flex-col md:flex-row gap-4 h-full">
-            {renderKanbanLane('To Do Queue', 'not_started', 'neo-card-a')}
-            {renderKanbanLane('In Development / Revise', 'in_progress', 'neo-card-c')}
-            {renderKanbanLane('Solved / Completed', 'completed', 'clay-card border border-[#e2e8f0]/60')}
+          <div className="flex flex-col gap-4 min-h-full">
+            {cramTasks.length > 0 && (
+              <div className="border-4 border-black bg-yellow-400 p-4 rounded-none shadow-[4px_4px_0px_#000000] relative overflow-hidden shrink-0">
+                {/* Header block */}
+                <div className="flex items-center justify-between pb-2 border-b-2 border-black mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="relative flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-600 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-rose-600 border border-black"></span>
+                    </span>
+                    <AlertTriangle className="w-4 h-4 text-black stroke-[3]" />
+                    <span className="font-black text-[11px] uppercase tracking-wider text-black">
+                      Urgent Cram Alarm: Imminent Deadlines (Within 48h or Overdue)
+                    </span>
+                  </div>
+                  <span className="bg-black text-yellow-400 font-mono text-[9px] font-black px-2 py-0.5 border border-black uppercase">
+                    {cramTasks.length} {cramTasks.length === 1 ? 'Task' : 'Tasks'} Pending
+                  </span>
+                </div>
+                {/* Task list grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                  {cramTasks.map(t => {
+                    const crs = getCourse(t.courseId);
+                    const isOverdue = new Date(t.deadline + 'T23:59:59') < new Date();
+                    return (
+                      <div key={t.id} className="bg-white border-2 border-black p-2.5 rounded-none shadow-[2px_2px_0px_#000000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all">
+                        <div className="flex justify-between items-start">
+                          <span className={`text-[8px] font-black px-1.5 py-0.5 uppercase border border-black ${
+                            isOverdue ? 'bg-rose-500 text-white' : 'bg-[#E85002] text-black'
+                          }`}>
+                            {isOverdue ? 'Overdue' : 'Due Soon'}
+                          </span>
+                          <span className="text-[9px] font-mono font-bold text-black">
+                            Due: {t.deadline}
+                          </span>
+                        </div>
+                        <h4 className="text-xs font-black text-black mt-2 truncate uppercase font-sans">
+                          {t.title}
+                        </h4>
+                        {crs && (
+                          <div className="text-[9px] font-black text-[#E85002] font-mono mt-0.5 uppercase">
+                            {crs.code} - {crs.name}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+            <div className="flex flex-col md:flex-row gap-4 flex-grow">
+              {renderKanbanLane('To Do Queue', 'not_started', 'neo-card-a')}
+              {renderKanbanLane('In Development / Revise', 'in_progress', 'neo-card-c')}
+              {renderKanbanLane('Solved / Completed', 'completed', 'clay-card border border-[#e2e8f0]/60')}
+            </div>
           </div>
         ) : (
           renderListView()
@@ -421,9 +494,9 @@ export default function TaskModule({
                       onChange={(e) => setNewPriority(e.target.value as any)}
                       className="w-full bg-white border-2 border-black rounded-none px-2.5 py-1.5 text-xs text-black focus:outline-none focus:border-[#E85002] shadow-[2px_2px_0px_#000000] font-black"
                     >
-                      <option value="high">🔥 High stakes / Cram alarm</option>
-                      <option value="medium">⚡ Medium workload</option>
-                      <option value="low">💤 Low priority review</option>
+                      <option value="high">High stakes / Cram alarm</option>
+                      <option value="medium">Medium workload</option>
+                      <option value="low">Low priority review</option>
                     </select>
                   </div>
                 </div>

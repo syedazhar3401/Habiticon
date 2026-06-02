@@ -720,6 +720,7 @@ export default function App() {
             <CalendarModule
               events={events}
               courses={courses}
+              tasks={tasks}
               onAddEvent={handleAddEvent}
               onDeleteEvent={handleDeleteEvent}
               onUpdateEvent={handleUpdateEvent}
