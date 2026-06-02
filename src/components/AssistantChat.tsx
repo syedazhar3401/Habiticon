@@ -29,7 +29,7 @@ export default function AssistantChat({
     {
       id: 'welcome',
       sender: 'assistant',
-      content: `Hello! I'm **Aura**, your AI Academic Assistant. I can understand natural language and automatically perform actions inside your workspace.
+      content: `Hello! I'm **Gemmi**, your AI Academic Assistant. I can understand natural language and automatically perform actions inside your workspace.
 
 For example, you can tell me things like:
 * *"Add an assignment due next Friday for WIX1003"*

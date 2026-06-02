@@ -547,7 +547,7 @@ export default function CalendarModule({
       </div>
 
       <div className="mt-3 text-[10px] text-black bg-white border-2 border-black rounded-none p-2 flex items-center justify-between font-mono font-bold shadow-[2px_2px_0px_#000000]">
-        <span>Quick Suggestion: Click on any day cell to manage events. Or tell Aura: <em>"Study Session on Thursday at 4pm"</em>.</span>
+        <span>Quick Suggestion: Click on any day cell to manage events. Or tell Gemmi: <em>"Study Session on Thursday at 4pm"</em>.</span>
         <span>Total: <strong>{filteredEvents.length}</strong> schedules</span>
       </div>
 

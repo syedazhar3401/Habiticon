@@ -1028,10 +1028,10 @@ export default function WellnessJournalModule({
                   <button 
                     onClick={() => handleTriggerAI()}
                     disabled={aiLoading}
-                    className="px-3 py-1 bg-black hover:bg-[#333333] border-2 border-black text-[#E85002] text-[10.5px] font-black rounded-none flex items-center gap-1 transition-all disabled:opacity-50 cursor-pointer shadow-[2px_2px_0px_#E85002] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
+                    className="px-3 py-1 bg-[#E85002] hover:bg-[#ff6214] border-2 border-black text-black text-[10.5px] font-black rounded-none flex items-center gap-1 transition-all disabled:opacity-50 cursor-pointer shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
                     title="Gemmi AI reflections summary"
                   >
-                    {aiLoading ? <RefreshCw className="w-3.5 h-3.5 animate-spin animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-[#E85002]" />}
+                    {aiLoading ? <RefreshCw className="w-3.5 h-3.5 animate-spin animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-black" />}
                     {aiLoading ? 'Grounding...' : 'Ask Gemmi reflections'}
                   </button>
 

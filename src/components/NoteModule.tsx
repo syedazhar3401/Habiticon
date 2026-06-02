@@ -89,7 +89,7 @@ export default function NoteModule({
     'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=500&q=80'
   ];
 
-  // Grounded Aura AI Notebook Summarizer States
+  // Grounded Gemmi AI Notebook Summarizer States
   const [aiLoading, setAiLoading] = useState(false);
   const [aiAnalysis, setAiAnalysis] = useState<{
     summary: string;
@@ -997,7 +997,7 @@ export default function NoteModule({
 
                   </div>
 
-                  {/* Right Column: Aura AI summaries side block */}
+                  {/* Right Column: Gemmi AI summaries side block */}
                   {aiAnalysis && (
                     <div className="w-full md:w-60 bg-black text-white border-2 border-[#333333] p-3 shadow-[4px_4px_0px_#E85002] flex flex-col gap-3 shrink-0 animate-in fade-in slide-in-from-right-3 duration-150 overflow-y-auto scrollbar-thin rounded-none">
                       <div className="flex justify-between items-start border-b border-[#333333] pb-1.5">

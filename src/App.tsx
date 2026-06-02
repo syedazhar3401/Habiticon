@@ -354,7 +354,7 @@ export default function App() {
     setNotifications(prev => prev.filter(n => n.id !== id));
   };
 
-  // --- Aura AI Suggested Action Dispatcher Integration ---
+  // --- Gemmi AI Suggested Action Dispatcher Integration ---
   const handleTriggerAction = (type: string, payload: any) => {
     switch (type) {
       case 'create_event': {
@@ -366,13 +366,13 @@ export default function App() {
           startTime: payload.startTime || '18:00',
           endTime: payload.endTime || '19:30',
           location: payload.location || 'Library Seminar',
-          description: payload.description || 'Grounded session designed via Aura',
+          description: payload.description || 'Grounded session designed via Gemmi',
           recurring: payload.recurring || 'none',
           category: payload.category || 'study_session',
           reminderMinutes: payload.reminderMinutes || 30
         };
         setEvents(prev => [...prev, generatedEvent]);
-        triggerToast('Grounded Event Created', `Aura booked: "${generatedEvent.title}"`);
+        triggerToast('Grounded Event Created', `Gemmi booked: "${generatedEvent.title}"`);
         break;
       }
       case 'create_task': {
@@ -385,10 +385,10 @@ export default function App() {
           estimatedHours: payload.estimatedHours || 4,
           progress: 0,
           status: 'not_started',
-          description: payload.description || 'Deliverable set via Aura AI command'
+          description: payload.description || 'Deliverable set via Gemmi AI command'
         };
         setTasks(prev => [...prev, generatedTask]);
-        triggerToast('Intel Task Logged', `Aura added: "${generatedTask.title}" due ${generatedTask.deadline}`);
+        triggerToast('Intel Task Logged', `Gemmi added: "${generatedTask.title}" due ${generatedTask.deadline}`);
         break;
       }
       case 'create_note': {
@@ -396,7 +396,7 @@ export default function App() {
         let foldId = folders[0]?.id;
         const noteFolder: Folder = {
           id: `folder-ai-${Date.now()}`,
-          name: 'Aura Summaries',
+          name: 'Gemmi Summaries',
           courseId: payload.courseId || undefined
         };
         setFolders(prev => [...prev, noteFolder]);
@@ -404,7 +404,7 @@ export default function App() {
 
         const generatedNote: Note = {
           id: `note-ai-${Date.now()}`,
-          title: payload.title || 'Aura AI Lecture Draft',
+          title: payload.title || 'Gemmi AI Lecture Draft',
           content: payload.content || '# Draft note summary\n\nOutline details from prompt.',
           courseId: payload.courseId || undefined,
           folderId: foldId,
@@ -859,7 +859,7 @@ export default function App() {
         </span>
       </div>
 
-      {/* Floating Aura AI Assistant Pop-up Chat Card */}
+      {/* Floating Gemmi AI Assistant Pop-up Chat Card */}
       <div
         style={{
           left: `${Math.max(20, Math.min(window.innerWidth - 380, fabPos.x - 120))}px`,

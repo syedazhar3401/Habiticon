@@ -182,19 +182,19 @@ export default function CourseModule({
               Assignments &amp; Deadlines ({courseTasks.length})
             </h4>
 
-            <div className="flex-grow space-y-2 overflow-y-auto max-h-[190px] pr-1">
+            <div className="flex-grow space-y-2 overflow-y-auto scrollbar-none pr-1">
               {courseTasks.map(tk => (
-                <div key={tk.id} className="p-2.5 border-2 border-black rounded-none bg-[#F9F9F9] flex flex-col gap-1 text-left shrink-0 shadow-[2px_2px_0px_#000000]">
+                <div key={tk.id} className="p-2.5 border-2 border-black rounded-none bg-[#E85002] text-black flex flex-col gap-1 text-left shrink-0 shadow-[2px_2px_0px_#000000]">
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-black text-black uppercase tracking-tight truncate">{tk.title}</span>
                     <span className={`text-[8.5px] font-black uppercase px-2 py-0.5 border border-black ${
-                      tk.status === 'completed' ? 'bg-[#333] text-white' : 'bg-[#E85002] text-black'
+                      tk.status === 'completed' ? 'bg-[#333] text-white' : 'bg-black text-white'
                     }`}>
                       {tk.status === 'completed' ? 'Done' : 'Todo'}
                     </span>
                   </div>
 
-                  <div className="flex justify-between items-center text-[9.5px] text-[#646464] mt-1 font-mono font-bold">
+                  <div className="flex justify-between items-center text-[9.5px] text-black/80 mt-1 font-mono font-bold">
                     <span>Deadline: {tk.deadline}</span>
                     <span>{tk.estimatedHours}h est</span>
                   </div>
@@ -207,22 +207,22 @@ export default function CourseModule({
             </div>
           </div>
 
-          {/* Col 3: Calendar schedules upcoming - Style C */}
-          <div className="neo-card-c p-4 flex flex-col h-full bg-black text-white">
-            <h4 className="text-xs font-black uppercase tracking-wider text-[#E85002] mb-3 border-b-2 border-[#333] pb-1 shrink-0">
+          {/* Col 3: Calendar schedules upcoming - Style A (same as course profile) */}
+          <div className="neo-card-a p-4 flex flex-col h-full rounded-none">
+            <h4 className="text-xs font-black uppercase tracking-wider text-black mb-3 border-b-2 border-black/10 pb-1.5 shrink-0">
               Classes &amp; Exams ({courseEvents.length})
             </h4>
 
-            <div className="flex-grow space-y-2 overflow-y-auto max-h-[190px] pr-1">
+            <div className="flex-grow space-y-2 overflow-y-auto scrollbar-none pr-1">
               {courseEvents.map(evt => (
-                <div key={evt.id} className="p-2.5 border border-black bg-[#333] flex flex-col gap-1 text-left shrink-0 shadow-[2px_2px_0px_#E85002]">
+                <div key={evt.id} className="p-2.5 border-2 border-black bg-white text-black flex flex-col gap-1 text-left shrink-0 shadow-[2px_2px_0px_#000000]">
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-black text-white uppercase tracking-tight truncate">{evt.title}</span>
+                    <span className="text-[11px] font-black text-black uppercase tracking-tight truncate">{evt.title}</span>
                     <span className="text-[8.5px] px-2 py-0.5 bg-[#E85002] text-black font-black border border-black uppercase font-mono">
                       {evt.category}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between text-[9.5px] text-[#A7A7A7] font-mono font-bold mt-1">
+                  <div className="flex items-center justify-between text-[9.5px] text-[#646464] font-mono font-bold mt-1">
                     <span>{evt.date}</span>
                     <span>{evt.startTime}-{evt.endTime}</span>
                   </div>
