@@ -176,25 +176,25 @@ export default function CourseModule({
             </button>
           </div>
 
-          {/* Col 2: Contextual assignments checks - Style D */}
-          <div className="clay-card border border-[#e2e8f0]/60 p-4 flex flex-col h-full bg-white">
-            <h4 className="text-xs font-black uppercase tracking-wider text-black mb-3 border-b-2 border-black/10 pb-1.5 shrink-0">
+          {/* Col 2: Contextual assignments checks - Option B (Black Container, Orange Cards) */}
+          <div className="bg-black text-white border-2 border-black p-4 flex flex-col h-full rounded-none shadow-[4px_4px_0px_#E85002]">
+            <h4 className="text-xs font-black uppercase tracking-wider text-white mb-3 border-b-2 border-[#333]/40 pb-1.5 shrink-0">
               Assignments &amp; Deadlines ({courseTasks.length})
             </h4>
 
             <div className="flex-grow space-y-2 overflow-y-auto scrollbar-none pr-1">
               {courseTasks.map(tk => (
-                <div key={tk.id} className="p-2.5 border-2 border-black rounded-none bg-[#E85002] text-black flex flex-col gap-1 text-left shrink-0 shadow-[2px_2px_0px_#000000]">
+                <div key={tk.id} className="p-2.5 border-2 border-black rounded-none bg-[#E85002] text-black flex flex-col gap-1 text-left shrink-0 shadow-[2px_2px_0px_#000000] hover:bg-[#ff6214] transition-all">
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-black text-black uppercase tracking-tight truncate">{tk.title}</span>
                     <span className={`text-[8.5px] font-black uppercase px-2 py-0.5 border border-black ${
-                      tk.status === 'completed' ? 'bg-[#333] text-white' : 'bg-black text-white'
+                      tk.status === 'completed' ? 'bg-black text-white' : 'bg-white text-black'
                     }`}>
                       {tk.status === 'completed' ? 'Done' : 'Todo'}
                     </span>
                   </div>
 
-                  <div className="flex justify-between items-center text-[9.5px] text-black/80 mt-1 font-mono font-bold">
+                  <div className="flex justify-between items-center text-[9.5px] text-black/85 mt-1 font-mono font-bold">
                     <span>Deadline: {tk.deadline}</span>
                     <span>{tk.estimatedHours}h est</span>
                   </div>
